@@ -1,0 +1,39 @@
+{
+    "name": "neon-signs-store",
+    "version": "1.0.0",
+    "description": "Tienda profesional de carteles de neón desarrollada con Vue.js",
+    "main": "index.js",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "lint": "eslint . --ext .vue,.js,.ts --fix",
+        "type-check": "vue-tsc --noEmit"
+    },
+    "keywords": [
+        "vue",
+        "neon-signs",
+        "ecommerce",
+        "frontend",
+        "typescript"
+    ],
+    "author": "Lauti Design",
+    "license": "MIT",
+    "dependencies": {
+        "vue": "^3.4.21",
+        "vue-router": "^4.3.0",
+        "pinia": "^2.1.7",
+        "@vueuse/core": "^10.9.0",
+        "lucide-vue-next": "^0.365.0"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.0.4",
+        "@vue/eslint-config-typescript": "^13.0.0",
+        "eslint": "^8.57.0",
+        "eslint-plugin-vue": "^9.22.0",
+        "sass": "^1.72.0",
+        "typescript": "^5.4.2",
+        "vite": "^5.2.0",
+        "vue-tsc": "^2.0.6"
+    }
+}
