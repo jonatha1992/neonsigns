@@ -13,7 +13,9 @@
         "deploy": "gh-pages -d dist",
         "firebase:build": "npm run build",
         "firebase:deploy": "firebase deploy",
-        "firebase:serve": "firebase serve"
+        "firebase:serve": "firebase serve",
+        "deploy:auto": "git add . && git commit -m 'deploy: Update website' && git push origin master",
+        "push": "git add . && git commit && git push origin master"
     },
     "keywords": [
         "vue",
