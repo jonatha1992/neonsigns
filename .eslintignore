@@ -1,0 +1,13 @@
+dist/
+node_modules/
+*.log
+.DS_Store
+*.local
+.env
+.env.local
+.env.*.local
+*.backup.vue
+*_backup.vue
+.firebase/
+.firebaserc
+firebase.json

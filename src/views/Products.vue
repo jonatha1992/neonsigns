@@ -18,7 +18,7 @@
         <p>{{ totalProducts }} trabajos realizados</p>
         
         <div class="whatsapp-cta">
-          <a :href="whatsappCatalogUrl" target="_blank" class="btn btn-neon">
+          <a :href="whatsappUrl" target="_blank" class="btn btn-neon">
             <MessageCircle :size="18" />
             Solicitar Cotización
           </a>

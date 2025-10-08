@@ -135,11 +135,13 @@ const product = computed(() => {
 const categoryName = computed(() => {
   if (!product.value) return ''
   
-  const categoryNames = {
+  const categoryNames: Record<string, string> = {
     business: 'Comercial',
     custom: 'Personalizado', 
     home: 'Hogar',
-    decorative: 'Decorativo'
+    decorative: 'Decorativo',
+    signs: 'Señales',
+    letters: 'Letras'
   }
   
   return categoryNames[product.value.category] || 'Otros'

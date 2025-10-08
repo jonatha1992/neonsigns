@@ -100,7 +100,7 @@ const closeModal = () => {
 }
 
 const categoryName = computed(() => {
-  const categories = {
+  const categories: Record<string, string> = {
     business: 'Negocios',
     home: 'Hogar',
     custom: 'Personalizado',
@@ -120,6 +120,8 @@ const whatsappProductUrl = computed(() => {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:color";
+
 .product-card {
   background: $card-bg;
   border-radius: $border-radius-lg;
@@ -280,20 +282,18 @@ const whatsappProductUrl = computed(() => {
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   
-  &.featured {
-    background: linear-gradient(45deg, $neon-pink, lighten($neon-pink, 10%));
-    color: $dark-bg;
-    box-shadow: 0 0 10px rgba($neon-pink, 0.4);
-    animation: neonPulse 2s ease-in-out infinite;
-  }
-  
-  &.discount {
-    background: linear-gradient(45deg, $neon-green, lighten($neon-green, 10%));
-    color: $dark-bg;
-    box-shadow: 0 0 10px rgba($neon-green, 0.4);
-  }
-  
-  &.category {
+    &.featured {
+      background: linear-gradient(45deg, $neon-pink, color.scale($neon-pink, $lightness: 20%));
+      color: $dark-bg;
+      box-shadow: 0 0 10px rgba($neon-pink, 0.4);
+      animation: neonPulse 2s ease-in-out infinite;
+    }
+    
+    &.discount {
+      background: linear-gradient(45deg, $neon-green, color.scale($neon-green, $lightness: 20%));
+      color: $dark-bg;
+      box-shadow: 0 0 10px rgba($neon-green, 0.4);
+    }  &.category {
     background: linear-gradient(45deg, rgba($neon-blue, 0.9), rgba($neon-blue, 0.7));
     color: white;
     border: 1px solid rgba($neon-blue, 0.3);
@@ -340,6 +340,7 @@ const whatsappProductUrl = computed(() => {
   margin-bottom: $spacing-lg;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

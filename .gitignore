@@ -101,3 +101,12 @@ temp/
 
 # Vercel
 .vercel
+
+# Firebase
+.firebase/
+firebase-debug.log
+.firebaserc
+
+# Backup files
+*_backup.*
+*.backup.*

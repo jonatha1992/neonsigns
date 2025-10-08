@@ -182,7 +182,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { 
   ChevronRight, Zap, Star, Minus, Plus, MessageCircle, 
-  Shield, Truck, Wrench, Palette 
+  Shield, Truck, Wrench
 } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
@@ -241,10 +241,10 @@ const whatsappProductUrl = computed(() => {
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
-const whatsappSimilarUrl = computed(() => {
-  if (!product.value) return ''
-  
-  const message = `Hola! Vi su trabajo "${product.value.name}" en la galería y me gustaría algo similar. ¿Podrían ayudarme con un diseño parecido? 🌟`
+// const whatsappSimilarUrl = computed(() => {
+//   if (!product.value) return ''
+//   
+//   const message = `Hola! Vi su trabajo "${product.value.name}" en la galería y me gustaría algo similar. ¿Podrían ayudarme con un diseño parecido? 🌟`
   
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
