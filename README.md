@@ -1,25 +1,25 @@
-# 🌟 Neon Signs Store
+# 🌟 Lauti Design - Carteles de Neón LED
 
-Una aplicación web profesional para la venta de carteles de neón, desarrollada con Vue.js 3, TypeScript y diseño responsivo.
+Landing page profesional para mostrar trabajos realizados de carteles de neón LED, desarrollada con Vue 3, TypeScript y animaciones premium.
 
 ![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![SCSS](https://img.shields.io/badge/SCSS-hotpink?style=for-the-badge&logo=SASS&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-222222?style=for-the-badge&logo=GitHub%20Pages&logoColor=white)
 
 ## ✨ Características
 
-- 🎨 **Diseño moderno**: Interfaz atractiva con efectos de neón y animaciones
+- 🎨 **Portfolio Visual**: Galería de trabajos reales con modal interactivo
 - 📱 **Responsive Design**: Optimizado para todos los dispositivos
-- ⚡ **Rendimiento**: Construido con Vite para carga rápida
-- 🛒 **E-commerce**: Sistema completo de carrito de compras
-- 🔍 **Filtros avanzados**: Búsqueda y filtrado de productos
-- 💳 **Proceso de compra**: Checkout optimizado y user-friendly
-- 🌙 **Efectos visuales**: Animaciones y efectos de neón inmersivos
+- ⚡ **Animaciones Premium**: Efectos visuales profesionales con tema neón
+- �️ **Modal de Imágenes**: Visualización ampliada con información detallada
+- � **WhatsApp Integration**: Contacto directo para cotizaciones
+- 🌟 **Spinner Personalizado**: Carga con efectos neón y múltiples anillos
+- 🌙 **Tema Neón**: Diseño inmersivo con colores vibrantes
 
-## 🚀 Demo
+## 🚀 Demo en Vivo
 
-[Ver Demo en Vivo](https://your-demo-link.com) (Próximamente)
+[Ver Portfolio](https://jonatha1992.github.io/neondesing)
 
 ## 📋 Requisitos Previos
 
@@ -33,8 +33,8 @@ Antes de comenzar, asegúrate de tener instalado:
 
 1. **Clona el repositorio**
    ```bash
-   git clone https://github.com/tu-usuario/neon-signs-store.git
-   cd neon-signs-store
+   git clone https://github.com/jonatha1992/neondesing.git
+   cd neondesing
    ```
 
 2. **Instala las dependencias**
@@ -121,42 +121,75 @@ neon-signs-store/
 
 ```bash
 # Desarrollo
-npm run dev          # Inicia servidor de desarrollo
+npm run dev          # Inicia servidor de desarrollo (localhost:3000)
 
 # Construcción
 npm run build        # Construye para producción
 npm run preview      # Preview de la build de producción
+
+# Deploy
+npm run predeploy    # Prepara build para GitHub Pages
+npm run deploy       # Deploy automático a GitHub Pages
 
 # Calidad de código
 npm run lint         # Ejecuta ESLint
 npm run type-check   # Verificación de tipos TypeScript
 ```
 
+## 🌐 Deploy a GitHub Pages
+
+### Configuración Automática
+El proyecto incluye GitHub Actions para deploy automático:
+
+1. **Push a main** → Deploy automático activado
+2. **URL final**: `https://jonatha1992.github.io/neondesing`
+
+### Deploy Manual
+```bash
+npm run deploy       # Deploy directo usando gh-pages
+```
+
+### Instrucciones de Setup
+1. **Crear repositorio** en GitHub con nombre: `neondesing`
+2. **Comandos para subir:**
+   ```bash
+   git init
+   git add .
+   git commit -m "feat: portfolio profesional Lauti Design"
+   git branch -M main
+   git remote add origin https://github.com/jonatha1992/neondesing.git
+   git push -u origin main
+   ```
+3. **Habilitar GitHub Pages** en Settings → Pages → Source: GitHub Actions
+
 ## 🌟 Funcionalidades Principales
 
-### 🏠 Página de Inicio
-- Hero section con efectos de neón
-- Productos destacados
-- Categorías principales
-- Testimonios de clientes
+### 🏠 Landing Page
+- Hero section con efectos de neón premium
+- Grid de trabajos realizados
+- Información de contacto profesional
+- Integración WhatsApp directa
 
-### 🛍️ Catálogo de Productos
-- Grid responsivo de productos
-- Filtros por categoría, precio y color
-- Búsqueda en tiempo real
-- Paginación
+### �️ Galería de Trabajos
+- 8 proyectos reales completados
+- Modal interactivo para visualización ampliada
+- Categorización por tipo de trabajo
+- Efectos hover profesionales
 
-### 📄 Detalle de Producto
-- Galería de imágenes
-- Información detallada
-- Opciones de personalización
-- Sistema de reseñas
+### � Sistema de Contacto
+- WhatsApp: +54 9 11 4091-6764
+- Ubicación: Zona Sur, Buenos Aires
+- Mensajes contextuales por trabajo
+- Cotizaciones directas
 
-### 🛒 Carrito de Compras
-- Gestión de productos
-- Cálculo automático de totales
-- Cupones de descuento
-- Proceso de checkout
+### 🎨 Portfolio Actual
+- **Hombre Araña** - Diseño temático personalizado
+- **Pizza** - Letreros comerciales para pizzerías
+- **Cerrajería** - Señalización profesional comercial
+- **Tecno Alfa** - Logo empresarial bicolor
+- **Happy Birthday** - Celebraciones especiales
+- **Nombres Personalizados** - Diseños elegantes para hogar
+- **Lavadero El Veci** - Letrero comercial multicolor
 
 ## 🎨 Personalización
 
@@ -195,18 +228,22 @@ Los efectos de neón se pueden customizar en `src/styles/neon-effects.scss`
 
 ## 📝 Roadmap
 
-- [ ] Integración con pasarela de pagos
-- [ ] Panel de administración
-- [ ] Sistema de usuarios
-- [ ] Chat en vivo
+- [ ] Más trabajos al portfolio
+- [ ] Galería de proceso de fabricación
+- [ ] Sistema de cotizaciones online
+- [ ] Integración con Instagram
 - [ ] PWA (Progressive Web App)
-- [ ] Análisis con Google Analytics
+- [ ] Formulario de contacto avanzado
 
 ## 📞 Contacto
 
-**Lauti Design** - [@lautidesign](https://github.com/lautidesign)
+**Lauti Design** - Especialistas en Carteles de Neón LED
 
-Enlace del Proyecto: [https://github.com/lautidesign/neon-signs-store](https://github.com/lautidesign/neon-signs-store)
+- 📱 **WhatsApp**: +54 9 11 4091-6764
+- 📍 **Ubicación**: Zona Sur, Buenos Aires
+- 🌐 **Portfolio**: [https://jonatha1992.github.io/neondesing](https://jonatha1992.github.io/neondesing)
+
+Enlace del Proyecto: [https://github.com/jonatha1992/neondesing](https://github.com/jonatha1992/neondesing)
 
 ## 📄 Licencia
 
@@ -214,6 +251,8 @@ Distribuido bajo la Licencia MIT. Ver `LICENSE` para más información.
 
 ---
 
-⭐ Si te gusta este proyecto, ¡dale una estrella en GitHub!
+⭐ Si te gusta este portfolio, ¡dale una estrella en GitHub!
+
+**🌟 Landing Page Profesional para Lauti Design - Carteles de Neón LED (Zona Sur, Buenos Aires)**
 
 Made with ❤️ and ⚡ by Lauti Design
