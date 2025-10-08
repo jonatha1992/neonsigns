@@ -60,10 +60,12 @@ export const useCartStore = defineStore('cart', {
                     customText
                 })
             }
+            this.saveToLocalStorage()
         },
 
         removeItem(index: number) {
             this.items.splice(index, 1)
+            this.saveToLocalStorage()
         },
 
         updateQuantity(index: number, quantity: number) {
@@ -71,11 +73,13 @@ export const useCartStore = defineStore('cart', {
                 this.removeItem(index)
             } else {
                 this.items[index].quantity = quantity
+                this.saveToLocalStorage()
             }
         },
 
         clearCart() {
             this.items = []
+            this.saveToLocalStorage()
         },
 
         toggleCart() {
@@ -88,11 +92,26 @@ export const useCartStore = defineStore('cart', {
 
         closeCart() {
             this.isOpen = false
-        }
-    },
+        },
 
-    persist: {
-        key: 'neon-cart',
-        storage: localStorage
+        // Persistencia manual del carrito
+        saveToLocalStorage() {
+            try {
+                localStorage.setItem('neon-cart', JSON.stringify(this.items))
+            } catch (error) {
+                console.warn('No se pudo guardar el carrito en localStorage:', error)
+            }
+        },
+
+        loadFromLocalStorage() {
+            try {
+                const saved = localStorage.getItem('neon-cart')
+                if (saved) {
+                    this.items = JSON.parse(saved)
+                }
+            } catch (error) {
+                console.warn('No se pudo cargar el carrito desde localStorage:', error)
+            }
+        }
     }
 })

@@ -1,24 +1,24 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
+import path from 'path'
 
 export default defineConfig({
     plugins: [vue()],
     resolve: {
         alias: {
-            '@': resolve(__dirname, 'src'),
-            '@components': resolve(__dirname, 'src/components'),
-            '@views': resolve(__dirname, 'src/views'),
-            '@assets': resolve(__dirname, 'src/assets'),
-            '@styles': resolve(__dirname, 'src/styles'),
-            '@utils': resolve(__dirname, 'src/utils'),
-            '@stores': resolve(__dirname, 'src/stores')
+            '@': path.resolve(__dirname, './src'),
+            '@components': path.resolve(__dirname, './src/components'),
+            '@views': path.resolve(__dirname, './src/views'),
+            '@assets': path.resolve(__dirname, './src/assets'),
+            '@styles': path.resolve(__dirname, './src/styles'),
+            '@utils': path.resolve(__dirname, './src/utils'),
+            '@stores': path.resolve(__dirname, './src/stores')
         }
     },
     css: {
         preprocessorOptions: {
             scss: {
-                additionalData: `@import "@/styles/variables.scss";`
+                additionalData: `@use "@/styles/variables.scss" as *;`
             }
         }
     },

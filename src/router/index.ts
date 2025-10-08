@@ -55,7 +55,7 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
-    scrollBehavior(to, from, savedPosition) {
+    scrollBehavior(_to, _from, savedPosition) {
         if (savedPosition) {
             return savedPosition
         } else {
@@ -65,7 +65,7 @@ const router = createRouter({
 })
 
 // Global navigation guard for page titles
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
     document.title = to.meta.title as string || 'Neon Signs Store'
     next()
 })
