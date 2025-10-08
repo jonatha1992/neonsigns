@@ -1,56 +1,59 @@
 <template>
   <div class="product-detail">
-    <div v-if="loading" class="loading-state">
-      <div class="container">
-        <div class="neon-spinner">
-          <div class="spinner-ring"></div>
-          <div class="spinner-ring"></div>
-          <div class="spinner-ring"></div>
-          <div class="spinner-core">⚡</div>
-        </div>
-        <p class="loading-text">Cargando trabajo...</p>
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <router-link to="/" class="breadcrumb-link">
+        Inicio
+      </router-link>
+      <ChevronRight :size="16" />
+      <router-link to="/products" class="breadcrumb-link">
+        Trabajos
+      </router-link>
+      <ChevronRight :size="16" />
+      <span v-if="product">{{ product.name }}</span>
+    </nav>
+
+    <!-- Loading State -->
+    <div v-if="loading" class="loading-container">
+      <div class="neon-spinner">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
       </div>
     </div>
-    
-    <div v-else-if="!product" class="not-found-state">
-      <div class="container">
-        <h1>Trabajo no encontrado</h1>
-        <p>El trabajo que buscas no existe o ha sido removido.</p>
-        <RouterLink to="/galeria" class="btn btn-primary">
-          Ver Todos los Trabajos
-        </RouterLink>
+
+    <!-- Product Not Found -->
+    <div v-else-if="!product" class="not-found">
+      <div class="not-found-content">
+        <h2>Trabajo no encontrado</h2>
+        <p>El trabajo que buscas no existe.</p>
+        <router-link to="/products" class="btn btn-primary">
+          Ver todos los trabajos
+        </router-link>
       </div>
     </div>
-    
-    <div v-else class="container">
-      <!-- Breadcrumb -->
-      <nav class="breadcrumb">
-        <RouterLink to="/">Inicio</RouterLink>
-        <ChevronRight :size="16" />
-          <RouterLink to="/galeria">Galería</RouterLink>
-        <ChevronRight :size="16" />
-        <span>{{ product.name }}</span>
-      </nav>
-      
-      <div class="product-content">
-        <!-- Product Images -->
-        <div class="product-images">
-          <div class="main-image">
-            <img 
-              v-if="product.images && product.images[0]" 
-              :src="product.images[0]" 
-              :alt="product.name"
-              class="product-img"
-            />
-            <div v-else class="image-placeholder">
-              <Zap :size="80" class="placeholder-icon" />
+
+    <!-- Product Content -->
+    <div v-else class="product-container">
+      <!-- Product Images -->
+      <div class="product-images">
+        <div class="main-image">
+          <img 
+            :src="product.images[0]" 
+            :alt="product.name"
+            class="main-product-image"
+          />
+          <div class="image-overlay">
+            <div class="overlay-content">
               <p>{{ product.name }}</p>
             </div>
           </div>
         </div>
-        
-        <!-- Product Info -->
-        <div class="product-info">
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <div class="product-header">
           <div class="product-badge">{{ categoryName }}</div>
           
           <h1 class="product-title">{{ product.name }}</h1>
@@ -66,111 +69,43 @@
             </div>
             <span class="rating-text">{{ product.rating }} ({{ product.reviews }} reseñas)</span>
           </div>
-          
+        </div>
 
-          
+        <div class="product-description-section">
           <p class="product-description">{{ product.description }}</p>
-          
-          <!-- Color Options -->
-          <div class="product-options">
-            <div class="option-group">
-              <label>Color:</label>
-              <div class="color-options">
-                <button 
-                  v-for="color in product.colors" 
-                  :key="color.name"
-                  @click="selectedColor = color"
-                  :class="{ active: selectedColor?.name === color.name }"
-                  class="color-option"
-                  :title="color.name"
-                >
-                  <div 
-                    class="color-circle"
-                    :style="{ 
-                      backgroundColor: color.hex, 
-                      boxShadow: selectedColor?.name === color.name ? `0 0 15px ${color.glowColor}` : 'none'
-                    }"
-                  ></div>
-                  <span>{{ color.name }}</span>
-                </button>
-              </div>
-            </div>
-            
-            <!-- Size Options -->
-            <div class="option-group">
-              <label>Tamaño:</label>
-              <div class="size-options">
-                <button 
-                  v-for="size in product.sizes" 
-                  :key="size.name"
-                  @click="selectedSize = size"
-                  :class="{ active: selectedSize?.name === size.name }"
-                  class="size-option"
-                >
-                  <div class="size-info">
-                    <span class="size-name">{{ size.name }}</span>
-                    <span class="size-dimensions">{{ size.dimensions }}</span>
-                  </div>
-                </button>
-              </div>
-            </div>
-            
-            <!-- Custom Text -->
-            <div v-if="product.customizable" class="option-group">
-              <label for="custom-text">Texto personalizado (opcional):</label>
-              <input 
-                id="custom-text"
-                v-model="customText" 
-                type="text" 
-                placeholder="Ingresa tu texto personalizado..."
-                class="custom-text-input"
-                maxlength="50"
-              >
-              <small class="input-hint">Máximo 50 caracteres</small>
-            </div>
+        </div>
+
+        <!-- Product Actions -->
+        <div class="product-actions">
+          <div class="action-buttons">
+            <a 
+              :href="whatsappUrlQuote"
+              target="_blank"
+              class="btn btn-primary btn-lg"
+            >
+              <MessageCircle :size="20" />
+              Consultar por WhatsApp
+            </a>
           </div>
-          
-          <!-- Actions -->
-          <div class="product-actions">
-            <div class="quantity-selector">
-              <label>Cantidad:</label>
-              <div class="quantity-controls">
-                <button @click="decreaseQuantity" :disabled="quantity <= 1">
-                  <Minus :size="16" />
-                </button>
-                <span class="quantity">{{ quantity }}</span>
-                <button @click="increaseQuantity">
-                  <Plus :size="16" />
-                </button>
-              </div>
-            </div>
-            
-            <div class="action-buttons">
-              <a 
-                :href="whatsappProductUrl" 
-                target="_blank" 
-                class="btn btn-neon btn-lg"
-              >
-                <MessageCircle :size="20" />
-                Cotizar trabajo similar
-              </a>
-            </div>
+        </div>
+
+        <!-- Product Features -->
+        <div class="product-features">
+          <div class="feature">
+            <Shield :size="20" />
+            <span>Garantía de calidad</span>
           </div>
-          
-          <!-- Product Features -->
-          <div class="product-features">
-            <div class="feature">
-              <Shield :size="20" />
-              <span>12 meses de garantía</span>
-            </div>
-            <div class="feature">
-              <Truck :size="20" />
-              <span>Envío gratuito en CABA</span>
-            </div>
-            <div class="feature">
-              <Wrench :size="20" />
-              <span>Instalación disponible</span>
-            </div>
+          <div class="feature">
+            <Truck :size="20" />
+            <span>Zona Sur - Buenos Aires</span>
+          </div>
+          <div class="feature">
+            <Wrench :size="20" />
+            <span>Instalación profesional</span>
+          </div>
+          <div class="feature">
+            <Palette :size="20" />
+            <span>Diseño 100% personalizable</span>
           </div>
         </div>
       </div>
@@ -182,591 +117,342 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { 
-  ChevronRight, Zap, Star, MessageCircle, 
+  ChevronRight, Star, MessageCircle, 
   Shield, Truck, Wrench, Palette 
 } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
-import type { NeonColor, ProductSize } from '@/types'
 
 const route = useRoute()
 const productsStore = useProductsStore()
 
 const loading = ref(true)
-const selectedColor = ref<NeonColor | null>(null)
-const selectedSize = ref<ProductSize | null>(null)
-const customText = ref('')
 
 const product = computed(() => {
   const id = route.params.id as string
-  return productsStore.getProductById(id)
+  return productsStore.products.find(p => p.id === id)
 })
 
 const categoryName = computed(() => {
   if (!product.value) return ''
-  const categories = {
-    business: 'Negocios',
-    home: 'Hogar', 
-    custom: 'Personalizado',
-    decorative: 'Decorativo',
-    signs: 'Señales',
-    letters: 'Letras'
+  
+  const categoryNames = {
+    business: 'Comercial',
+    custom: 'Personalizado', 
+    home: 'Hogar',
+    decorative: 'Decorativo'
   }
-  return categories[product.value.category] || 'Producto'
+  
+  return categoryNames[product.value.category] || 'Otros'
 })
 
-// WhatsApp URL
-const whatsappNumber = '+5491140916764'
-const whatsappProductUrl = computed(() => {
+const whatsappUrlQuote = computed(() => {
   if (!product.value) return ''
   
-  let message = `Hola! Me interesa el producto "${product.value.name}".\n\n`
-  
-  if (selectedColor.value) {
-    message += `Color: ${selectedColor.value.name}\n`
-  }
-  
-  if (selectedSize.value) {
-    message += `Tamaño: ${selectedSize.value.name} (${selectedSize.value.dimensions})\n`
-  }
-  
-  if (customText.value) {
-    message += `Texto personalizado: "${customText.value}"\n`
-  }
-  
-  message += `Cantidad: ${quantity.value}\n\n`
-  message += '¿Podrían darme más información y confirmar disponibilidad? 🌟'
-  
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
-})
-
-const whatsappSimilarUrl = computed(() => {
-  if (!product.value) return ''
-  
+  const whatsappNumber = '5491140916764'
   const message = `Hola! Vi su trabajo "${product.value.name}" en la galería y me gustaría algo similar. ¿Podrían ayudarme con un diseño parecido? 🌟`
   
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
-const decreaseQuantity = () => {
-  if (quantity.value > 1) {
-    quantity.value--
-  }
-}
-
-const increaseQuantity = () => {
-  quantity.value++
-}
-
-onMounted(async () => {
-  if (productsStore.products.length === 0) {
-    await productsStore.fetchProducts()
-  }
-  
-  if (product.value) {
-    // Set default selections
-    selectedColor.value = product.value.colors[0] || null
-    selectedSize.value = product.value.sizes[0] || null
-  }
-  
-  loading.value = false
+onMounted(() => {
+  setTimeout(() => {
+    loading.value = false
+  }, 1000)
 })
 </script>
 
 <style lang="scss" scoped>
 .product-detail {
-  padding: $spacing-xl 0;
-  min-height: calc(100vh - 160px);
-}
-
-.loading-state {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba($dark-bg, 0.95);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  
-  .container {
-    text-align: center;
-  }
-  
-  .loading-text {
-    color: $text-secondary;
-    margin-top: $spacing-xl;
-    font-size: 1.1rem;
-    animation: pulse 2s ease-in-out infinite;
-  }
-}
-
-.not-found-state {
-  text-align: center;
-  padding: $spacing-3xl;
-  
-  h1 {
-    color: $text-primary;
-    margin-bottom: $spacing-md;
-    animation: fadeInUp 0.8s ease-out;
-  }
-  
-  p {
-    color: $text-secondary;
-    margin-bottom: $spacing-xl;
-    animation: fadeInUp 0.8s ease-out 0.2s both;
-  }
-  
-  .btn {
-    animation: fadeInUp 0.8s ease-out 0.4s both;
-  }
-}
-
-.neon-spinner {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto;
-  
-  .spinner-ring {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 3px solid transparent;
-    border-radius: 50%;
-    
-    &:nth-child(1) {
-      border-top-color: $neon-pink;
-      animation: neonSpin 2s linear infinite;
-      box-shadow: 0 0 20px rgba($neon-pink, 0.5);
-    }
-    
-    &:nth-child(2) {
-      border-right-color: $neon-blue;
-      animation: neonSpin 1.5s linear infinite reverse;
-      box-shadow: 0 0 15px rgba($neon-blue, 0.4);
-      transform: scale(0.8);
-    }
-    
-    &:nth-child(3) {
-      border-bottom-color: $neon-green;
-      animation: neonSpin 1s linear infinite;
-      box-shadow: 0 0 10px rgba($neon-green, 0.3);
-      transform: scale(0.6);
-    }
-  }
-  
-  .spinner-core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    color: $neon-yellow;
-    filter: drop-shadow(0 0 10px $neon-yellow);
-    animation: pulse 1.5s ease-in-out infinite;
-  }
+  min-height: 100vh;
+  padding: 2rem 0;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  margin-bottom: $spacing-xl;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0 2rem;
   font-size: 0.9rem;
-  
-  a {
-    color: $neon-blue;
+  color: #8892b0;
+
+  .breadcrumb-link {
+    color: #64ffda;
     text-decoration: none;
-    
+    transition: color 0.3s ease;
+
     &:hover {
-      color: $neon-pink;
+      color: #ffffff;
     }
-  }
-  
-  span {
-    color: $text-secondary;
-  }
-  
-  svg {
-    color: $text-muted;
   }
 }
 
-.product-content {
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+.neon-spinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+
+  .ring {
+    position: absolute;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    animation: neonSpin 2s linear infinite;
+
+    &.ring-1 {
+      width: 80px;
+      height: 80px;
+      border-top-color: #ff0080;
+      animation-delay: 0s;
+    }
+
+    &.ring-2 {
+      width: 60px;
+      height: 60px;
+      top: 10px;
+      left: 10px;
+      border-top-color: #00ffff;
+      animation-delay: -0.5s;
+    }
+
+    &.ring-3 {
+      width: 40px;
+      height: 40px;
+      top: 20px;
+      left: 20px;
+      border-top-color: #00ff00;
+      animation-delay: -1s;
+    }
+  }
+}
+
+@keyframes neonSpin {
+  0% {
+    transform: rotate(0deg);
+    border-top-color: #ff0080;
+  }
+  25% {
+    border-top-color: #00ffff;
+  }
+  50% {
+    transform: rotate(180deg);
+    border-top-color: #00ff00;
+  }
+  75% {
+    border-top-color: #ffff00;
+  }
+  100% {
+    transform: rotate(360deg);
+    border-top-color: #ff0080;
+  }
+}
+
+.not-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  text-align: center;
+
+  .not-found-content {
+    h2 {
+      color: #ffffff;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #8892b0;
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.product-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: $spacing-2xl;
-  
-  @media (max-width: $tablet) {
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: $spacing-xl;
+    gap: 2rem;
   }
 }
 
 .product-images {
   .main-image {
-    aspect-ratio: 1;
-    background: linear-gradient(135deg, rgba($neon-pink, 0.1) 0%, rgba($neon-blue, 0.1) 100%);
-    border-radius: $border-radius-lg;
-    border: 1px solid rgba($neon-blue, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    position: relative;
+    border-radius: 12px;
     overflow: hidden;
-    
-    .product-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform $transition-normal;
-      
-      &:hover {
-        transform: scale(1.05);
-      }
-    }
-    
-    .image-placeholder {
-      color: rgba($neon-blue, 0.6);
-      text-align: center;
-      
-      .placeholder-icon {
-        filter: drop-shadow(0 0 20px currentColor);
-        margin-bottom: $spacing-md;
-      }
-    }
-  }
-}
+    background: #1a1a1a;
 
-.product-detail-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: $border-radius-lg;
-    
-    .image-placeholder {
-      text-align: center;
-      color: rgba($neon-blue, 0.6);
-      
-      .placeholder-icon {
-        filter: drop-shadow(0 0 20px currentColor);
-        margin-bottom: $spacing-md;
-      }
-      
-      p {
-        color: $text-muted;
+    .main-product-image {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .image-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+      padding: 2rem;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+
+      .overlay-content p {
+        color: #ffffff;
+        font-size: 1.2rem;
+        font-weight: 600;
         margin: 0;
       }
     }
-  }
-}
 
-.product-badge {
-  display: inline-block;
-  background: rgba($neon-blue, 0.2);
-  color: $neon-blue;
-  padding: $spacing-xs $spacing-sm;
-  border-radius: $border-radius-sm;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-bottom: $spacing-md;
-}
+    &:hover {
+      .main-product-image {
+        transform: scale(1.05);
+      }
 
-.product-title {
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: $text-primary;
-  margin-bottom: $spacing-md;
-  line-height: 1.2;
-  
-  @media (max-width: $mobile) {
-    font-size: 2rem;
-  }
-}
-
-.product-rating {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-  margin-bottom: $spacing-sm;
-  
-  .stars {
-    display: flex;
-    gap: 2px;
-    
-    svg {
-      color: $text-muted;
-      
-      &.filled {
-        color: $neon-yellow;
-        fill: currentColor;
+      .image-overlay {
+        transform: translateY(0);
       }
     }
   }
-  
-  .rating-text {
-    color: $text-secondary;
-  }
 }
 
-.product-pricing {
+.product-info {
   display: flex;
-  align-items: center;
-  gap: $spacing-md;
-  margin-bottom: $spacing-md;
-  
-  .current-price {
-    font-size: 2rem;
-    font-weight: 900;
-    color: $neon-pink;
-    font-family: $font-neon;
-  }
-  
-  .original-price {
-    font-size: 1.2rem;
-    color: $text-muted;
-    text-decoration: line-through;
-  }
-  
-  .discount-badge {
-    background: $neon-green;
-    color: $dark-bg;
-    padding: $spacing-xs $spacing-sm;
-    border-radius: $border-radius-sm;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-}
+  flex-direction: column;
+  gap: 2rem;
 
-.product-description {
-  font-size: 1.1rem;
-  color: $text-secondary;
-  line-height: 1.6;
-  margin-bottom: $spacing-xl;
-}
-
-.product-options {
-  margin-bottom: $spacing-xl;
-}
-
-.option-group {
-  margin-bottom: $spacing-lg;
-  
-  label {
-    display: block;
-    color: $text-primary;
-    font-weight: 600;
-    margin-bottom: $spacing-sm;
-  }
-}
-
-.color-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $spacing-md;
-}
-
-.color-option {
-  background: transparent;
-  border: 2px solid transparent;
-  border-radius: $border-radius-md;
-  padding: $spacing-sm;
-  cursor: pointer;
-  transition: all $transition-normal;
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  
-  &.active {
-    border-color: rgba($neon-pink, 0.6);
-    background: rgba($neon-pink, 0.1);
-  }
-  
-  .color-circle {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 2px solid rgba(white, 0.3);
-  }
-  
-  span {
-    color: $text-primary;
-    font-size: 0.9rem;
-  }
-}
-
-.size-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $spacing-md;
-}
-
-.size-option {
-  background: transparent;
-  border: 2px solid rgba($neon-blue, 0.4);
-  border-radius: $border-radius-md;
-  padding: $spacing-md;
-  cursor: pointer;
-  transition: all $transition-normal;
-  
-  &.active {
-    border-color: $neon-blue;
-    background: rgba($neon-blue, 0.1);
-  }
-  
-  .size-info {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-    
-    .size-name {
-      color: $text-primary;
+  .product-header {
+    .product-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff0080, #00ffff);
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
       font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
     }
-    
-    .size-dimensions {
-      color: $text-secondary;
-      font-size: 0.85rem;
+
+    .product-title {
+      color: #ffffff;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
     }
-    
-    .size-price {
-      color: $neon-pink;
-      font-size: 0.85rem;
-      font-weight: 600;
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .stars {
+        display: flex;
+        gap: 0.25rem;
+
+        svg {
+          color: #555;
+          transition: color 0.3s ease;
+
+          &.filled {
+            color: #ffff00;
+            filter: drop-shadow(0 0 8px #ffff00);
+          }
+        }
+      }
+
+      .rating-text {
+        color: #8892b0;
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .product-description-section {
+    .product-description {
+      color: #ccd6f6;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+  }
+
+  .product-actions {
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
   }
 }
 
-.custom-text-input {
-  width: 100%;
-  background: rgba($card-bg, 0.8);
-  border: 2px solid rgba($neon-purple, 0.4);
-  border-radius: $border-radius-md;
-  padding: $spacing-md;
-  color: $text-primary;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
   font-size: 1rem;
-  
-  &:focus {
-    outline: none;
-    border-color: $neon-purple;
-    box-shadow: $neon-glow-sm rgba($neon-purple, 0.3);
-  }
-  
-  &::placeholder {
-    color: $text-muted;
-  }
-}
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 
-.input-hint {
-  color: $text-muted;
-  font-size: 0.8rem;
-  margin-top: $spacing-xs;
-}
+  &.btn-primary {
+    background: linear-gradient(135deg, #ff0080, #00ffff);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 0, 128, 0.3);
 
-.product-actions {
-  margin-bottom: $spacing-2xl;
-}
-
-.quantity-selector {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-  margin-bottom: $spacing-lg;
-  
-  label {
-    color: $text-primary;
-    font-weight: 600;
-  }
-}
-
-.quantity-controls {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  
-  button {
-    background: rgba($neon-blue, 0.2);
-    border: 1px solid $neon-blue;
-    color: $neon-blue;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all $transition-normal;
-    
-    &:hover:not(:disabled) {
-      background: rgba($neon-blue, 0.3);
-    }
-    
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 0, 128, 0.4);
     }
   }
-  
-  .quantity {
-    min-width: 40px;
-    text-align: center;
-    font-weight: 600;
+
+  &.btn-lg {
+    padding: 1.25rem 2.5rem;
     font-size: 1.1rem;
-    color: $text-primary;
   }
-}
-
-.action-buttons {
-  display: flex;
-  gap: $spacing-md;
-  
-  @media (max-width: $mobile) {
-    flex-direction: column;
-  }
-  
-  .btn {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: $spacing-sm;
-    
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  }
-}
-
-.btn-lg {
-  padding: $spacing-lg $spacing-xl;
-  font-size: 1.1rem;
 }
 
 .product-features {
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
-  padding: $spacing-lg;
-  background: rgba($card-bg, 0.5);
-  border: 1px solid rgba($neon-green, 0.2);
-  border-radius: $border-radius-md;
-}
+  gap: 1rem;
+  padding: 2rem;
+  background: rgba(26, 26, 26, 0.5);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  border-radius: 12px;
 
-.feature {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  color: $text-secondary;
-  
-  svg {
-    color: $neon-green;
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #8892b0;
+    
+    svg {
+      color: #00ff00;
+      flex-shrink: 0;
+    }
   }
 }
 </style>
