@@ -125,33 +125,63 @@ const whatsappProductUrl = computed(() => {
   border-radius: $border-radius-lg;
   border: 1px solid rgba($neon-blue, 0.2);
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
   display: flex;
   flex-direction: column;
-  animation: fadeInUp 0.6s ease-out;
+  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  
+  // Efecto de brillo sutil
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba($neon-blue, 0.1), 
+      transparent
+    );
+    transition: left 0.6s ease;
+    z-index: 1;
+    pointer-events: none;
+  }
   
   &:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-12px) scale(1.03);
     box-shadow: 
-      $neon-glow-md rgba($neon-blue, 0.4),
-      0 20px 40px rgba($neon-pink, 0.2),
-      0 0 0 1px rgba($neon-pink, 0.3);
-    border-color: rgba($neon-pink, 0.6);
+      $neon-glow-md rgba($neon-blue, 0.5),
+      0 25px 50px rgba($neon-pink, 0.3),
+      0 0 0 1px rgba($neon-pink, 0.4),
+      inset 0 0 50px rgba($neon-blue, 0.1);
+    border-color: rgba($neon-pink, 0.8);
+    
+    &::before {
+      left: 100%;
+    }
     
     .product-img {
-      transform: scale(1.1);
-      filter: brightness(1.1) saturate(1.2);
+      transform: scale(1.1) rotate(1deg);
+      filter: brightness(1.2) saturate(1.3) contrast(1.1);
     }
     
     .product-name {
       color: $neon-pink;
-      text-shadow: 0 0 10px rgba($neon-pink, 0.5);
+      text-shadow: 0 0 15px rgba($neon-pink, 0.6);
+      transform: translateY(-2px);
     }
     
     .badge {
-      transform: scale(1.1);
-      box-shadow: 0 0 15px currentColor;
+      transform: scale(1.15) translateY(-2px);
+      box-shadow: 0 0 20px currentColor;
+    }
+    
+    .product-category {
+      color: $neon-blue;
+      text-shadow: 0 0 10px rgba($neon-blue, 0.5);
     }
   }
 }
@@ -291,6 +321,7 @@ const whatsappProductUrl = computed(() => {
   font-weight: 600;
   text-transform: uppercase;
   margin-bottom: $spacing-sm;
+  transition: all 0.3s ease;
 }
 
 .product-name {
@@ -299,6 +330,7 @@ const whatsappProductUrl = computed(() => {
   color: $text-primary;
   margin-bottom: $spacing-sm;
   line-height: 1.3;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .product-description {

@@ -15,11 +15,24 @@
           </p>
         </div>
         
-        <div class="products-grid">
+        <!-- Loading State -->
+        <div v-if="productsStore.loading" class="loading-state">
+          <div class="neon-spinner">
+            <div class="spinner-ring ring-1"></div>
+            <div class="spinner-ring ring-2"></div>
+            <div class="spinner-ring ring-3"></div>
+            <div class="spinner-core">⚡</div>
+          </div>
+          <p class="loading-text neon-text pink">Cargando trabajos destacados...</p>
+        </div>
+        
+        <!-- Products Grid -->
+        <div v-else class="products-grid">
           <ProductCard 
-            v-for="product in featuredProducts" 
+            v-for="(product, index) in limitedFeaturedProducts" 
             :key="product.id" 
             :product="product" 
+            :class="`fade-in-up delay-${index * 100}`"
           />
         </div>
         
@@ -92,6 +105,7 @@ import ProductCard from '@/components/product/ProductCard.vue'
 const productsStore = useProductsStore()
 
 const featuredProducts = computed(() => productsStore.featuredProducts)
+const limitedFeaturedProducts = computed(() => featuredProducts.value.slice(0, 4))
 
 // WhatsApp configuration
 const whatsappNumber = '+5491140916764'
@@ -137,6 +151,21 @@ onMounted(async () => {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: $spacing-xl;
   margin-bottom: $spacing-2xl;
+  
+  // En desktop, máximo 4 columnas
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  // En tablet, máximo 2 columnas
+  @media (min-width: $tablet) and (max-width: 1199px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  // En móvil, 1 columna
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .section-cta {
@@ -214,6 +243,127 @@ onMounted(async () => {
   &:hover {
     transform: translateY(-3px);
     box-shadow: $neon-glow-lg $neon-pink;
+  }
+}
+
+// Loading State Styles
+.loading-state {
+  text-align: center;
+  padding: $spacing-3xl;
+}
+
+.neon-spinner {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto $spacing-xl;
+  
+  .spinner-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    
+    &.ring-1 {
+      border-top-color: $neon-pink;
+      border-right-color: rgba($neon-pink, 0.3);
+      animation: neonSpin 2s linear infinite;
+      box-shadow: 0 0 15px rgba($neon-pink, 0.4);
+    }
+    
+    &.ring-2 {
+      border-right-color: $neon-blue;
+      border-bottom-color: rgba($neon-blue, 0.3);
+      animation: neonSpin 1.5s linear infinite reverse;
+      transform: scale(0.75);
+      box-shadow: 0 0 12px rgba($neon-blue, 0.3);
+    }
+    
+    &.ring-3 {
+      border-bottom-color: $neon-green;
+      border-left-color: rgba($neon-green, 0.3);
+      animation: neonSpin 1s linear infinite;
+      transform: scale(0.5);
+      box-shadow: 0 0 10px rgba($neon-green, 0.3);
+    }
+  }
+  
+  .spinner-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: $neon-yellow;
+    filter: drop-shadow(0 0 10px $neon-yellow);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  animation: textGlow 2s ease-in-out infinite;
+}
+
+// Animation classes for cards
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.8s ease-out forwards;
+  
+  &.delay-0 { animation-delay: 0ms; }
+  &.delay-100 { animation-delay: 100ms; }
+  &.delay-200 { animation-delay: 200ms; }
+  &.delay-300 { animation-delay: 300ms; }
+}
+
+// Keyframe animations
+@keyframes neonSpin {
+  0% { 
+    transform: rotate(0deg);
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.3);
+  }
+  100% { 
+    transform: rotate(360deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px currentColor;
+  }
+  50% {
+    text-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style>
