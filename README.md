@@ -19,7 +19,7 @@ Landing page profesional para mostrar trabajos realizados de carteles de neón L
 
 ## 🚀 Demo en Vivo
 
-[Ver Portfolio](https://jonatha1992.github.io/neondesing)
+[Ver Portfolio](https://jonatha1992.github.io/neonsign)
 
 ## 📋 Requisitos Previos
 
@@ -33,8 +33,8 @@ Antes de comenzar, asegúrate de tener instalado:
 
 1. **Clona el repositorio**
    ```bash
-   git clone https://github.com/jonatha1992/neondesing.git
-   cd neondesing
+   git clone https://github.com/jonatha1992/neonsign.git
+   cd neonsign
    ```
 
 2. **Instala las dependencias**
@@ -142,7 +142,7 @@ npm run type-check   # Verificación de tipos TypeScript
 El proyecto incluye GitHub Actions para deploy automático:
 
 1. **Push a main** → Deploy automático activado
-2. **URL final**: `https://jonatha1992.github.io/neondesing`
+2. **URL final**: `https://jonatha1992.github.io/neonsign`
 
 ### Deploy Manual
 ```bash
@@ -150,15 +150,15 @@ npm run deploy       # Deploy directo usando gh-pages
 ```
 
 ### Instrucciones de Setup
-1. **Crear repositorio** en GitHub con nombre: `neondesing`
+1. **Crear repositorio** en GitHub con nombre: `neonsign`
 2. **Comandos para subir:**
    ```bash
    git init
    git add .
    git commit -m "feat: portfolio profesional Lauti Design"
    git branch -M main
-   git remote add origin https://github.com/jonatha1992/neondesing.git
-   git push -u origin main
+   git remote add origin https://github.com/jonatha1992/neonsign.git
+   git push -u origin master
    ```
 3. **Habilitar GitHub Pages** en Settings → Pages → Source: GitHub Actions
 
@@ -241,9 +241,9 @@ Los efectos de neón se pueden customizar en `src/styles/neon-effects.scss`
 
 - 📱 **WhatsApp**: +54 9 11 4091-6764
 - 📍 **Ubicación**: Zona Sur, Buenos Aires
-- 🌐 **Portfolio**: [https://jonatha1992.github.io/neondesing](https://jonatha1992.github.io/neondesing)
+- 🌐 **Portfolio**: [https://jonatha1992.github.io/neonsign](https://jonatha1992.github.io/neonsign)
 
-Enlace del Proyecto: [https://github.com/jonatha1992/neondesing](https://github.com/jonatha1992/neondesing)
+Enlace del Proyecto: [https://github.com/jonatha1992/neonsign](https://github.com/jonatha1992/neonsign)
 
 ## 📄 Licencia
 
