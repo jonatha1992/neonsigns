@@ -9,12 +9,15 @@
    https://github.com/jonatha1992/neonsigns
    ```
 
-2. **Configura el secreto de Firebase:**
+2. **Configura el secreto de Firebase (ACTUALIZADO):**
    - Ve a **Settings** → **Secrets and variables** → **Actions**
+   - Si ya existe `FIREBASE_TOKEN`, elimínalo
    - Click en **New repository secret**
    - **Name:** `FIREBASE_TOKEN`
-   - **Value:** `1//0hcKVz-rqGHK1CgYIARAAGBESNwF-L9IrRISzSGIHizF0Iz5_apGRO6kT_b8VlS8d_JtuyY2iDR63JzehLV1XM1T5dvNhzypzMKc`
+   - **Value:** `1//0hcMzlOfETfDwCgYIARAAGBESNwF-L9IroCuMjdvlBA-nBeJILJ-0-dHwoO-1i5C-ASojEJuAI7AlvQqNtO3lVCyJRnLDOhlh7TY`
    - Click **Add secret**
+
+   **⚠️ IMPORTANTE:** Este es un nuevo token generado. El anterior puede haber expirado.
 
 ## 🎯 **¿Cómo funciona?**
 
