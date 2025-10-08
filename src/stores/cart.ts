@@ -50,7 +50,10 @@ export const useCartStore = defineStore('cart', {
             )
 
             if (existingItemIndex > -1) {
-                this.items[existingItemIndex].quantity += quantity
+                const existingItem = this.items[existingItemIndex]
+                if (existingItem) {
+                    existingItem.quantity += quantity
+                }
             } else {
                 this.items.push({
                     product,
@@ -72,8 +75,11 @@ export const useCartStore = defineStore('cart', {
             if (quantity <= 0) {
                 this.removeItem(index)
             } else {
-                this.items[index].quantity = quantity
-                this.saveToLocalStorage()
+                const item = this.items[index]
+                if (item) {
+                    item.quantity = quantity
+                    this.saveToLocalStorage()
+                }
             }
         },
 
