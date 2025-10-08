@@ -12,18 +12,12 @@
           <!-- Desktop Navigation -->
           <div class="nav-links desktop-only">
             <RouterLink to="/" class="nav-link">Inicio</RouterLink>
-            <RouterLink to="/productos" class="nav-link">Productos</RouterLink>
+            <RouterLink to="/galeria" class="nav-link">Galería</RouterLink>
             <RouterLink to="/contacto" class="nav-link">Contacto</RouterLink>
           </div>
 
-          <!-- WhatsApp & Cart Actions -->
+          <!-- WhatsApp Actions -->
           <div class="navbar-actions">
-            <!-- Cart Icon -->
-            <button @click="toggleCart" class="cart-btn">
-              <ShoppingCart :size="24" />
-              <span v-if="cartItems > 0" class="cart-badge">{{ cartItems }}</span>
-            </button>
-
             <!-- WhatsApp Button -->
             <a 
               :href="whatsappUrl" 
@@ -45,7 +39,7 @@
         <!-- Mobile Navigation -->
         <div v-show="isMobileMenuOpen" class="mobile-nav">
           <RouterLink to="/" class="mobile-nav-link" @click="closeMobileMenu">Inicio</RouterLink>
-          <RouterLink to="/productos" class="mobile-nav-link" @click="closeMobileMenu">Productos</RouterLink>
+          <RouterLink to="/galeria" class="mobile-nav-link" @click="closeMobileMenu">Galería</RouterLink>
           <RouterLink to="/contacto" class="mobile-nav-link" @click="closeMobileMenu">Contacto</RouterLink>
         </div>
       </div>
@@ -55,24 +49,15 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { ShoppingCart, MessageCircle, Menu, X } from 'lucide-vue-next'
-import { useCartStore } from '@/stores/cart'
-
-const cartStore = useCartStore()
+import { MessageCircle, Menu, X } from 'lucide-vue-next'
 const isMobileMenuOpen = ref(false)
 
-const cartItems = computed(() => cartStore.totalItems)
-
 // WhatsApp configuration
-const whatsappNumber = '+5491123456789' // Cambiar por tu número
-const whatsappMessage = 'Hola! Me interesa información sobre sus carteles de neón 🌟'
+const whatsappNumber = '+5491140916764'
+const whatsappMessage = 'Hola! Me interesa información sobre sus carteles de neón (Zona Sur) 🌟'
 const whatsappUrl = computed(() => 
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 )
-
-const toggleCart = () => {
-  cartStore.toggleCart()
-}
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
@@ -96,7 +81,7 @@ const closeMobileMenu = () => {
 }
 
 .navbar {
-  padding: $spacing-md 0;
+  padding: $spacing-lg 0;
 
   &-content {
     display: flex;
@@ -134,7 +119,7 @@ const closeMobileMenu = () => {
   color: $text-secondary;
   font-weight: 500;
   transition: all $transition-normal;
-  padding: $spacing-sm $spacing-md;
+  padding: $spacing-xs $spacing-sm;
   border-radius: $border-radius-md;
   
   &:hover,
@@ -144,44 +129,11 @@ const closeMobileMenu = () => {
   }
 }
 
-.cart-btn {
-  position: relative;
-  background: transparent;
-  border: 1px solid rgba($neon-blue, 0.5);
-  color: $neon-blue;
-  padding: $spacing-sm;
-  border-radius: $border-radius-md;
-  cursor: pointer;
-  transition: all $transition-normal;
-  
-  &:hover {
-    background: rgba($neon-blue, 0.1);
-    box-shadow: $neon-glow-sm $neon-blue;
-  }
-}
-
-.cart-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: $neon-pink;
-  color: $dark-bg;
-  font-size: 0.75rem;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 50%;
-  min-width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .whatsapp-btn {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  padding: $spacing-sm $spacing-md;
+  padding: $spacing-xs $spacing-sm;
   
   &:hover {
     transform: translateY(-2px);
@@ -209,7 +161,7 @@ const closeMobileMenu = () => {
   text-decoration: none;
   color: $text-secondary;
   font-weight: 500;
-  padding: $spacing-md;
+  padding: $spacing-sm;
   border-radius: $border-radius-md;
   transition: all $transition-normal;
   

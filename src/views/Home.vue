@@ -8,10 +8,10 @@
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">
-            <span class="neon-text blue">Productos</span> Destacados
+            <span class="neon-text blue">Trabajos</span> Destacados
           </h2>
           <p class="section-subtitle">
-            Descubre nuestros diseños más populares y solicita el tuyo personalizado
+            Explora algunos de nuestros trabajos más destacados y solicita el tuyo personalizado
           </p>
         </div>
         
@@ -24,8 +24,8 @@
         </div>
         
         <div class="section-cta">
-          <RouterLink to="/productos" class="btn btn-neon btn-lg">
-            Ver Todos los Productos
+          <RouterLink to="/galeria" class="btn btn-neon btn-lg">
+            Ver Galería Completa
           </RouterLink>
         </div>
       </div>
@@ -66,8 +66,8 @@
     <section class="cta-section">
       <div class="container">
         <div class="cta-content">
-          <h2>Listo para crear tu cartel de neón?</h2>
-          <p>Contactanos por WhatsApp y cotiza tu proyecto en minutos</p>
+          <h2>¿Te gustó algún trabajo?</h2>
+          <p>Contactanos por WhatsApp y cotiza tu proyecto personalizado en minutos</p>
           <a 
             :href="whatsappUrl" 
             target="_blank" 
@@ -94,8 +94,8 @@ const productsStore = useProductsStore()
 const featuredProducts = computed(() => productsStore.featuredProducts)
 
 // WhatsApp configuration
-const whatsappNumber = '+5491123456789'
-const whatsappMessage = '¡Hola! Me interesa crear un cartel de neón personalizado. ¿Podrían ayudarme con una cotización? 🌟'
+const whatsappNumber = '+5491140916764'
+const whatsappMessage = '¡Hola! Me interesa crear un cartel de neón personalizado (Zona Sur). ¿Podrían ayudarme con una cotización? 🌟'
 const whatsappUrl = computed(() => 
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 )
@@ -109,13 +109,13 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .featured-section {
-  padding: $spacing-3xl 0;
+  padding: $spacing-2xl 0;
   background: rgba($darker-bg, 0.5);
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: $spacing-3xl;
+  margin-bottom: $spacing-2xl;
 }
 
 .section-title {
@@ -144,7 +144,7 @@ onMounted(async () => {
 }
 
 .features-section {
-  padding: $spacing-3xl 0;
+  padding: $spacing-2xl 0;
 }
 
 .features-grid {
@@ -155,7 +155,7 @@ onMounted(async () => {
 
 .feature-card {
   text-align: center;
-  padding: $spacing-2xl;
+  padding: $spacing-xl;
   border-radius: $border-radius-lg;
   background: rgba($card-bg, 0.5);
   border: 1px solid rgba($neon-blue, 0.2);
@@ -188,7 +188,7 @@ onMounted(async () => {
 }
 
 .cta-section {
-  padding: $spacing-3xl 0;
+  padding: $spacing-2xl 0;
   background: linear-gradient(135deg, rgba($neon-pink, 0.1) 0%, rgba($neon-purple, 0.1) 100%);
   text-align: center;
 }
@@ -209,7 +209,7 @@ onMounted(async () => {
 
 .cta-btn {
   font-size: 1.2rem;
-  padding: $spacing-lg $spacing-2xl;
+  padding: $spacing-md $spacing-xl;
   
   &:hover {
     transform: translateY(-3px);

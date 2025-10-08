@@ -41,7 +41,7 @@
           
           <div class="contact-info">
             <Phone :size="20" />
-            <span>+54 9 11 2345-6789</span>
+            <span>+54 9 11 4091-6764</span>
           </div>
         </div>
         
@@ -54,7 +54,7 @@
           <p>Para consultas detalladas o envío de archivos de diseño.</p>
           
           <a 
-            href="mailto:info@neonsigns.com?subject=Consulta%20sobre%20carteles%20de%20ne%C3%B3n"
+            href="mailto:info@neonsigns.com?subject=Consulta%20sobre%20carteles%20de%20ne%C3%B3n%20-%20Zona%20Sur"
             class="btn btn-secondary btn-lg"
           >
             Enviar Email
@@ -78,7 +78,7 @@
             <div class="info-item">
               <MapPin :size="20" />
               <div>
-                <strong>Buenos Aires, Argentina</strong><br>
+                <strong>Zona Sur, Buenos Aires</strong><br>
                 <span>Zona CABA - Consultanos ubicación exacta</span>
               </div>
             </div>
@@ -148,7 +148,7 @@ import { computed } from 'vue'
 import { MessageCircle, Mail, Phone, MapPin, Clock } from 'lucide-vue-next'
 
 // WhatsApp configuration
-const whatsappNumber = '+5491123456789'
+const whatsappNumber = '+5491140916764'
 
 const whatsappConsultaUrl = computed(() => {
   const message = '¡Hola! Me gustaría hacer una consulta sobre sus carteles de neón. ¿Podrían ayudarme? 🌟'
@@ -156,7 +156,7 @@ const whatsappConsultaUrl = computed(() => {
 })
 
 const whatsappCotizacionUrl = computed(() => {
-  const message = 'Hola! Quiero solicitar una cotización para un cartel de neón personalizado. Los detalles son:\n\n' +
+  const message = 'Hola! Quiero solicitar una cotización para un cartel de neón personalizado (Zona Sur). Los detalles son:\n\n' +
                   '- Texto/diseño: \n' +
                   '- Tamaño aproximado: \n' +
                   '- Colores preferidos: \n' +
@@ -168,13 +168,13 @@ const whatsappCotizacionUrl = computed(() => {
 
 <style lang="scss" scoped>
 .contact-page {
-  padding: $spacing-3xl 0;
+  padding: $spacing-xl 0;
   min-height: calc(100vh - 160px);
 }
 
 .page-header {
   text-align: center;
-  margin-bottom: $spacing-3xl;
+  margin-bottom: $spacing-2xl;
 }
 
 .page-title {
@@ -202,7 +202,7 @@ const whatsappCotizacionUrl = computed(() => {
   background: $card-bg;
   border: 1px solid rgba($neon-blue, 0.2);
   border-radius: $border-radius-lg;
-  padding: $spacing-2xl;
+  padding: $spacing-xl;
   text-align: center;
   transition: all $transition-normal;
   

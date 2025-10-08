@@ -2,22 +2,17 @@
   <div class="product-detail">
     <div v-if="loading" class="loading-state">
       <div class="container">
-        <div class="neon-spinner">
-          <div class="spinner-ring"></div>
-          <div class="spinner-ring"></div>
-          <div class="spinner-ring"></div>
-          <div class="spinner-core">⚡</div>
-        </div>
-        <p class="loading-text">Cargando trabajo...</p>
+        <div class="spinner"></div>
+        <p>Cargando producto...</p>
       </div>
     </div>
     
     <div v-else-if="!product" class="not-found-state">
       <div class="container">
-        <h1>Trabajo no encontrado</h1>
-        <p>El trabajo que buscas no existe o ha sido removido.</p>
-        <RouterLink to="/galeria" class="btn btn-primary">
-          Ver Todos los Trabajos
+        <h1>Producto no encontrado</h1>
+        <p>El producto que buscas no existe o ha sido removido.</p>
+        <RouterLink to="/productos" class="btn btn-primary">
+          Ver Todos los Productos
         </RouterLink>
       </div>
     </div>
@@ -27,7 +22,7 @@
       <nav class="breadcrumb">
         <RouterLink to="/">Inicio</RouterLink>
         <ChevronRight :size="16" />
-          <RouterLink to="/galeria">Galería</RouterLink>
+        <RouterLink to="/productos">Productos</RouterLink>
         <ChevronRight :size="16" />
         <span>{{ product.name }}</span>
       </nav>
@@ -36,15 +31,9 @@
         <!-- Product Images -->
         <div class="product-images">
           <div class="main-image">
-            <img 
-              v-if="product.images && product.images[0]" 
-              :src="product.images[0]" 
-              :alt="product.name"
-              class="product-img"
-            />
-            <div v-else class="image-placeholder">
+            <div class="image-placeholder">
               <Zap :size="80" class="placeholder-icon" />
-              <p>{{ product.name }}</p>
+              <p>Imagen del producto</p>
             </div>
           </div>
         </div>
@@ -110,6 +99,7 @@
                   <div class="size-info">
                     <span class="size-name">{{ size.name }}</span>
                     <span class="size-dimensions">{{ size.dimensions }}</span>
+                    <span v-if="size.price > 0" class="size-price">+${{ size.price }}</span>
                   </div>
                 </button>
               </div>
@@ -146,13 +136,22 @@
             </div>
             
             <div class="action-buttons">
+              <button 
+                @click="addToCart" 
+                :disabled="!selectedColor || !selectedSize"
+                class="btn btn-primary btn-lg"
+              >
+                <ShoppingCart :size="20" />
+                Agregar al Carrito
+              </button>
+              
               <a 
                 :href="whatsappProductUrl" 
                 target="_blank" 
                 class="btn btn-neon btn-lg"
               >
                 <MessageCircle :size="20" />
-                Cotizar trabajo similar
+                Consultar por WhatsApp
               </a>
             </div>
           </div>
@@ -182,19 +181,22 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { 
-  ChevronRight, Zap, Star, MessageCircle, 
+  ChevronRight, Zap, Star, Minus, Plus, MessageCircle, 
   Shield, Truck, Wrench, Palette 
 } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
+import { useCartStore } from '@/stores/cart'
 import type { NeonColor, ProductSize } from '@/types'
 
 const route = useRoute()
 const productsStore = useProductsStore()
+const cartStore = useCartStore()
 
 const loading = ref(true)
 const selectedColor = ref<NeonColor | null>(null)
 const selectedSize = ref<ProductSize | null>(null)
 const customText = ref('')
+const quantity = ref(1)
 
 const product = computed(() => {
   const id = route.params.id as string
@@ -215,7 +217,7 @@ const categoryName = computed(() => {
 })
 
 // WhatsApp URL
-const whatsappNumber = '+5491140916764'
+const whatsappNumber = '+5491123456789'
 const whatsappProductUrl = computed(() => {
   if (!product.value) return ''
   
@@ -257,6 +259,21 @@ const increaseQuantity = () => {
   quantity.value++
 }
 
+const addToCart = () => {
+  if (!product.value || !selectedColor.value || !selectedSize.value) return
+  
+  cartStore.addItem(
+    product.value,
+    selectedColor.value,
+    selectedSize.value,
+    quantity.value,
+    customText.value || undefined
+  )
+  
+  // Open cart to show added item
+  cartStore.openCart()
+}
+
 onMounted(async () => {
   if (productsStore.products.length === 0) {
     await productsStore.fetchProducts()
@@ -278,31 +295,7 @@ onMounted(async () => {
   min-height: calc(100vh - 160px);
 }
 
-.loading-state {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba($dark-bg, 0.95);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  
-  .container {
-    text-align: center;
-  }
-  
-  .loading-text {
-    color: $text-secondary;
-    margin-top: $spacing-xl;
-    font-size: 1.1rem;
-    animation: pulse 2s ease-in-out infinite;
-  }
-}
-
+.loading-state,
 .not-found-state {
   text-align: center;
   padding: $spacing-3xl;
@@ -310,65 +303,11 @@ onMounted(async () => {
   h1 {
     color: $text-primary;
     margin-bottom: $spacing-md;
-    animation: fadeInUp 0.8s ease-out;
   }
   
   p {
     color: $text-secondary;
     margin-bottom: $spacing-xl;
-    animation: fadeInUp 0.8s ease-out 0.2s both;
-  }
-  
-  .btn {
-    animation: fadeInUp 0.8s ease-out 0.4s both;
-  }
-}
-
-.neon-spinner {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto;
-  
-  .spinner-ring {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 3px solid transparent;
-    border-radius: 50%;
-    
-    &:nth-child(1) {
-      border-top-color: $neon-pink;
-      animation: neonSpin 2s linear infinite;
-      box-shadow: 0 0 20px rgba($neon-pink, 0.5);
-    }
-    
-    &:nth-child(2) {
-      border-right-color: $neon-blue;
-      animation: neonSpin 1.5s linear infinite reverse;
-      box-shadow: 0 0 15px rgba($neon-blue, 0.4);
-      transform: scale(0.8);
-    }
-    
-    &:nth-child(3) {
-      border-bottom-color: $neon-green;
-      animation: neonSpin 1s linear infinite;
-      box-shadow: 0 0 10px rgba($neon-green, 0.3);
-      transform: scale(0.6);
-    }
-  }
-  
-  .spinner-core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    color: $neon-yellow;
-    filter: drop-shadow(0 0 10px $neon-yellow);
-    animation: pulse 1.5s ease-in-out infinite;
   }
 }
 
@@ -419,27 +358,6 @@ onMounted(async () => {
     justify-content: center;
     flex-direction: column;
     overflow: hidden;
-    
-    .product-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform $transition-normal;
-      
-      &:hover {
-        transform: scale(1.05);
-      }
-    }
-    
-    .image-placeholder {
-      color: rgba($neon-blue, 0.6);
-      text-align: center;
-      
-      .placeholder-icon {
-        filter: drop-shadow(0 0 20px currentColor);
-        margin-bottom: $spacing-md;
-      }
-    }
   }
 }
 

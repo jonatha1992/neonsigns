@@ -19,7 +19,7 @@
             Volver al Inicio
           </RouterLink>
           
-          <RouterLink to="/productos" class="btn btn-neon">
+          <RouterLink to="/galeria" class="btn btn-neon">
             <Package :size="20" />
             Ver Productos
           </RouterLink>
@@ -38,7 +38,7 @@
           <h3>Enlaces útiles:</h3>
           <ul>
             <li><RouterLink to="/">Página principal</RouterLink></li>
-            <li><RouterLink to="/productos">Catálogo de productos</RouterLink></li>
+            <li><RouterLink to="/galeria">Galería de trabajos</RouterLink></li>
             <li><RouterLink to="/contacto">Información de contacto</RouterLink></li>
           </ul>
         </div>
@@ -52,8 +52,8 @@ import { computed } from 'vue'
 import { Home, Package, MessageCircle } from 'lucide-vue-next'
 
 // WhatsApp configuration
-const whatsappNumber = '+5491123456789'
-const whatsappMessage = 'Hola! Estaba navegando en su página y me gustaría más información sobre sus carteles de neón 🌟'
+const whatsappNumber = '+5491140916764'
+const whatsappMessage = 'Hola! Estaba navegando en su página y me gustaría más información sobre sus carteles de neón (Zona Sur) 🌟'
 const whatsappUrl = computed(() => 
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 )

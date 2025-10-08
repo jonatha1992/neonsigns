@@ -4,78 +4,23 @@
       <!-- Header -->
       <div class="page-header">
         <h1 class="page-title">
-          <span class="neon-text pink">Catálogo</span> de Productos
+          <span class="neon-text pink">Galería</span> de Trabajos
         </h1>
         <p class="page-subtitle">
-          Descubre nuestra colección completa de carteles de neón personalizados
+          Explora nuestros trabajos realizados y diseños únicos de carteles de neón
         </p>
       </div>
       
-      <!-- Filters -->
-      <div class="filters-section">
-        <div class="filters-header">
-          <h3>Filtrar productos</h3>
-          <button v-if="hasActiveFilters" @click="clearAllFilters" class="clear-filters">
-            <X :size="16" />
-            Limpiar filtros
-          </button>
-        </div>
-        
-        <div class="filters-grid">
-          <!-- Category Filter -->
-          <div class="filter-group">
-            <label>Categoría</label>
-            <div class="filter-options">
-              <button 
-                v-for="category in categories" 
-                :key="category.value"
-                @click="toggleCategory(category.value)"
-                :class="{ active: selectedCategory === category.value }"
-                class="filter-btn"
-              >
-                {{ category.label }}
-              </button>
-            </div>
-          </div>
-          
-          <!-- Price Range Filter -->
-          <div class="filter-group">
-            <label>Rango de precio</label>
-            <div class="filter-options">
-              <button 
-                v-for="range in priceRanges" 
-                :key="range.label"
-                @click="setPriceRange(range.value)"
-                :class="{ active: isPriceRangeActive(range.value) }"
-                class="filter-btn"
-              >
-                {{ range.label }}
-              </button>
-            </div>
-          </div>
-          
-          <!-- In Stock Filter -->
-          <div class="filter-group">
-            <label class="checkbox-label">
-              <input 
-                v-model="showOnlyInStock" 
-                type="checkbox" 
-                @change="updateInStockFilter"
-              >
-              <span>Solo productos disponibles</span>
-            </label>
-          </div>
-        </div>
-      </div>
+
       
-      <!-- Results Info -->
+      <!-- Gallery Info -->
       <div class="results-info">
-        <p>Mostrando {{ filteredProducts.length }} de {{ totalProducts }} productos</p>
+        <p>{{ totalProducts }} trabajos realizados</p>
         
         <div class="whatsapp-cta">
           <a :href="whatsappCatalogUrl" target="_blank" class="btn btn-neon">
             <MessageCircle :size="18" />
-            Consultar Catálogo
+            Solicitar Cotización
           </a>
         </div>
       </div>
@@ -86,32 +31,29 @@
         <p>Cargando productos...</p>
       </div>
       
-      <div v-else-if="filteredProducts.length === 0" class="empty-state">
+      <div v-else-if="allProducts.length === 0" class="empty-state">
         <Package :size="64" class="empty-icon" />
-        <h3>No encontramos productos</h3>
-        <p>Intenta ajustar los filtros o contactanos para consultar disponibilidad.</p>
-        <a :href="whatsappConsultaUrl" target="_blank" class="btn btn-primary">
-          <MessageCircle :size="20" />
-          Consultar Disponibilidad
-        </a>
+        <h3>Cargando trabajos...</h3>
+        <p>Estamos preparando nuestra galería de trabajos realizados.</p>
       </div>
       
       <div v-else class="products-grid">
         <ProductCard 
-          v-for="product in filteredProducts" 
+          v-for="(product, index) in allProducts" 
           :key="product.id" 
           :product="product" 
+          :class="`animate-fade-in-up animate-delay-${Math.min(index % 3 + 1, 3)}`"
         />
       </div>
       
-      <!-- Load More (simulado) -->
-      <div v-if="filteredProducts.length > 0" class="load-more-section">
+      <!-- Custom Work CTA -->
+      <div v-if="allProducts.length > 0" class="load-more-section">
         <p class="load-more-text">
-          ¿No encuentras lo que buscas? Podemos crear un diseño personalizado para ti.
+          ¿Te gusta algún diseño? Podemos crear algo similar o completamente personalizado para ti.
         </p>
         <a :href="whatsappCustomUrl" target="_blank" class="btn btn-primary btn-lg">
           <Palette :size="20" />
-          Solicitar Diseño Personalizado
+          Solicitar Trabajo Personalizado
         </a>
       </div>
     </div>
@@ -119,100 +61,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { X, MessageCircle, Package, Palette } from 'lucide-vue-next'
+import { computed, onMounted } from 'vue'
+import { MessageCircle, Package, Palette } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import ProductCard from '@/components/product/ProductCard.vue'
-import type { ProductCategory } from '@/types'
 
 const productsStore = useProductsStore()
 
-const selectedCategory = ref<ProductCategory | null>(null)
-const showOnlyInStock = ref(false)
-const selectedPriceRange = ref<[number, number] | null>(null)
-
 const loading = computed(() => productsStore.loading)
-const filteredProducts = computed(() => productsStore.filteredProducts)
+const allProducts = computed(() => productsStore.products)
 const totalProducts = computed(() => productsStore.products.length)
 
-const categories = [
-  { value: 'business' as ProductCategory, label: 'Negocios' },
-  { value: 'home' as ProductCategory, label: 'Hogar' },
-  { value: 'custom' as ProductCategory, label: 'Personalizado' },
-  { value: 'decorative' as ProductCategory, label: 'Decorativo' },
-  { value: 'signs' as ProductCategory, label: 'Señales' },
-  { value: 'letters' as ProductCategory, label: 'Letras' }
-]
 
-const priceRanges = [
-  { label: 'Hasta $50', value: [0, 50] as [number, number] },
-  { label: '$50 - $100', value: [50, 100] as [number, number] },
-  { label: '$100 - $200', value: [100, 200] as [number, number] },
-  { label: 'Más de $200', value: [200, 9999] as [number, number] }
-]
-
-const hasActiveFilters = computed(() => 
-  selectedCategory.value !== null || 
-  showOnlyInStock.value || 
-  selectedPriceRange.value !== null
-)
 
 // WhatsApp URLs
-const whatsappNumber = '+5491123456789'
+const whatsappNumber = '+5491140916764'
 
-const whatsappCatalogUrl = computed(() => {
-  const message = 'Hola! Me gustaría recibir información completa sobre su catálogo de carteles de neón. ¿Podrían enviarme detalles y precios? 🌟'
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
-})
-
-const whatsappConsultaUrl = computed(() => {
-  const message = 'Hola! No encuentro exactamente lo que busco en el catálogo. ¿Podrían ayudarme a encontrar el producto ideal? 🌟'
+const whatsappUrl = computed(() => {
+  const message = 'Hola! Vi su galería de trabajos y me interesa solicitar una cotización para un cartel de neón (Zona Sur). ¿Podrían ayudarme? 🌟'
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
 const whatsappCustomUrl = computed(() => {
-  const message = 'Hola! Me interesa un diseño personalizado de cartel de neón. ¿Podrían ayudarme a crear algo único? 🌟'
+    const message = 'Hola! Me interesan sus trabajos personalizados (Zona Sur). ¿Podrían ayudarme a crear algo único? 🌟'
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
-const toggleCategory = (category: ProductCategory) => {
-  if (selectedCategory.value === category) {
-    selectedCategory.value = null
-    productsStore.setCategory(null)
-  } else {
-    selectedCategory.value = category
-    productsStore.setCategory(category)
-  }
-}
 
-const setPriceRange = (range: [number, number]) => {
-  if (selectedPriceRange.value && 
-      selectedPriceRange.value[0] === range[0] && 
-      selectedPriceRange.value[1] === range[1]) {
-    selectedPriceRange.value = null
-    productsStore.setFilters({ priceRange: undefined })
-  } else {
-    selectedPriceRange.value = range
-    productsStore.setFilters({ priceRange: range })
-  }
-}
-
-const isPriceRangeActive = (range: [number, number]) => {
-  return selectedPriceRange.value && 
-         selectedPriceRange.value[0] === range[0] && 
-         selectedPriceRange.value[1] === range[1]
-}
-
-const updateInStockFilter = () => {
-  productsStore.setFilters({ inStock: showOnlyInStock.value || undefined })
-}
-
-const clearAllFilters = () => {
-  selectedCategory.value = null
-  selectedPriceRange.value = null
-  showOnlyInStock.value = false
-  productsStore.clearFilters()
-}
 
 onMounted(async () => {
   if (productsStore.products.length === 0) {
@@ -223,7 +98,7 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .products-page {
-  padding: $spacing-3xl 0;
+  padding: $spacing-xl 0;
   min-height: calc(100vh - 160px);
 }
 
@@ -250,8 +125,8 @@ onMounted(async () => {
   background: rgba($card-bg, 0.5);
   border: 1px solid rgba($neon-blue, 0.2);
   border-radius: $border-radius-lg;
-  padding: $spacing-xl;
-  margin-bottom: $spacing-2xl;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
 }
 
 .filters-header {
@@ -412,8 +287,8 @@ onMounted(async () => {
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: $spacing-xl;
-  margin-bottom: $spacing-3xl;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-2xl;
 }
 
 .load-more-section {

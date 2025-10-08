@@ -11,9 +11,6 @@
     <!-- Footer -->
     <AppFooter />
     
-    <!-- Cart Sidebar -->
-    <CartSidebar />
-    
     <!-- Loading Overlay -->
     <LoadingOverlay v-if="isLoading" />
   </div>
@@ -24,7 +21,6 @@ import { onMounted, computed } from 'vue'
 import { useProductsStore } from '@/stores/products'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
-import CartSidebar from '@/components/cart/CartSidebar.vue'
 import LoadingOverlay from '@/components/common/LoadingOverlay.vue'
 
 const productsStore = useProductsStore()
@@ -38,8 +34,8 @@ onMounted(async () => {
 
 <style lang="scss">
 .main-content {
-  min-height: calc(100vh - 140px); // Ajustar según header y footer
-  padding-top: 80px; // Altura del header fijo
+  min-height: calc(100vh - 120px); // Ajustar según header y footer
+  padding-top: 60px; // Altura del header fijo
 }
 
 // Transiciones suaves entre rutas

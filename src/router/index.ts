@@ -11,27 +11,19 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
-        path: '/productos',
-        name: 'Products',
+        path: '/galeria',
+        name: 'Gallery',
         component: () => import('@/views/Products.vue'),
         meta: {
-            title: 'Productos - Carteles de Neón'
+            title: 'Galería - Trabajos de Neón'
         }
     },
     {
-        path: '/producto/:id',
-        name: 'ProductDetail',
+        path: '/trabajo/:id',
+        name: 'WorkDetail',
         component: () => import('@/views/ProductDetail.vue'),
         meta: {
-            title: 'Detalle del Producto'
-        }
-    },
-    {
-        path: '/carrito',
-        name: 'Cart',
-        component: () => import('@/views/Cart.vue'),
-        meta: {
-            title: 'Carrito de Compras'
+            title: 'Detalle del Trabajo'
         }
     },
     {

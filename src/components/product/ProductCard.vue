@@ -1,14 +1,25 @@
 <template>
   <div class="product-card">
-    <div class="product-image">
-      <div class="image-placeholder">
+    <div class="product-image" @click="openModal">
+      <img 
+        v-if="product.images && product.images[0]" 
+        :src="product.images[0]" 
+        :alt="product.name"
+        class="product-img"
+      />
+      <div v-else class="image-placeholder">
         <Zap :size="48" class="placeholder-icon" />
+        <p>{{ product.name }}</p>
+      </div>
+      <div class="image-overlay">
+        <div class="overlay-icon">
+          <Eye :size="24" />
+        </div>
+        <span class="overlay-text">Ver imagen completa</span>
       </div>
       <div class="product-badges">
         <span v-if="product.featured" class="badge featured">Destacado</span>
-        <span v-if="product.originalPrice" class="badge discount">
-          -{{ Math.round((1 - product.price / product.originalPrice) * 100) }}%
-        </span>
+        <span class="badge category">{{ categoryName }}</span>
       </div>
     </div>
     
@@ -17,28 +28,7 @@
       <h3 class="product-name">{{ product.name }}</h3>
       <p class="product-description">{{ product.description }}</p>
       
-      <div class="product-colors">
-        <span class="colors-label">Colores:</span>
-        <div class="color-dots">
-          <div 
-            v-for="color in product.colors.slice(0, 4)" 
-            :key="color.name"
-            class="color-dot"
-            :style="{ backgroundColor: color.hex, boxShadow: `0 0 10px ${color.glowColor}` }"
-            :title="color.name"
-          ></div>
-          <span v-if="product.colors.length > 4" class="more-colors">
-            +{{ product.colors.length - 4 }}
-          </span>
-        </div>
-      </div>
-      
-      <div class="product-pricing">
-        <span class="current-price">${{ product.price }}</span>
-        <span v-if="product.originalPrice" class="original-price">
-          ${{ product.originalPrice }}
-        </span>
-      </div>
+
       
       <div class="product-rating">
         <div class="stars">
@@ -55,10 +45,11 @@
     
     <div class="product-actions">
       <RouterLink 
-        :to="`/producto/${product.id}`" 
+        :to="`/trabajo/${product.id}`" 
         class="btn btn-secondary btn-full"
       >
-        Ver Detalles
+        <Eye :size="18" />
+        Ver Trabajo
       </RouterLink>
       
       <a 
@@ -67,15 +58,27 @@
         class="btn btn-neon btn-full"
       >
         <MessageCircle :size="18" />
-        Consultar
+        Cotizar Similar
       </a>
     </div>
+    
+    <!-- Modal para imagen completa -->
+    <ImageModal
+      :is-open="isModalOpen"
+      :image="product.images?.[0] || ''"
+      :title="product.name"
+      :description="product.description"
+      :category="product.category"
+      :product-id="product.id"
+      @close="closeModal"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { Zap, Star, MessageCircle } from 'lucide-vue-next'
+import { ref, computed } from 'vue'
+import { Zap, Star, MessageCircle, Eye } from 'lucide-vue-next'
+import ImageModal from '@/components/common/ImageModal.vue'
 import type { Product } from '@/types'
 
 interface Props {
@@ -83,6 +86,18 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+const isModalOpen = ref(false)
+
+const openModal = () => {
+  if (props.product.images && props.product.images[0]) {
+    isModalOpen.value = true
+  }
+}
+
+const closeModal = () => {
+  isModalOpen.value = false
+}
 
 const categoryName = computed(() => {
   const categories = {
@@ -97,9 +112,9 @@ const categoryName = computed(() => {
 })
 
 // WhatsApp configuration
-const whatsappNumber = '+5491123456789'
+const whatsappNumber = '+5491140916764'
 const whatsappProductUrl = computed(() => {
-  const message = `Hola! Me interesa el producto "${props.product.name}". ¿Podrían darme más información y disponibilidad? 🌟`
+  const message = `Hola! Me interesa el trabajo "${props.product.name}" (Zona Sur). ¿Podrían darme más información y disponibilidad? 🌟`
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 </script>
@@ -110,15 +125,34 @@ const whatsappProductUrl = computed(() => {
   border-radius: $border-radius-lg;
   border: 1px solid rgba($neon-blue, 0.2);
   overflow: hidden;
-  transition: all $transition-normal;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
   display: flex;
   flex-direction: column;
+  animation: fadeInUp 0.6s ease-out;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: $neon-glow-md rgba($neon-blue, 0.3);
-    border-color: rgba($neon-pink, 0.4);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+      $neon-glow-md rgba($neon-blue, 0.4),
+      0 20px 40px rgba($neon-pink, 0.2),
+      0 0 0 1px rgba($neon-pink, 0.3);
+    border-color: rgba($neon-pink, 0.6);
+    
+    .product-img {
+      transform: scale(1.1);
+      filter: brightness(1.1) saturate(1.2);
+    }
+    
+    .product-name {
+      color: $neon-pink;
+      text-shadow: 0 0 10px rgba($neon-pink, 0.5);
+    }
+    
+    .badge {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px currentColor;
+    }
   }
 }
 
@@ -129,6 +163,65 @@ const whatsappProductUrl = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  
+  &:hover .image-overlay {
+    opacity: 1;
+  }
+  
+  &:hover .product-img {
+    transform: scale(1.05);
+    filter: brightness(0.8);
+  }
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(0.9) saturate(0.9);
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba($dark-bg, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  
+  .overlay-icon {
+    color: $neon-blue;
+    margin-bottom: $spacing-sm;
+    filter: drop-shadow(0 0 10px currentColor);
+    animation: float 2s ease-in-out infinite;
+  }
+  
+  .overlay-text {
+    color: $text-primary;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 0 $spacing-md;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 .image-placeholder {
@@ -154,20 +247,41 @@ const whatsappProductUrl = computed(() => {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
   
   &.featured {
-    background: $neon-pink;
+    background: linear-gradient(45deg, $neon-pink, lighten($neon-pink, 10%));
     color: $dark-bg;
+    box-shadow: 0 0 10px rgba($neon-pink, 0.4);
+    animation: neonPulse 2s ease-in-out infinite;
   }
   
   &.discount {
-    background: $neon-green;
+    background: linear-gradient(45deg, $neon-green, lighten($neon-green, 10%));
     color: $dark-bg;
+    box-shadow: 0 0 10px rgba($neon-green, 0.4);
+  }
+  
+  &.category {
+    background: linear-gradient(45deg, rgba($neon-blue, 0.9), rgba($neon-blue, 0.7));
+    color: white;
+    border: 1px solid rgba($neon-blue, 0.3);
+    box-shadow: 0 0 8px rgba($neon-blue, 0.3);
+  }
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba($neon-pink, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba($neon-pink, 0.6), 0 0 30px rgba($neon-pink, 0.3);
   }
 }
 
 .product-info {
-  padding: $spacing-lg;
+  padding: $spacing-md;
   flex: 1;
 }
 
@@ -198,37 +312,7 @@ const whatsappProductUrl = computed(() => {
   overflow: hidden;
 }
 
-.product-colors {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  margin-bottom: $spacing-lg;
-}
 
-.colors-label {
-  font-size: 0.85rem;
-  color: $text-secondary;
-}
-
-.color-dots {
-  display: flex;
-  align-items: center;
-  gap: $spacing-xs;
-}
-
-.color-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid rgba(white, 0.3);
-  cursor: pointer;
-}
-
-.more-colors {
-  font-size: 0.75rem;
-  color: $text-muted;
-  margin-left: $spacing-xs;
-}
 
 .product-pricing {
   display: flex;
@@ -277,11 +361,11 @@ const whatsappProductUrl = computed(() => {
 }
 
 .product-actions {
-  padding: $spacing-lg;
+  padding: $spacing-md;
   border-top: 1px solid rgba($text-muted, 0.1);
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: $spacing-xs;
 }
 
 .btn-full {
@@ -290,6 +374,24 @@ const whatsappProductUrl = computed(() => {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(white, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
 }
 
 .btn-secondary {
@@ -300,6 +402,9 @@ const whatsappProductUrl = computed(() => {
   &:hover {
     background: rgba($text-secondary, 0.1);
     color: $text-primary;
+    border-color: rgba($text-primary, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba($text-secondary, 0.2);
   }
 }
 </style>

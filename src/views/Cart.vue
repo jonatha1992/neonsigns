@@ -24,7 +24,7 @@
               Abrir Carrito
             </button>
             
-            <RouterLink to="/productos" class="btn btn-neon btn-lg">
+            <RouterLink to="/galeria" class="btn btn-neon btn-lg">
               <Package :size="20" />
               Seguir Comprando
             </RouterLink>
@@ -32,8 +32,8 @@
           
           <div v-if="cartItems === 0" class="empty-message">
             <p>Tu carrito está vacío. ¡Explora nuestros productos y encuentra el cartel perfecto!</p>
-            <RouterLink to="/productos" class="btn btn-primary">
-              Ver Catálogo
+            <RouterLink to="/galeria" class="btn btn-primary">
+              Ver Galería
             </RouterLink>
           </div>
         </div>

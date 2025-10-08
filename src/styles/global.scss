@@ -51,7 +51,7 @@ body {
 
 // Botones con efectos de neón
 .btn {
-    padding: $spacing-md $spacing-xl;
+    padding: $spacing-sm $spacing-lg;
     border: none;
     border-radius: $border-radius-md;
     font-weight: 600;
@@ -91,7 +91,7 @@ body {
 .card {
     background: $card-bg;
     border-radius: $border-radius-lg;
-    padding: $spacing-lg;
+    padding: $spacing-md;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all $transition-normal;
 
@@ -139,10 +139,10 @@ body {
 .container {
     max-width: $large-desktop;
     margin: 0 auto;
-    padding: 0 $spacing-lg;
+    padding: 0 $spacing-md;
 
     @media (max-width: $mobile) {
-        padding: 0 $spacing-md;
+        padding: 0 $spacing-sm;
     }
 }
 
@@ -164,4 +164,97 @@ body {
     100% {
         transform: rotate(360deg);
     }
+}
+
+// Animaciones profesionales adicionales
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-60px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(60px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes neonPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px currentColor;
+    }
+
+    50% {
+        box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+}
+
+// Clases de utilidad para animaciones
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.8s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.8s ease-out;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.6s ease-out;
+}
+
+.animate-delay-1 {
+    animation-delay: 0.2s;
+    animation-fill-mode: both;
+}
+
+.animate-delay-2 {
+    animation-delay: 0.4s;
+    animation-fill-mode: both;
+}
+
+.animate-delay-3 {
+    animation-delay: 0.6s;
+    animation-fill-mode: both;
 }

@@ -12,7 +12,7 @@
         <div v-if="items.length === 0" class="empty-cart">
           <ShoppingCart :size="48" class="empty-icon" />
           <p>Tu carrito está vacío</p>
-          <RouterLink to="/productos" class="btn btn-neon" @click="closeCart">
+          <RouterLink to="/galeria" class="btn btn-neon" @click="closeCart">
             Ver Productos
           </RouterLink>
         </div>
@@ -90,7 +90,7 @@ const items = computed(() => cartStore.items)
 const totalPrice = computed(() => cartStore.totalPrice)
 
 // WhatsApp configuration
-const whatsappNumber = '+5491123456789'
+const whatsappNumber = '+5491140916764'
 const whatsappOrderUrl = computed(() => {
   let message = '¡Hola! Quiero hacer un pedido:\n\n'
   
@@ -157,7 +157,7 @@ const clearCart = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: $spacing-lg;
+  padding: $spacing-md;
   border-bottom: 1px solid rgba($text-muted, 0.2);
   
   h3 {
@@ -181,7 +181,7 @@ const clearCart = () => {
 .cart-content {
   flex: 1;
   overflow-y: auto;
-  padding: $spacing-lg;
+  padding: $spacing-md;
 }
 
 .empty-cart {
@@ -201,7 +201,7 @@ const clearCart = () => {
 
 .cart-item {
   border-bottom: 1px solid rgba($text-muted, 0.1);
-  padding: $spacing-lg 0;
+  padding: $spacing-md 0;
   
   &:last-child {
     border-bottom: none;
@@ -285,7 +285,7 @@ const clearCart = () => {
 
 .cart-footer {
   border-top: 1px solid rgba($text-muted, 0.2);
-  padding: $spacing-lg;
+  padding: $spacing-md;
 }
 
 .total {

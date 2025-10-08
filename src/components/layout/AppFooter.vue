@@ -19,7 +19,7 @@
           <h3 class="footer-title">Enlaces Rápidos</h3>
           <ul class="footer-links">
             <li><RouterLink to="/">Inicio</RouterLink></li>
-            <li><RouterLink to="/productos">Productos</RouterLink></li>
+            <li><RouterLink to="/galeria">Galería</RouterLink></li>
             <li><RouterLink to="/contacto">Contacto</RouterLink></li>
           </ul>
         </div>
@@ -41,7 +41,7 @@
           <div class="contact-info">
             <div class="contact-item">
               <Phone :size="16" />
-              <span>+54 9 11 2345-6789</span>
+              <span>+54 9 11 4091-6764</span>
             </div>
             <div class="contact-item">
               <Mail :size="16" />
@@ -49,7 +49,7 @@
             </div>
             <div class="contact-item">
               <MapPin :size="16" />
-              <span>Buenos Aires, Argentina</span>
+              <span>Zona Sur, Buenos Aires</span>
             </div>
           </div>
 
@@ -91,8 +91,8 @@ import { computed } from 'vue'
 import { Phone, Mail, MapPin, MessageCircle, Instagram, Facebook, Twitter } from 'lucide-vue-next'
 
 // WhatsApp configuration
-const whatsappNumber = '+5491123456789'
-const whatsappMessage = 'Hola! Quiero más información sobre sus carteles de neón 🌟'
+const whatsappNumber = '+5491140916764'
+const whatsappMessage = 'Hola! Quiero más información sobre sus carteles de neón (Zona Sur) 🌟'
 const whatsappUrl = computed(() => 
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 )
@@ -108,13 +108,13 @@ const whatsappUrl = computed(() =>
 .footer-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: $spacing-2xl;
-  padding: $spacing-3xl 0 $spacing-2xl;
+  gap: $spacing-xl;
+  padding: $spacing-2xl 0 $spacing-lg;
   
   @media (max-width: $mobile) {
     grid-template-columns: 1fr;
-    gap: $spacing-xl;
-    padding: $spacing-2xl 0;
+    gap: $spacing-lg;
+    padding: $spacing-xl 0;
   }
 }
 
@@ -193,7 +193,7 @@ const whatsappUrl = computed(() =>
   gap: $spacing-sm;
   background: linear-gradient(45deg, #25d366, #128c7e);
   color: white;
-  padding: $spacing-md $spacing-lg;
+  padding: $spacing-sm $spacing-md;
   border-radius: $border-radius-lg;
   text-decoration: none;
   font-weight: 600;
@@ -207,7 +207,7 @@ const whatsappUrl = computed(() =>
 
 .footer-bottom {
   border-top: 1px solid rgba($text-muted, 0.2);
-  padding: $spacing-lg 0;
+  padding: $spacing-md 0;
   
   &-content {
     display: flex;

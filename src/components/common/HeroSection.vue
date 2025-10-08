@@ -14,7 +14,7 @@
           </h1>
           
           <p class="hero-subtitle">
-            Transforma tu espacio con diseños únicos que <strong>brillan</strong> con luz propia.
+            Explora nuestros trabajos realizados y transforma tu espacio con diseños únicos que <strong>brillan</strong> con luz propia.
             Calidad profesional para tu negocio o hogar.
           </p>
           
@@ -43,9 +43,9 @@
               Cotizar por WhatsApp
             </a>
             
-            <RouterLink to="/productos" class="btn btn-neon btn-lg">
+            <RouterLink to="/galeria" class="btn btn-neon btn-lg">
               <Eye :size="20" />
-              Ver Catálogo
+              Ver Galería
             </RouterLink>
           </div>
         </div>
@@ -78,8 +78,8 @@ import { computed } from 'vue'
 import { MessageCircle, Eye, Zap, Palette, Shield, ChevronDown } from 'lucide-vue-next'
 
 // WhatsApp configuration
-const whatsappNumber = '+5491123456789'
-const whatsappMessage = '¡Hola! Me interesa cotizar un cartel de neón personalizado 🌟'
+const whatsappNumber = '+5491140916764'
+const whatsappMessage = '¡Hola! Me interesa cotizar un cartel de neón personalizado (Zona Sur) 🌟'
 const whatsappUrl = computed(() => 
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 )
@@ -122,7 +122,7 @@ const whatsappUrl = computed(() =>
 .hero-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: $spacing-3xl;
+  gap: $spacing-2xl;
   align-items: center;
   position: relative;
   z-index: 2;
@@ -130,7 +130,7 @@ const whatsappUrl = computed(() =>
   @media (max-width: $tablet) {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: $spacing-2xl;
+    gap: $spacing-xl;
   }
 }
 
@@ -138,7 +138,7 @@ const whatsappUrl = computed(() =>
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 900;
   line-height: 1.1;
-  margin-bottom: $spacing-lg;
+  margin-bottom: $spacing-md;
   font-family: $font-neon;
   
   span {
@@ -156,7 +156,7 @@ const whatsappUrl = computed(() =>
 .hero-subtitle {
   font-size: 1.25rem;
   color: $text-secondary;
-  margin-bottom: $spacing-2xl;
+  margin-bottom: $spacing-xl;
   line-height: 1.6;
   
   strong {
@@ -167,12 +167,12 @@ const whatsappUrl = computed(() =>
 
 .hero-features {
   display: flex;
-  gap: $spacing-xl;
-  margin-bottom: $spacing-2xl;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
   
   @media (max-width: $mobile) {
     flex-direction: column;
-    gap: $spacing-md;
+    gap: $spacing-sm;
   }
 }
 
@@ -189,7 +189,7 @@ const whatsappUrl = computed(() =>
 
 .hero-actions {
   display: flex;
-  gap: $spacing-lg;
+  gap: $spacing-md;
   
   @media (max-width: $mobile) {
     flex-direction: column;
@@ -225,7 +225,7 @@ const whatsappUrl = computed(() =>
 
 .neon-sign {
   position: absolute;
-  padding: $spacing-lg $spacing-xl;
+  padding: $spacing-sm $spacing-md;
   border: 2px solid;
   border-radius: $border-radius-lg;
   background: rgba($dark-bg, 0.8);
