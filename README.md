@@ -1,4 +1,4 @@
-# 🌟 Lauti Design - Carteles de Neón LED
+# 🌟 Neon Designs - Carteles de Neón LED
 
 Landing page profesional para mostrar trabajos realizados de carteles de neón LED, desarrollada con Vue 3, TypeScript y animaciones premium.
 
