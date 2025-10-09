@@ -262,24 +262,24 @@ const whatsappUrl = computed(() =>
 
   &.main-sign {
     font-size: 3.5rem;
-    top: 3%;
-    right: 8%;
+    top: -8%;
+    right: 5%;
     z-index: 3;
     animation: float 3s ease-in-out infinite;
     padding: $spacing-xl $spacing-3xl;
 
     @media (max-width: $tablet) {
       font-size: 2.5rem;
-      top: 3%;
-      right: 5%;
+      top: -6%;
+      right: 3%;
       padding: $spacing-lg $spacing-xl;
     }
 
     @media (max-width: $mobile) {
       font-size: 1.8rem;
       padding: $spacing-md $spacing-lg;
-      top: 2%;
-      right: 3%;
+      top: -2%;
+      right: 2%;
     }
   }
 
@@ -330,30 +330,34 @@ const whatsappUrl = computed(() =>
   }
 
   &.logo-sign {
-    top: 42%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 65%;
+    right: 15%;
+    transform: translateY(-50%);
     z-index: 4;
-    animation: float 3s ease-in-out infinite 0.5s;
+    animation: logo-float-right 3s ease-in-out infinite;
     padding: 0;
     border: none;
     background: transparent;
+    animation-fill-mode: both;
 
     @media (max-width: $tablet) {
-      top: 45%;
+      right: 10%;
+      top: 65%;
     }
 
     @media (max-width: $mobile) {
-      top: 47%;
+      right: 5%;
+      top: 65%;
     }
 
     .neon-logo-large {
       width: 280px;
       height: 280px;
       object-fit: contain;
-      filter: brightness(1.4) saturate(1.5) drop-shadow(0 0 25px rgba(255, 20, 147, 1))
-              drop-shadow(0 0 50px rgba(255, 20, 147, 0.7));
-      animation: logo-pulse 2s ease-in-out infinite;
+      filter: brightness(1.5) saturate(1.6) drop-shadow(0 0 30px rgba(255, 20, 147, 1))
+              drop-shadow(0 0 60px rgba(255, 20, 147, 0.8))
+              drop-shadow(0 0 100px rgba(255, 20, 147, 0.4));
+      animation: logo-pulse-enhanced 2.5s ease-in-out infinite;
 
       @media (max-width: $tablet) {
         width: 220px;
@@ -421,6 +425,59 @@ const whatsappUrl = computed(() =>
   50% {
     filter: brightness(1.6) saturate(1.7) drop-shadow(0 0 30px rgba(255, 20, 147, 1))
             drop-shadow(0 0 50px rgba(255, 20, 147, 0.8));
+  }
+}
+
+@keyframes logo-pulse-enhanced {
+  0% {
+    filter: brightness(1.5) saturate(1.6) drop-shadow(0 0 30px rgba(255, 20, 147, 1))
+            drop-shadow(0 0 60px rgba(255, 20, 147, 0.8))
+            drop-shadow(0 0 100px rgba(255, 20, 147, 0.4));
+  }
+  33% {
+    filter: brightness(1.7) saturate(1.8) drop-shadow(0 0 40px rgba(255, 20, 147, 1))
+            drop-shadow(0 0 80px rgba(255, 20, 147, 0.9))
+            drop-shadow(0 0 120px rgba(255, 20, 147, 0.5));
+  }
+  66% {
+    filter: brightness(1.8) saturate(1.9) drop-shadow(0 0 50px rgba(255, 20, 147, 1))
+            drop-shadow(0 0 100px rgba(255, 20, 147, 1))
+            drop-shadow(0 0 150px rgba(255, 20, 147, 0.6));
+  }
+  100% {
+    filter: brightness(1.5) saturate(1.6) drop-shadow(0 0 30px rgba(255, 20, 147, 1))
+            drop-shadow(0 0 60px rgba(255, 20, 147, 0.8))
+            drop-shadow(0 0 100px rgba(255, 20, 147, 0.4));
+  }
+}
+
+@keyframes logo-float {
+  0% {
+    transform: translate(-50%, -50%) translateY(0px);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-10px);
+  }
+  100% {
+    transform: translate(-50%, -50%) translateY(0px);
+  }
+}
+
+@keyframes logo-float-right {
+  0% {
+    transform: translateY(-50%) translateY(0px) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-50%) translateY(-8px) rotate(2deg) scale(1.02);
+  }
+  50% {
+    transform: translateY(-50%) translateY(-15px) rotate(0deg) scale(1.05);
+  }
+  75% {
+    transform: translateY(-50%) translateY(-8px) rotate(-2deg) scale(1.02);
+  }
+  100% {
+    transform: translateY(-50%) translateY(0px) rotate(0deg) scale(1);
   }
 }
 </style>
