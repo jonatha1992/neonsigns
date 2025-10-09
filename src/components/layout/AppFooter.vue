@@ -7,6 +7,8 @@
           <div class="logo">
             <span class="neon-text pink">NEON</span>
             <span class="text-white">Signs</span>
+            <span class="text-white">LD</span>
+            <img src="/logo_neon.png" alt="León Neón" class="logo-icon" />
           </div>
           <p class="footer-description">
             Creamos carteles de neón únicos y personalizados para dar vida a tus ideas.
@@ -124,6 +126,24 @@ const whatsappUrl = computed(() =>
     font-weight: 900;
     font-family: $font-neon;
     margin-bottom: $spacing-md;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      filter: brightness(1.2) saturate(1.3) drop-shadow(0 0 10px rgba(255, 20, 147, 0.8));
+      margin-left: $spacing-sm;
+      animation: neon-pulse 2s ease-in-out infinite alternate;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        filter: brightness(1.5) saturate(1.5) drop-shadow(0 0 20px rgba(255, 20, 147, 1));
+        transform: scale(1.1);
+      }
+    }
   }
 }
 
@@ -239,6 +259,16 @@ const whatsappUrl = computed(() =>
   &:hover {
     color: $neon-pink;
     transform: translateY(-2px);
+  }
+}
+
+// Animations
+@keyframes neon-pulse {
+  0% {
+    filter: brightness(1.2) saturate(1.3) drop-shadow(0 0 10px rgba(255, 20, 147, 0.8));
+  }
+  100% {
+    filter: brightness(1.4) saturate(1.5) drop-shadow(0 0 15px rgba(255, 20, 147, 1));
   }
 }
 </style>

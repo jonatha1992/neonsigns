@@ -9,7 +9,9 @@
         <div class="hero-text">
           <h1 class="hero-title">
             <span class="animate-float">Carteles de</span>
-            <span class="neon-text pink animate-flicker">NEÓN</span>
+            <span class="title-line">
+              <span class="neon-text pink animate-flicker">NEÓN</span>
+            </span>
             <span class="animate-float">Personalizados</span>
           </h1>
           
@@ -52,6 +54,9 @@
         
         <div class="hero-visual">
           <div class="neon-showcase">
+            <div class="neon-sign logo-sign">
+              <img src="/logo_neon.png" alt="NEONSigns LD Logo" class="neon-logo-large" />
+            </div>
             <div class="neon-sign main-sign">
               <span class="neon-text blue">OPEN</span>
             </div>
@@ -140,6 +145,30 @@ const whatsappUrl = computed(() =>
   line-height: 1.1;
   margin-bottom: $spacing-md;
   font-family: $font-neon;
+  position: relative;
+  
+  .title-line {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 24px);
+    white-space: nowrap; // mantener NEÓN y el logo en la misma línea
+  }
+  
+  .hero-logo-inline {
+    width: clamp(80px, 10vw, 140px);
+    height: clamp(80px, 10vw, 140px);
+    object-fit: contain;
+    filter: brightness(1.25) saturate(1.4) drop-shadow(0 0 14px rgba(255, 20, 147, 0.85));
+    animation: hero-neon-float 3s ease-in-out infinite;
+    vertical-align: middle;
+    margin-left: clamp(10px, 2vw, 28px); // empujar más a la derecha
+
+    @media (max-width: $mobile) {
+      width: 60px;
+      height: 60px;
+      margin-left: 8px;
+    }
+  }
   
   span {
     display: block;
@@ -225,32 +254,117 @@ const whatsappUrl = computed(() =>
 
 .neon-sign {
   position: absolute;
-  padding: $spacing-sm $spacing-md;
-  border: 2px solid;
+  padding: $spacing-lg $spacing-2xl;
+  border: 3px solid;
   border-radius: $border-radius-lg;
-  background: rgba($dark-bg, 0.8);
-  backdrop-filter: blur(10px);
-  
+  background: transparent;
+  backdrop-filter: none;
+
   &.main-sign {
-    font-size: 3rem;
+    font-size: 3.5rem;
+    top: 3%;
+    right: 8%;
     z-index: 3;
     animation: float 3s ease-in-out infinite;
+    padding: $spacing-xl $spacing-3xl;
+
+    @media (max-width: $tablet) {
+      font-size: 2.5rem;
+      top: 3%;
+      right: 5%;
+      padding: $spacing-lg $spacing-xl;
+    }
+
+    @media (max-width: $mobile) {
+      font-size: 1.8rem;
+      padding: $spacing-md $spacing-lg;
+      top: 2%;
+      right: 3%;
+    }
   }
-  
+
   &.secondary-sign {
     font-size: 1.5rem;
-    top: 20%;
-    right: 10%;
+    top: 8%;
+    left: 8%;
     z-index: 2;
     animation: float 3s ease-in-out infinite 1s;
+    padding: $spacing-md $spacing-lg;
+
+    @media (max-width: $tablet) {
+      font-size: 1.2rem;
+      top: 6%;
+      left: 5%;
+      padding: $spacing-sm $spacing-md;
+    }
+
+    @media (max-width: $mobile) {
+      font-size: 0.9rem;
+      padding: $spacing-xs $spacing-sm;
+      top: 4%;
+      left: 3%;
+    }
   }
-  
+
   &.tertiary-sign {
-    font-size: 2rem;
-    bottom: 20%;
-    left: 5%;
+    font-size: 2.2rem;
+    bottom: 15%;
+    left: 10%;
     z-index: 1;
     animation: float 3s ease-in-out infinite 2s;
+    padding: $spacing-lg $spacing-xl;
+
+    @media (max-width: $tablet) {
+      font-size: 1.8rem;
+      bottom: 12%;
+      left: 5%;
+      padding: $spacing-md $spacing-lg;
+    }
+
+    @media (max-width: $mobile) {
+      font-size: 1.3rem;
+      padding: $spacing-sm $spacing-md;
+      bottom: 8%;
+      left: 3%;
+    }
+  }
+
+  &.logo-sign {
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    animation: float 3s ease-in-out infinite 0.5s;
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    @media (max-width: $tablet) {
+      top: 45%;
+    }
+
+    @media (max-width: $mobile) {
+      top: 47%;
+    }
+
+    .neon-logo-large {
+      width: 280px;
+      height: 280px;
+      object-fit: contain;
+      filter: brightness(1.4) saturate(1.5) drop-shadow(0 0 25px rgba(255, 20, 147, 1))
+              drop-shadow(0 0 50px rgba(255, 20, 147, 0.7));
+      animation: logo-pulse 2s ease-in-out infinite;
+
+      @media (max-width: $tablet) {
+        width: 220px;
+        height: 220px;
+      }
+
+      @media (max-width: $mobile) {
+        width: 160px;
+        height: 160px;
+      }
+    }
   }
 }
 
@@ -281,6 +395,32 @@ const whatsappUrl = computed(() =>
   }
   60% {
     transform: translateY(-5px);
+  }
+}
+
+@keyframes hero-neon-float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    filter: brightness(1.3) saturate(1.4) drop-shadow(0 0 20px rgba(255, 20, 147, 0.9));
+  }
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+    filter: brightness(1.5) saturate(1.6) drop-shadow(0 0 30px rgba(255, 20, 147, 1));
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    filter: brightness(1.3) saturate(1.4) drop-shadow(0 0 20px rgba(255, 20, 147, 0.9));
+  }
+}
+
+@keyframes logo-pulse {
+  0%, 100% {
+    filter: brightness(1.4) saturate(1.5) drop-shadow(0 0 20px rgba(255, 20, 147, 1))
+            drop-shadow(0 0 40px rgba(255, 20, 147, 0.6));
+  }
+  50% {
+    filter: brightness(1.6) saturate(1.7) drop-shadow(0 0 30px rgba(255, 20, 147, 1))
+            drop-shadow(0 0 50px rgba(255, 20, 147, 0.8));
   }
 }
 </style>
