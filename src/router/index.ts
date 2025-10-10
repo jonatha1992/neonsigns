@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+import { guestGuard, adminGuard } from '@/middleware/auth.guard'
 
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
-        name: 'Home',
+        name: 'home',
         component: () => import('@/views/Home.vue'),
         meta: {
             title: 'Inicio - Neon Signs Store'
@@ -12,7 +13,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/galeria',
-        name: 'Gallery',
+        name: 'gallery',
         component: () => import('@/views/Products.vue'),
         meta: {
             title: 'Galería - Trabajos de Neón'
@@ -20,7 +21,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/trabajo/:id',
-        name: 'WorkDetail',
+        name: 'work-detail',
         component: () => import('@/views/ProductDetail.vue'),
         meta: {
             title: 'Detalle del Trabajo'
@@ -28,15 +29,56 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/contacto',
-        name: 'Contact',
+        name: 'contact',
         component: () => import('@/views/Contact.vue'),
         meta: {
             title: 'Contacto - Neon Signs Store'
         }
     },
+    // Admin routes
+    {
+        path: '/admin/login',
+        name: 'admin-login',
+        component: () => import('@/views/admin/AdminLogin.vue'),
+        beforeEnter: guestGuard,
+        meta: {
+            title: 'Acceso Administrativo - Neon Signs Store'
+        }
+    },
+    {
+        path: '/admin',
+        redirect: '/admin/dashboard',
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true
+        }
+    },
+    {
+        path: '/admin/dashboard',
+        name: 'admin-dashboard',
+        component: () => import('@/views/admin/AdminDashboard.vue'),
+        beforeEnter: adminGuard,
+        meta: {
+            title: 'Panel de Administración - Neon Signs Store',
+            requiresAuth: true,
+            requiresAdmin: true
+        }
+    },
+    {
+        path: '/admin/gallery',
+        name: 'admin-gallery',
+        component: () => import('@/views/admin/GalleryManager.vue'),
+        beforeEnter: adminGuard,
+        meta: {
+            title: 'Gestión de Galería - Admin',
+            requiresAuth: true,
+            requiresAdmin: true
+        }
+    },
+    // 404 - Must be last
     {
         path: '/:pathMatch(.*)*',
-        name: 'NotFound',
+        name: 'not-found',
         component: () => import('@/views/NotFound.vue'),
         meta: {
             title: 'Página no encontrada'
