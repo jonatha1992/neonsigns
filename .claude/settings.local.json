@@ -3,7 +3,12 @@
     "allow": [
       "Read(//c/Users/DICA/**)",
       "Bash(npx @modelcontextprotocol/inspector:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(test:*)",
+      "Bash(npm install:*)",
+      "Bash(if not exist \"src\\config\" mkdir \"src\\config\")",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat(abm): Add Firebase configuration and TypeScript types\n\n- Install Firebase SDK and uuid packages\n- Add .env.local.example with Firebase config template\n- Create src/config/firebase.ts for Firestore, Auth, Storage initialization\n- Create src/types/gallery.types.ts with comprehensive TypeScript interfaces\n- Add firestore.rules and storage.rules with admin-only write access\n- Configure admin email: tecnofusion.it@gmail.com\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
