@@ -12,7 +12,7 @@ import {
   limit,
   Timestamp,
   QueryConstraint,
-  DocumentData,
+  type DocumentData,
   writeBatch
 } from 'firebase/firestore';
 import { db } from '@/config/firebase';
@@ -301,7 +301,8 @@ export class FirestoreService {
         return 0;
       }
 
-      return items[0].orderIndex + 1;
+      const firstItem = items[0];
+      return (firstItem?.orderIndex ?? 0) + 1;
     } catch (error) {
       console.error('Error getting next order index:', error);
       return 0;

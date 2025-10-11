@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import { User } from 'firebase/auth';
+import type { User } from 'firebase/auth';
 import AuthService from '@/services/auth.service';
 
 /**

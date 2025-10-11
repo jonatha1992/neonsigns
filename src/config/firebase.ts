@@ -1,7 +1,7 @@
-import { initializeApp, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
-import { getFirestore, Firestore } from 'firebase/firestore';
-import { getStorage, FirebaseStorage } from 'firebase/storage';
+import { initializeApp, type FirebaseApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getStorage, type FirebaseStorage } from 'firebase/storage';
 
 // Firebase configuration from environment variables
 const firebaseConfig = {
@@ -25,7 +25,7 @@ if (missingKeys.length > 0) {
 
 // Initialize Firebase
 let app: FirebaseApp;
-let auth: Auth;
+let auth: ReturnType<typeof getAuth>;
 let db: Firestore;
 let storage: FirebaseStorage;
 

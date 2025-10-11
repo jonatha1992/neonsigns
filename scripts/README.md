@@ -1,6 +1,6 @@
 # 🧪 Testing & Migration Scripts
 
-This folder contains scripts for testing Firebase functionality and migrating data.
+This folder contains scripts for testing Firebase functionality. Migration scripts have been removed from the CLI and must be run manually or from isolated scripts maintained outside the admin UI.
 
 ## 📝 Available Scripts
 
@@ -93,29 +93,7 @@ Success Rate: 100.0%
 
 ---
 
-### 2. `migrate-to-firestore.ts` - Data Migration Script (Coming Soon)
-
-This script will migrate existing mock product data to Firestore.
-
-#### Features (Planned)
-- Read mock data from `src/stores/products.ts`
-- Transform to Firestore schema
-- Map categories appropriately
-- Mark first 4 items as featured
-- Assign sequential order indexes
-- Upload to Firestore collection
-- Create backup of original data
-
-#### Usage (When Available)
-```bash
-# Run migration
-npm run migrate
-
-# Or with backup
-npm run migrate -- --backup
-```
-
----
+<!-- Migraciones removidas: los scripts y la documentación de migración fueron eliminados del proyecto. -->
 
 ## 🔧 Setup Instructions
 

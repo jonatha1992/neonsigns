@@ -1,5 +1,7 @@
 {
-    "projects": {
-        "default": "neon-signs-app"
-    }
+  "projects": {
+    "default": "neon-signs-app"
+  },
+  "targets": {},
+  "etags": {}
 }

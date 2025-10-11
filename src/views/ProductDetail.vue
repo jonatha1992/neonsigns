@@ -6,8 +6,8 @@
         Inicio
       </router-link>
       <ChevronRight :size="16" />
-      <router-link to="/products" class="breadcrumb-link">
-        Trabajos
+      <router-link to="/galeria" class="breadcrumb-link">
+        Galería
       </router-link>
       <ChevronRight :size="16" />
       <span v-if="product">{{ product.name }}</span>
@@ -27,8 +27,8 @@
       <div class="not-found-content">
         <h2>Trabajo no encontrado</h2>
         <p>El trabajo que buscas no existe.</p>
-        <router-link to="/products" class="btn btn-primary">
-          Ver todos los trabajos
+        <router-link to="/galeria" class="btn btn-primary">
+          Ver toda la galería
         </router-link>
       </div>
     </div>
@@ -156,7 +156,12 @@ const whatsappUrlQuote = computed(() => {
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
-onMounted(() => {
+onMounted(async () => {
+  // Cargar productos si no están cargados
+  if (productsStore.products.length === 0) {
+    await productsStore.fetchProducts()
+  }
+  
   setTimeout(() => {
     loading.value = false
   }, 1000)

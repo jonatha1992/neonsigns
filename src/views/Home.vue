@@ -96,16 +96,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { MessageCircle, Palette, Zap, Shield } from 'lucide-vue-next'
-import { useProductsStore } from '@/stores/products'
+import { useHybridGallery } from '@/services/hybrid-gallery.service'
 import HeroSection from '@/components/common/HeroSection.vue'
 import ProductCard from '@/components/product/ProductCard.vue'
+import type { Product } from '@/types'
+import type { GalleryItem } from '@/types/gallery.types'
 
-const productsStore = useProductsStore()
+// Usar el servicio híbrido
+const { getFeaturedItems, getSystemStats, isLoading, error } = useHybridGallery()
 
-const featuredProducts = computed(() => productsStore.featuredProducts)
+// Estado reactivo
+const featuredProducts = ref<Product[]>([])
+const dataSource = ref<'firebase' | 'mock'>('mock')
+const systemStats = ref<any>(null)
+
+// Productos limitados para mostrar
 const limitedFeaturedProducts = computed(() => featuredProducts.value.slice(0, 4))
+
+// Estado de carga (compatible con template existente)
+const productsStore = computed(() => ({
+  loading: isLoading.value
+}))
 
 // WhatsApp configuration
 const whatsappNumber = '+5491140916764'
@@ -114,10 +127,37 @@ const whatsappUrl = computed(() =>
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 )
 
-onMounted(async () => {
-  if (productsStore.products.length === 0) {
-    await productsStore.fetchProducts()
+// Cargar datos híbridos
+const loadData = async () => {
+  try {
+    const { getFeaturedItems, getSystemStats, service } = useHybridGallery()
+    const { items, source } = await getFeaturedItems()
+    
+    // Convertir GalleryItems a Products si es necesario
+    const products = items.map(item => {
+      if (source === 'firebase') {
+        return service.convertGalleryItemToProduct(item as GalleryItem)
+      }
+      return item as Product
+    })
+    
+    featuredProducts.value = products
+    dataSource.value = source
+    
+    // Obtener estadísticas del sistema
+    systemStats.value = await getSystemStats()
+    
+    console.log(`🏠 Home: Cargados ${items.length} productos destacados desde ${source}`)
+    if (systemStats.value) {
+      console.log('📊 System stats:', systemStats.value)
+    }
+  } catch (err) {
+    console.error('Error cargando datos en Home:', err)
   }
+}
+
+onMounted(() => {
+  loadData()
 })
 </script>
 

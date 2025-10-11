@@ -23,6 +23,7 @@
             <li><RouterLink to="/">Inicio</RouterLink></li>
             <li><RouterLink to="/galeria">Galería</RouterLink></li>
             <li><RouterLink to="/contacto">Contacto</RouterLink></li>
+            <li><RouterLink to="/admin-simple" class="admin-link">Panel</RouterLink></li>
           </ul>
         </div>
 
@@ -70,7 +71,7 @@
       <!-- Bottom Bar -->
       <div class="footer-bottom">
         <div class="footer-bottom-content">
-          <p>&copy; 2024 Neon Signs Store. Desarrollado por Lauti Design.</p>
+          <p>&copy; 2024 Neon Signs Store. Desarrollado por Tecnofusion.IT.</p>
           <div class="social-links">
             <a href="#" class="social-link" title="Instagram">
               <Instagram :size="20" />
@@ -187,6 +188,16 @@ const whatsappUrl = computed(() =>
     &:hover {
       color: $neon-pink;
       padding-left: $spacing-sm;
+    }
+    
+    &.admin-link {
+      opacity: 0.3;
+      font-size: 0.85rem;
+      
+      &:hover {
+        opacity: 1;
+        color: $neon-blue;
+      }
     }
   }
 }

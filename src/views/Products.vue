@@ -6,24 +6,11 @@
         <h1 class="page-title">
           <span class="neon-text pink">Galería</span> de Trabajos
         </h1>
-        <p class="page-subtitle">
-          Explora nuestros trabajos realizados y diseños únicos de carteles de neón
-        </p>
       </div>
       
 
       
-      <!-- Gallery Info -->
-      <div class="results-info">
-        <p>{{ totalProducts }} trabajos realizados</p>
-        
-        <div class="whatsapp-cta">
-          <a :href="whatsappUrl" target="_blank" class="btn btn-neon">
-            <MessageCircle :size="18" />
-            Solicitar Cotización
-          </a>
-        </div>
-      </div>
+ 
       
       <!-- Products Grid -->
       <div v-if="loading" class="loading-state">
@@ -41,6 +28,12 @@
         </div>
       </div>
       
+      <div v-else-if="errorMessage" class="empty-state">
+        <Package :size="64" class="empty-icon" />
+        <h3>Galería temporalmente vacía</h3>
+        <p>{{ errorMessage }}</p>
+      </div>
+
       <div v-else-if="allProducts.length === 0" class="empty-state">
         <Package :size="64" class="empty-icon" />
         <h3>Cargando trabajos...</h3>
@@ -70,16 +63,25 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { MessageCircle, Package, Palette } from 'lucide-vue-next'
+import { computed, onMounted, ref } from 'vue'
+import { Package, Palette } from 'lucide-vue-next'
+import { hybridGallery } from '@/services/hybrid-gallery.service'
+import { useGalleryStore } from '@/stores/gallery'
 import { useProductsStore } from '@/stores/products'
 import ProductCard from '@/components/product/ProductCard.vue'
+import type { Product } from '@/types'
+import type { GalleryItem } from '@/types/gallery.types'
 
+const galleryStore = useGalleryStore()
 const productsStore = useProductsStore()
 
-const loading = computed(() => productsStore.loading)
-const allProducts = computed(() => productsStore.products)
-const totalProducts = computed(() => productsStore.products.length)
+const allProducts = ref<Product[]>([])
+const dataSource = ref<'firebase' | 'mock'>('mock')
+const systemStats = ref<any>(null)
+const loading = ref(true)
+const errorMessage = ref<string | null>(null)
+
+const totalProducts = computed(() => allProducts.value.length)
 
 
 
@@ -98,10 +100,44 @@ const whatsappCustomUrl = computed(() => {
 
 
 
-onMounted(async () => {
-  if (productsStore.products.length === 0) {
-    await productsStore.fetchProducts()
+const mapGalleryItemsToProducts = (items: GalleryItem[]): Product[] =>
+  items.map(item => hybridGallery.convertGalleryItemToProduct(item))
+
+const loadData = async () => {
+  loading.value = true
+  errorMessage.value = null
+
+  try {
+    await galleryStore.fetchPublicItems()
+
+    if (galleryStore.items.length > 0) {
+      allProducts.value = mapGalleryItemsToProducts(galleryStore.items)
+      dataSource.value = 'firebase'
+    } else {
+      await productsStore.fetchProducts()
+
+      if (productsStore.products.length > 0) {
+        allProducts.value = [...productsStore.products]
+        dataSource.value = 'mock'
+      } else {
+        errorMessage.value = 'No encontramos trabajos para mostrar todavía.'
+      }
+    }
+
+    systemStats.value = {
+      source: dataSource.value,
+      totalItems: allProducts.value.length
+    }
+  } catch (err) {
+    console.error('Error cargando datos en Products:', err)
+    errorMessage.value = 'No pudimos cargar la galería. Intentalo nuevamente más tarde.'
+  } finally {
+    loading.value = false
   }
+}
+
+onMounted(() => {
+  loadData()
 })
 </script>
 

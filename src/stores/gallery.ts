@@ -129,7 +129,14 @@ export const useGalleryStore = defineStore('gallery', () => {
       // Update local state
       const index = items.value.findIndex(item => item.id === id);
       if (index !== -1) {
-        items.value[index] = { ...items.value[index], ...data };
+        const existingItem = items.value[index];
+        if (existingItem) {
+          items.value[index] = {
+            ...existingItem,
+            ...data,
+            id: existingItem.id // Ensure id is preserved
+          } as GalleryItem;
+        }
       }
 
       return true;

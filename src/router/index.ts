@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
-import { guestGuard, adminGuard } from '@/middleware/auth.guard'
+// import { guestGuard, adminGuard } from '@/middleware/auth.guard'
 
 const routes: RouteRecordRaw[] = [
     {
@@ -18,6 +18,10 @@ const routes: RouteRecordRaw[] = [
         meta: {
             title: 'Galería - Trabajos de Neón'
         }
+    },
+    {
+        path: '/trabajos',
+        redirect: '/galeria'
     },
     {
         path: '/trabajo/:id',
@@ -40,9 +44,10 @@ const routes: RouteRecordRaw[] = [
         path: '/admin/login',
         name: 'admin-login',
         component: () => import('@/views/admin/AdminLogin.vue'),
-        beforeEnter: guestGuard,
+        // beforeEnter: guestGuard,
         meta: {
-            title: 'Acceso Administrativo - Neon Signs Store'
+            title: 'Acceso Administrativo - Neon Signs Store',
+            hideLayout: true
         }
     },
     {
@@ -57,7 +62,7 @@ const routes: RouteRecordRaw[] = [
         path: '/admin/dashboard',
         name: 'admin-dashboard',
         component: () => import('@/views/admin/AdminDashboard.vue'),
-        beforeEnter: adminGuard,
+        // beforeEnter: adminGuard,
         meta: {
             title: 'Panel de Administración - Neon Signs Store',
             requiresAuth: true,
@@ -68,17 +73,26 @@ const routes: RouteRecordRaw[] = [
         path: '/admin/gallery',
         name: 'admin-gallery',
         component: () => import('@/views/admin/GalleryManager.vue'),
-        beforeEnter: adminGuard,
+        // beforeEnter: adminGuard,
         meta: {
             title: 'Gestión de Galería - Admin',
             requiresAuth: true,
             requiresAdmin: true
         }
     },
-    // 404 - Must be last
+    // Data Manager (for development/admin)
+    {
+        path: '/data-manager',
+        name: 'DataManager',
+        component: () => import('@/views/DataManager.vue'),
+        meta: {
+            title: 'Administrador de Datos'
+        }
+    },
+    // 404 - Not Found (Must be last)
     {
         path: '/:pathMatch(.*)*',
-        name: 'not-found',
+        name: 'NotFound',
         component: () => import('@/views/NotFound.vue'),
         meta: {
             title: 'Página no encontrada'

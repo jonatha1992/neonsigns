@@ -3,8 +3,8 @@ import {
   uploadBytesResumable,
   getDownloadURL,
   deleteObject,
-  UploadTask,
-  UploadTaskSnapshot
+  type UploadTask,
+  type UploadTaskSnapshot
 } from 'firebase/storage';
 import { storage } from '@/config/firebase';
 import type { UploadProgress, UploadResult } from '@/types/gallery.types';
@@ -153,7 +153,7 @@ export class StorageService {
       if (pathOrUrl.includes('firebasestorage.googleapis.com')) {
         const url = new URL(pathOrUrl);
         const pathMatch = url.pathname.match(/\/o\/(.+?)\?/);
-        if (pathMatch) {
+        if (pathMatch && pathMatch[1]) {
           path = decodeURIComponent(pathMatch[1]);
         }
       }
@@ -184,7 +184,7 @@ export class StorageService {
       const urlObj = new URL(url);
       const pathMatch = urlObj.pathname.match(/\/o\/(.+?)\?/);
 
-      if (pathMatch) {
+      if (pathMatch && pathMatch[1]) {
         return decodeURIComponent(pathMatch[1]);
       }
 

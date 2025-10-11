@@ -2,12 +2,12 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  User,
-  AuthError,
   sendPasswordResetEmail,
   updatePassword,
   EmailAuthProvider,
-  reauthenticateWithCredential
+  reauthenticateWithCredential,
+  type User,
+  type AuthError
 } from 'firebase/auth';
 import { auth } from '@/config/firebase';
 
