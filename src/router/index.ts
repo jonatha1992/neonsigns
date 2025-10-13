@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
         name: 'home',
         component: () => import('@/views/Home.vue'),
         meta: {
-            title: 'Inicio - Neon Signs Store'
+            title: 'Inicio - Cruados Neon LeD Store'
         }
     },
     {
@@ -46,7 +46,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/admin/AdminLogin.vue'),
         // beforeEnter: guestGuard,
         meta: {
-            title: 'Acceso Administrativo - Neon Signs Store',
+            title: 'Acceso Administrativo - Cruados Neon Store',
             hideLayout: true
         }
     },
@@ -64,7 +64,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/admin/ProductsManager.vue'),
         // beforeEnter: adminGuard,
         meta: {
-            title: 'Panel de Administración - Neon Signs Store',
+            title: 'Panel de Administración - Cruados Neon Store',
             requiresAuth: true,
             requiresAdmin: true
         }
@@ -95,7 +95,7 @@ const router = createRouter({
 
 // Global navigation guard for page titles
 router.beforeEach((to, _from, next) => {
-    document.title = to.meta.title as string || 'Neon Signs Store'
+    document.title = to.meta.title as string || 'Cruados Neon Store'
     next()
 })
 

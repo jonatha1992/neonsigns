@@ -4,29 +4,30 @@
 
 /* Custom Neon Utilities */
 @layer utilities {
+
   /* Text glow effects */
   .text-neon-glow {
     text-shadow: 0 0 10px currentColor,
-                 0 0 20px currentColor,
-                 0 0 30px currentColor;
+      0 0 20px currentColor,
+      0 0 30px currentColor;
   }
 
   .text-neon-glow-sm {
     text-shadow: 0 0 5px currentColor,
-                 0 0 10px currentColor;
+      0 0 10px currentColor;
   }
 
   .text-neon-glow-lg {
     text-shadow: 0 0 15px currentColor,
-                 0 0 30px currentColor,
-                 0 0 45px currentColor;
+      0 0 30px currentColor,
+      0 0 45px currentColor;
   }
 
   .text-neon-glow-xl {
     text-shadow: 0 0 20px currentColor,
-                 0 0 40px currentColor,
-                 0 0 60px currentColor,
-                 0 0 80px currentColor;
+      0 0 40px currentColor,
+      0 0 60px currentColor,
+      0 0 80px currentColor;
   }
 
   /* Specific color text glows */
@@ -53,36 +54,36 @@
   /* Border glow effects */
   .border-neon-glow {
     box-shadow: 0 0 10px currentColor,
-                inset 0 0 10px currentColor;
+      inset 0 0 10px currentColor;
   }
 
   .border-neon-glow-sm {
     box-shadow: 0 0 5px currentColor,
-                inset 0 0 5px currentColor;
+      inset 0 0 5px currentColor;
   }
 
   .border-neon-glow-lg {
     box-shadow: 0 0 15px currentColor,
-                inset 0 0 15px currentColor;
+      inset 0 0 15px currentColor;
   }
 
   /* Background glow effects */
   .bg-neon-glow {
     box-shadow: 0 0 20px currentColor,
-                0 0 40px currentColor,
-                inset 0 0 20px rgba(255, 255, 255, 0.1);
+      0 0 40px currentColor,
+      inset 0 0 20px rgba(255, 255, 255, 0.1);
   }
 
   .bg-neon-glow-sm {
     box-shadow: 0 0 10px currentColor,
-                0 0 20px currentColor,
-                inset 0 0 10px rgba(255, 255, 255, 0.05);
+      0 0 20px currentColor,
+      inset 0 0 10px rgba(255, 255, 255, 0.05);
   }
 
   .bg-neon-glow-lg {
     box-shadow: 0 0 30px currentColor,
-                0 0 60px currentColor,
-                inset 0 0 30px rgba(255, 255, 255, 0.15);
+      0 0 60px currentColor,
+      inset 0 0 30px rgba(255, 255, 255, 0.15);
   }
 
   /* Gradient text utilities */
@@ -107,34 +108,35 @@
     -webkit-text-fill-color: transparent;
   }
 
-  /* Animation delay utilities */
+  /* Animation delay utilities - Más rápidos */
+  .animate-delay-50 {
+    animation-delay: 50ms;
+  }
+
   .animate-delay-100 {
     animation-delay: 100ms;
+  }
+
+  .animate-delay-150 {
+    animation-delay: 150ms;
   }
 
   .animate-delay-200 {
     animation-delay: 200ms;
   }
 
+  .animate-delay-250 {
+    animation-delay: 250ms;
+  }
+
   .animate-delay-300 {
     animation-delay: 300ms;
-  }
-
-  .animate-delay-400 {
-    animation-delay: 400ms;
-  }
-
-  .animate-delay-500 {
-    animation-delay: 500ms;
-  }
-
-  .animate-delay-600 {
-    animation-delay: 600ms;
   }
 }
 
 /* Component Classes */
 @layer components {
+
   /* Neon Text */
   .neon-text {
     font-family: 'Orbitron', monospace;
@@ -171,7 +173,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     display: inline-block;
     text-align: center;
@@ -237,7 +239,12 @@
     overflow-x: hidden;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Orbitron', monospace;
   }
 

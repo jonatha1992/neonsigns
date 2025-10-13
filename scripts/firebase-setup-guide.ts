@@ -6,7 +6,7 @@
  * Te guía paso a paso para obtener las credenciales correctas.
  */
 
-console.log('🔧 CONFIGURADOR DE FIREBASE - NEON SIGNS LD');
+console.log('🔧 CONFIGURADOR DE FIREBASE - CUADROS NEON LD');
 console.log('============================================\n');
 
 console.log('📋 PASOS PARA CONFIGURAR FIREBASE:\n');

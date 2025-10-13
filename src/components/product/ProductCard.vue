@@ -195,7 +195,7 @@ const whatsappProductUrl = computed(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   filter: brightness(0.9) saturate(0.9);
 }
 
@@ -205,13 +205,13 @@ const whatsappProductUrl = computed(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(10, 10, 10, 0.8);
+  background: rgba($dark-bg, 0.8);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
   backdrop-filter: blur(4px);
 }
 

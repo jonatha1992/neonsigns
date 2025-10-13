@@ -144,7 +144,8 @@ const instagramUrl = 'https://www.instagram.com/neonsignsld/'
 // Cargar datos
 const loadData = async () => {
   try {
-    await productsStore.fetchProducts()
+    // Cargar solo productos destacados primero (más rápido)
+    await productsStore.fetchFeaturedProducts()
     
     featuredProducts.value = productsStore.featuredProducts
     
@@ -241,7 +242,7 @@ onMounted(() => {
   border-radius: 12px;
   background: rgba(26, 26, 26, 0.5);
   border: 1px solid rgba(0, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
 }
 
 .feature-card:hover {

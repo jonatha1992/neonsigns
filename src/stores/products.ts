@@ -63,8 +63,15 @@ export const useProductsStore = defineStore('products', {
         async fetchProducts() {
             this.loading = true
             try {
-                // Intentar cargar desde Firestore
-                this.products = await ProductsService.getAllProducts()
+                // Intentar cargar desde Firestore con timeout
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Timeout')), 3000)
+                )
+
+                this.products = await Promise.race([
+                    ProductsService.getAllProducts(),
+                    timeoutPromise
+                ]) as Product[]
 
                 // Si no hay productos en Firestore, usar mock como fallback
                 if (this.products.length === 0) {
@@ -90,7 +97,15 @@ export const useProductsStore = defineStore('products', {
 
         async fetchFeaturedProducts() {
             try {
-                this.featuredProducts = await ProductsService.getFeaturedProducts(4)
+                // Timeout más corto para productos destacados
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Timeout')), 2000)
+                )
+
+                this.featuredProducts = await Promise.race([
+                    ProductsService.getFeaturedProducts(4),
+                    timeoutPromise
+                ]) as Product[]
 
                 if (this.featuredProducts.length === 0) {
                     // Fallback a productos mock

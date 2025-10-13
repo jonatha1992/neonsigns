@@ -469,7 +469,7 @@ onMounted(() => {
 .fade-in-up {
   opacity: 0;
   transform: translateY(30px) scale(0.95);
-  animation: fadeInUpCard 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fadeInUpCard 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   animation-delay: var(--animation-delay);
 }
 
@@ -484,16 +484,14 @@ onMounted(() => {
   }
 }
 
-/* Clases de delay específicas (0ms a 500ms) */
+/* Clases de delay específicas (0ms a 200ms) - Más rápido */
 .delay-0 { animation-delay: 0ms; }
+.delay-25 { animation-delay: 25ms; }
 .delay-50 { animation-delay: 50ms; }
+.delay-75 { animation-delay: 75ms; }
 .delay-100 { animation-delay: 100ms; }
+.delay-125 { animation-delay: 125ms; }
 .delay-150 { animation-delay: 150ms; }
+.delay-175 { animation-delay: 175ms; }
 .delay-200 { animation-delay: 200ms; }
-.delay-250 { animation-delay: 250ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-350 { animation-delay: 350ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-450 { animation-delay: 450ms; }
-.delay-500 { animation-delay: 500ms; }
 </style>

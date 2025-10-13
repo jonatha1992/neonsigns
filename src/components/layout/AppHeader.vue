@@ -10,9 +10,9 @@
             @click.prevent="handleLogoClick"
           >
             <span class="neon-text pink glitch-effect">
-              <span class="glitch-layer" data-text="NEON">NEON</span>
+              <span class="glitch-layer" data-text="Cuadros">Cuadros</span>
             </span>
-            <span class="text-white">Signs</span>
+            <span class="text-white">NEON</span>
             <span class="text-white">LD</span>
           </RouterLink>
 

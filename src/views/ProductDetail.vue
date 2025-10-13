@@ -180,7 +180,7 @@ onMounted(async () => {
   .breadcrumb-link {
     color: #64ffda;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.15s ease;
 
     &:hover {
       color: #ffffff;
@@ -389,7 +389,7 @@ onMounted(async () => {
   text-decoration: none;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
   white-space: nowrap;
 
   &.btn-primary {

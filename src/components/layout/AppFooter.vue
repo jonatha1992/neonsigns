@@ -5,8 +5,8 @@
         <!-- Company Info -->
         <div class="footer-section">
           <div class="logo">
-            <span class="neon-text pink">NEON</span>
-            <span class="text-white">Signs</span>
+            <span class="neon-text pink">Cuadros</span>
+            <span class="text-white">NEON</span>
             <span class="text-white">LD</span>
             <img src="/logo_neon.png" alt="León Neón" class="logo-icon" />
           </div>
@@ -81,7 +81,7 @@
       <!-- Bottom Bar -->
       <div class="footer-bottom">
         <div class="footer-bottom-content">
-          <p>&copy; 2024 Neon Signs Store. Desarrollado por Tecnofusion.IT.</p>
+          <p>&copy; 2024 Cuadros NEON LD. Desarrollado por Tecnofusion.IT.</p>
           <div class="social-links">
             <a href="#" class="social-link" title="Instagram">
               <Instagram :size="20" />

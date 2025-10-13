@@ -9,7 +9,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-console.log('📊 VERIFICACIÓN DE ESTADO - NEON SIGNS LD');
+console.log('📊 VERIFICACIÓN DE ESTADO - CUADROS NEON LD');
 console.log('==========================================\n');
 
 // Verificar archivos esenciales

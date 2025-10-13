@@ -18,12 +18,31 @@ export default defineConfig({
 
     server: {
         port: 3000,
-        open: true
+        open: true,
+        hmr: {
+            overlay: false
+        },
+        fs: {
+            strict: false
+        }
     },
     build: {
         outDir: 'dist',
         assetsDir: 'assets',
         sourcemap: false,
-        minify: 'terser'
+        minify: 'terser',
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor': ['vue', 'vue-router', 'pinia'],
+                    'firebase': ['firebase/app', 'firebase/firestore', 'firebase/auth', 'firebase/storage'],
+                    'ui': ['lucide-vue-next']
+                }
+            }
+        },
+        chunkSizeWarningLimit: 1000
+    },
+    optimizeDeps: {
+        include: ['vue', 'vue-router', 'pinia', 'firebase/app', 'firebase/firestore', 'firebase/auth', 'firebase/storage', 'lucide-vue-next']
     }
 })
