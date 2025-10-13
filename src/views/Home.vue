@@ -16,7 +16,7 @@
         </div>
         
         <!-- Loading State -->
-        <div v-if="productsStore.loading" class="loading-state">
+        <div v-if="productsStoreLoading" class="loading-state">
           <div class="neon-spinner">
             <div class="spinner-ring ring-1"></div>
             <div class="spinner-ring ring-2"></div>
@@ -80,15 +80,29 @@
       <div class="container">
         <div class="cta-content">
           <h2>¿Te gustó algún trabajo?</h2>
-          <p>Contactanos por WhatsApp y cotiza tu proyecto personalizado en minutos</p>
-          <a 
-            :href="whatsappUrl" 
-            target="_blank" 
-            class="btn btn-primary btn-lg cta-btn"
-          >
-            <MessageCircle :size="24" />
-            Cotizar Ahora
-          </a>
+          <p>Cotiza tu proyecto personalizado por WhatsApp o Instagram</p>
+          <div class="cta-buttons">
+            <a 
+              :href="whatsappUrl" 
+              target="_blank" 
+              class="btn btn-whatsapp btn-lg cta-btn"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              WhatsApp
+            </a>
+            <a 
+              :href="instagramUrl" 
+              target="_blank" 
+              class="btn btn-instagram btn-lg cta-btn"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              Instagram
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -96,16 +110,26 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { MessageCircle, Palette, Zap, Shield } from 'lucide-vue-next'
+import { computed, onMounted, ref } from 'vue'
+import { MessageCircle, Palette, Zap, Shield, Instagram } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import HeroSection from '@/components/common/HeroSection.vue'
 import ProductCard from '@/components/product/ProductCard.vue'
+import type { Product } from '@/types'
 
+// Usar el store de productos
 const productsStore = useProductsStore()
 
-const featuredProducts = computed(() => productsStore.featuredProducts)
+// Estado reactivo
+const featuredProducts = ref<Product[]>([])
+const dataSource = ref<'firebase' | 'mock'>('mock')
+const systemStats = ref<any>(null)
+
+// Productos limitados para mostrar
 const limitedFeaturedProducts = computed(() => featuredProducts.value.slice(0, 4))
+
+// Estado de carga (compatible con template existente)
+const productsStoreLoading = computed(() => productsStore.loading)
 
 // WhatsApp configuration
 const whatsappNumber = '+5491140916764'
@@ -114,34 +138,64 @@ const whatsappUrl = computed(() =>
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 )
 
-onMounted(async () => {
-  if (productsStore.products.length === 0) {
-    await productsStore.fetchProducts()
+// Instagram URL
+const instagramUrl = 'https://www.instagram.com/neonsignsld/'
+
+// Cargar datos
+const loadData = async () => {
+  try {
+    // Cargar solo productos destacados primero (más rápido)
+    await productsStore.fetchFeaturedProducts()
+    
+    featuredProducts.value = productsStore.featuredProducts
+    
+    // Detectar si los datos vienen de Firebase o mock
+    // Si el primer producto tiene un ID que no empieza con 'mock-', viene de Firebase
+    if (featuredProducts.value.length > 0 && !featuredProducts.value[0].id.startsWith('mock-')) {
+      dataSource.value = 'firebase'
+      console.log(`🏠 Home: Cargados ${featuredProducts.value.length} productos destacados desde Firebase`)
+    } else {
+      dataSource.value = 'mock'
+      console.log(`🏠 Home: Cargados ${featuredProducts.value.length} productos destacados desde mock`)
+    }
+    
+    // Stats del sistema
+    systemStats.value = {
+      totalItems: productsStore.products.length,
+      featuredItems: productsStore.featuredProducts.length,
+      source: dataSource.value
+    }
+  } catch (err) {
+    console.error('Error cargando datos en Home:', err)
   }
+}
+
+onMounted(() => {
+  loadData()
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .featured-section {
-  padding: $spacing-2xl 0;
-  background: rgba($darker-bg, 0.5);
+  padding: 3rem 0;
+  background: rgba(5, 5, 5, 0.5);
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: $spacing-2xl;
+  margin-bottom: 3rem;
 }
 
 .section-title {
   font-size: 2.5rem;
   font-weight: 900;
-  margin-bottom: $spacing-md;
-  font-family: $font-neon;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
 }
 
 .section-subtitle {
   font-size: 1.2rem;
-  color: $text-secondary;
+  color: #cccccc;
   max-width: 600px;
   margin: 0 auto;
 }
@@ -149,21 +203,21 @@ onMounted(async () => {
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: $spacing-xl;
-  margin-bottom: $spacing-2xl;
+  gap: 2rem;
+  margin-bottom: 3rem;
   
-  // En desktop, máximo 4 columnas
+  /* En desktop, máximo 4 columnas */
   @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
   }
   
-  // En tablet, máximo 2 columnas
-  @media (min-width: $tablet) and (max-width: 1199px) {
+  /* En tablet, máximo 2 columnas */
+  @media (min-width: 1024px) and (max-width: 1199px) {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  // En móvil, 1 columna
-  @media (max-width: $mobile) {
+  /* En móvil, 1 columna */
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 }
@@ -173,33 +227,33 @@ onMounted(async () => {
 }
 
 .features-section {
-  padding: $spacing-2xl 0;
+  padding: 3rem 0;
 }
 
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: $spacing-2xl;
+  gap: 3rem;
 }
 
 .feature-card {
   text-align: center;
-  padding: $spacing-xl;
-  border-radius: $border-radius-lg;
-  background: rgba($card-bg, 0.5);
-  border: 1px solid rgba($neon-blue, 0.2);
-  transition: all $transition-normal;
-  
-  &:hover {
-    transform: translateY(-10px);
-    background: rgba($card-bg, 0.8);
-    box-shadow: $neon-glow-md rgba($neon-blue, 0.3);
-  }
+  padding: 2rem;
+  border-radius: 12px;
+  background: rgba(26, 26, 26, 0.5);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  transition: all 0.15s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  background: rgba(26, 26, 26, 0.8);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
 .feature-icon {
-  color: $neon-blue;
-  margin-bottom: $spacing-lg;
+  color: #00ffff;
+  margin-bottom: 1.5rem;
   display: flex;
   justify-content: center;
 }
@@ -207,100 +261,143 @@ onMounted(async () => {
 .feature-card h3 {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: $spacing-md;
-  color: $text-primary;
+  margin-bottom: 1rem;
+  color: #ffffff;
 }
 
 .feature-card p {
-  color: $text-secondary;
+  color: #cccccc;
   line-height: 1.6;
 }
 
 .cta-section {
-  padding: $spacing-2xl 0;
-  background: linear-gradient(135deg, rgba($neon-pink, 0.1) 0%, rgba($neon-purple, 0.1) 100%);
+  padding: 3rem 0;
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(128, 0, 255, 0.1) 100%);
   text-align: center;
 }
 
 .cta-content h2 {
   font-size: 2.5rem;
   font-weight: 900;
-  margin-bottom: $spacing-md;
-  font-family: $font-neon;
-  color: $text-primary;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
+  color: #ffffff;
 }
 
 .cta-content p {
   font-size: 1.2rem;
-  color: $text-secondary;
-  margin-bottom: $spacing-xl;
+  color: #cccccc;
+  margin-bottom: 2rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-btn {
+    width: 100%;
+    max-width: 300px;
+  }
 }
 
 .cta-btn {
   font-size: 1.2rem;
-  padding: $spacing-md $spacing-xl;
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: $neon-glow-lg $neon-pink;
-  }
+  padding: 1rem 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-// Loading State Styles
+.cta-btn:hover {
+  transform: translateY(-3px);
+}
+
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: white;
+  border: none;
+}
+
+.btn-whatsapp:hover {
+  background: linear-gradient(135deg, #2edf71, #13a087);
+  box-shadow: 0 0 20px #25D366 !important;
+}
+
+.btn-instagram {
+  background: linear-gradient(135deg, #E4405F, #C13584, #833AB4);
+  color: white;
+  border: none;
+}
+
+.btn-instagram:hover {
+  background: linear-gradient(135deg, #ea4c6d, #d63f92, #9347c4);
+  box-shadow: 0 0 20px #E4405F !important;
+}
+
+/* Loading State Styles */
 .loading-state {
   text-align: center;
-  padding: $spacing-3xl;
+  padding: 4rem;
 }
 
 .neon-spinner {
   position: relative;
   width: 100px;
   height: 100px;
-  margin: 0 auto $spacing-xl;
-  
-  .spinner-ring {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 3px solid transparent;
-    border-radius: 50%;
-    
-    &.ring-1 {
-      border-top-color: $neon-pink;
-      border-right-color: rgba($neon-pink, 0.3);
-      animation: neonSpin 2s linear infinite;
-      box-shadow: 0 0 15px rgba($neon-pink, 0.4);
-    }
-    
-    &.ring-2 {
-      border-right-color: $neon-blue;
-      border-bottom-color: rgba($neon-blue, 0.3);
-      animation: neonSpin 1.5s linear infinite reverse;
-      transform: scale(0.75);
-      box-shadow: 0 0 12px rgba($neon-blue, 0.3);
-    }
-    
-    &.ring-3 {
-      border-bottom-color: $neon-green;
-      border-left-color: rgba($neon-green, 0.3);
-      animation: neonSpin 1s linear infinite;
-      transform: scale(0.5);
-      box-shadow: 0 0 10px rgba($neon-green, 0.3);
-    }
-  }
-  
-  .spinner-core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    color: $neon-yellow;
-    filter: drop-shadow(0 0 10px $neon-yellow);
-    animation: pulse 1.5s ease-in-out infinite;
-  }
+  margin: 0 auto 2rem;
+}
+
+.neon-spinner .spinner-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+}
+
+.neon-spinner .spinner-ring.ring-1 {
+  border-top-color: #ff0080;
+  border-right-color: rgba(255, 0, 128, 0.3);
+  animation: neonSpin 2s linear infinite;
+  box-shadow: 0 0 15px rgba(255, 0, 128, 0.4);
+}
+
+.neon-spinner .spinner-ring.ring-2 {
+  border-right-color: #00ffff;
+  border-bottom-color: rgba(0, 255, 255, 0.3);
+  animation: neonSpin 1.5s linear infinite reverse;
+  transform: scale(0.75);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+}
+
+.neon-spinner .spinner-ring.ring-3 {
+  border-bottom-color: #00ff00;
+  border-left-color: rgba(0, 255, 0, 0.3);
+  animation: neonSpin 1s linear infinite;
+  transform: scale(0.5);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.neon-spinner .spinner-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: #ffff00;
+  filter: drop-shadow(0 0 10px #ffff00);
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 .loading-text {
@@ -309,19 +406,19 @@ onMounted(async () => {
   animation: textGlow 2s ease-in-out infinite;
 }
 
-// Animation classes for cards
+/* Animation classes for cards */
 .fade-in-up {
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.8s ease-out forwards;
-  
-  &.delay-0 { animation-delay: 0ms; }
-  &.delay-100 { animation-delay: 100ms; }
-  &.delay-200 { animation-delay: 200ms; }
-  &.delay-300 { animation-delay: 300ms; }
 }
 
-// Keyframe animations
+.fade-in-up.delay-0 { animation-delay: 0ms; }
+.fade-in-up.delay-100 { animation-delay: 100ms; }
+.fade-in-up.delay-200 { animation-delay: 200ms; }
+.fade-in-up.delay-300 { animation-delay: 300ms; }
+
+/* Keyframe animations */
 @keyframes neonSpin {
   0% { 
     transform: rotate(0deg);

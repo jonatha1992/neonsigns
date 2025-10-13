@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Product, ProductCategory, FilterOptions } from '@/types'
+import { ProductsService } from '@/services/products.service'
 
 interface ProductsState {
     products: Product[]
@@ -62,203 +63,144 @@ export const useProductsStore = defineStore('products', {
         async fetchProducts() {
             this.loading = true
             try {
-                // Simulamos datos hasta que tengas un backend
-                await this.loadMockProducts()
+                // Intentar cargar desde Firestore con timeout
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Timeout')), 3000)
+                )
+
+                this.products = await Promise.race([
+                    ProductsService.getAllProducts(),
+                    timeoutPromise
+                ]) as Product[]
+
+                // Si no hay productos en Firestore, usar mock como fallback
+                if (this.products.length === 0) {
+                    console.warn('[ProductsStore] No products found in Firestore, using mock data')
+                    this.products = this.getMockProducts()
+                }
+
+                this.featuredProducts = this.products.filter(p => p.featured).slice(0, 4)
+
+                const source = this.products.length > 0 && this.products[0] && !this.products[0].id.startsWith('mock-') ? 'Firebase' : 'Mock'
+                console.log(`[ProductsStore] Loaded ${this.products.length} products from ${source}`)
+                console.log(`[ProductsStore] Featured products: ${this.featuredProducts.length}`)
             } catch (error) {
-                console.error('Error fetching products:', error)
+                console.error('[ProductsStore] Error fetching products from Firestore:', error)
+                // En caso de error, usar datos mock como fallback
+                console.warn('[ProductsStore] Falling back to mock data')
+                this.products = this.getMockProducts()
+                this.featuredProducts = this.products.filter(p => p.featured).slice(0, 4)
             } finally {
                 this.loading = false
             }
         },
 
-        async loadMockProducts() {
-            // Datos de ejemplo para la tienda
-            this.products = [
+        async fetchFeaturedProducts() {
+            try {
+                // Timeout más corto para productos destacados
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Timeout')), 2000)
+                )
+
+                this.featuredProducts = await Promise.race([
+                    ProductsService.getFeaturedProducts(4),
+                    timeoutPromise
+                ]) as Product[]
+
+                if (this.featuredProducts.length === 0) {
+                    // Fallback a productos mock
+                    console.warn('[ProductsStore] No featured products in Firebase, using mock')
+                    this.featuredProducts = this.getMockProducts().filter(p => p.featured).slice(0, 4)
+                } else {
+                    console.log(`[ProductsStore] Loaded ${this.featuredProducts.length} featured products from Firebase`)
+                }
+            } catch (error) {
+                console.error('[ProductsStore] Error fetching featured products:', error)
+                this.featuredProducts = this.getMockProducts().filter(p => p.featured).slice(0, 4)
+            }
+        },
+
+        async fetchProductById(id: string): Promise<Product | null> {
+            try {
+                // Primero buscar en el store local
+                const localProduct = this.products.find(p => p.id === id)
+                if (localProduct) {
+                    return localProduct
+                }
+
+                // Si no está en local, buscar en Firestore
+                const product = await ProductsService.getProductById(id)
+
+                if (product) {
+                    // Agregar al store local si no existe
+                    if (!this.products.find(p => p.id === product.id)) {
+                        this.products.push(product)
+                    }
+                    return product
+                }
+
+                // Fallback: buscar en mock
+                const mockProduct = this.getMockProducts().find(p => p.id === id)
+                return mockProduct || null
+            } catch (error) {
+                console.error(`[ProductsStore] Error fetching product ${id}:`, error)
+                // Fallback a mock
+                return this.getMockProducts().find(p => p.id === id) || null
+            }
+        },
+
+        getMockProducts(): Product[] {
+            // Datos mock como fallback
+            return [
                 {
-                    id: '1',
-                    name: 'Hombre Araña - Diseño Personalizado',
-                    description: 'Diseño de Hombre Araña en neón LED con efectos vibrantes. Perfecto para fans y espacios temáticos.',
-                    price: 0,
-                    images: ['/images/hombre araña.jpeg'],
+                    id: 'mock-1',
+                    name: 'Letrero Neon Personalizado',
+                    description: 'Letrero de neón LED personalizable para negocios y eventos especiales.',
+                    price: 15000,
+                    images: ['/images/placeholder-neon.jpg'],
                     category: 'custom',
-                    colors: [
-                        { name: 'Rojo', hex: '#ff0000', glowColor: '#ff6666' },
-                        { name: 'Azul', hex: '#0066ff', glowColor: '#66b3ff' }
-                    ],
-                    sizes: [
-                        { name: 'Pequeño', dimensions: '30x15 cm', price: 0 },
-                        { name: 'Mediano', dimensions: '45x22 cm', price: 0 },
-                        { name: 'Grande', dimensions: '60x30 cm', price: 0 }
-                    ],
-                    customizable: false,
+                    colors: [{ name: 'Multicolor', hex: '#ff0080', glowColor: '#ff0080' }],
+                    sizes: [{ name: 'Mediano', dimensions: '50x30cm', price: 0 }],
+                    customizable: true,
                     featured: true,
                     inStock: true,
                     rating: 4.8,
-                    reviews: 156,
-                    tags: ['negocio', 'clásico', 'popular']
+                    reviews: 45,
+                    tags: ['personalizado', 'neón', 'led']
                 },
                 {
-                    id: '2',
-                    name: 'Pizza - Letrero Comercial',
-                    description: 'Letrero comercial para pizzería con diseño llamativo y colores vibrantes. Ideal para restaurantes.',
-                    price: 0,
-                    images: ['/images/pizza.jpeg'],
+                    id: 'mock-2',
+                    name: 'Cartel Comercial LED',
+                    description: 'Cartel luminoso para negocios con alta visibilidad nocturna.',
+                    price: 12000,
+                    images: ['/images/placeholder-business.jpg'],
                     category: 'business',
-                    colors: [
-                        { name: 'Rosa', hex: '#ff0080', glowColor: '#ff66b3' },
-                        { name: 'Verde', hex: '#00ff00', glowColor: '#66ff66' },
-                        { name: 'Morado', hex: '#8000ff', glowColor: '#b366ff' }
-                    ],
-                    sizes: [
-                        { name: 'Por letra', dimensions: '10cm altura', price: 0 }
-                    ],
-                    customizable: true,
-                    featured: true,
-                    inStock: true,
-                    rating: 4.9,
-                    reviews: 203,
-                    tags: ['personalizado', 'letras', 'nombre']
-                },
-                {
-                    id: '3',
-                    name: 'Cerrajería - Letrero Comercial',
-                    description: 'Letrero profesional para cerrajería con diseño elegante y gran visibilidad nocturna.',
-                    price: 0,
-                    images: ['/images/cerrajeria.jpeg'],
-                    category: 'business',
-                    colors: [
-                        { name: 'Blanco', hex: '#ffffff', glowColor: '#f0f0f0' },
-                        { name: 'Azul', hex: '#0066ff', glowColor: '#66b3ff' },
-                        { name: 'Verde', hex: '#00ff00', glowColor: '#66ff66' }
-                    ],
-                    sizes: [
-                        { name: 'Mediano', dimensions: '50x30 cm', price: 0 },
-                        { name: 'Grande', dimensions: '80x50 cm', price: 0 }
-                    ],
-                    customizable: true,
-                    featured: false,
-                    inStock: true,
-                    rating: 4.7,
-                    reviews: 89,
-                    tags: ['empresa', 'logo', 'corporativo']
-                },
-                {
-                    id: '4',
-                    name: 'Tecno Alfa - Logo Empresarial',
-                    description: 'Logo corporativo moderno con efectos de neón profesionales. Diseño bicolor impactante.',
-                    price: 0,
-                    images: ['/images/tecno alfa.jpeg'],
-                    category: 'business',
-                    colors: [
-                        { name: 'Rosa', hex: '#ff69b4', glowColor: '#ff8dc7' },
-                        { name: 'Púrpura', hex: '#9932cc', glowColor: '#b347d9' },
-                        { name: 'Turquesa', hex: '#40e0d0', glowColor: '#5ce8db' }
-                    ],
-                    sizes: [
-                        { name: 'Pequeño', dimensions: '25x15 cm', price: 0 },
-                        { name: 'Mediano', dimensions: '40x25 cm', price: 0 }
-                    ],
+                    colors: [{ name: 'Azul Neón', hex: '#00ffff', glowColor: '#00ffff' }],
+                    sizes: [{ name: 'Grande', dimensions: '80x40cm', price: 0 }],
                     customizable: true,
                     featured: true,
                     inStock: true,
                     rating: 4.6,
-                    reviews: 124,
-                    tags: ['hogar', 'decorativo', 'personal']
-                },
-                {
-                    id: '5',
-                    name: 'Happy Birthday - Celebración',
-                    description: 'Letrero personalizado para celebraciones especiales con diseño elegante y festivo.',
-                    price: 0,
-                    images: ['/images/harppit bithday.jpeg'],
-                    category: 'custom',
-                    colors: [
-                        { name: 'Naranja', hex: '#ff4500', glowColor: '#ff6a33' },
-                        { name: 'Rojo', hex: '#dc143c', glowColor: '#e3456b' },
-                        { name: 'Amarillo', hex: '#ffd700', glowColor: '#ffdf33' }
-                    ],
-                    sizes: [
-                        { name: 'Grande', dimensions: '70x40 cm', price: 0 },
-                        { name: 'Extra grande', dimensions: '100x60 cm', price: 0 }
-                    ],
-                    customizable: false,
-                    featured: false,
-                    inStock: true,
-                    rating: 4.9,
-                    reviews: 78,
-                    tags: ['bar', 'restaurant', 'comercial']
-                },
-                {
-                    id: '6',
-                    name: 'Nombre Personalizado',
-                    description: 'Letrero personalizado con nombre en estilo elegante y moderno, perfecto para decoración.',
-                    price: 0,
-                    images: ['/images/nombre.jpeg'],
-                    category: 'home',
-                    colors: [
-                        { name: 'Multicolor', hex: '#ff00ff', glowColor: '#ff33ff' },
-                        { name: 'Azul eléctrico', hex: '#00bfff', glowColor: '#33ccff' },
-                        { name: 'Verde limón', hex: '#32cd32', glowColor: '#5ad85a' }
-                    ],
-                    sizes: [
-                        { name: 'Personalizado', dimensions: 'A medida', price: 0 }
-                    ],
-                    customizable: true,
-                    featured: true,
-                    inStock: true,
-                    rating: 5.0,
                     reviews: 32,
-                    tags: ['nombre', 'personalizado', 'hogar']
+                    tags: ['negocio', 'comercial', 'led']
                 },
                 {
-                    id: '7',
-                    name: 'Lavadero El Veci - Comercial',
-                    description: 'Letrero comercial para lavadero con diseño profesional y múltiples colores.',
-                    price: 0,
-                    images: ['/images/lavadero.jpeg'],
-                    category: 'business',
-                    colors: [
-                        { name: 'Blanco', hex: '#ffffff', glowColor: '#f0f0f0' },
-                        { name: 'Verde', hex: '#00ff00', glowColor: '#66ff66' },
-                        { name: 'Amarillo', hex: '#ffff00', glowColor: '#ffff66' }
-                    ],
-                    sizes: [
-                        { name: 'Grande', dimensions: '80x40 cm', price: 0 },
-                        { name: 'Extra grande', dimensions: '120x60 cm', price: 0 }
-                    ],
-                    customizable: false,
-                    featured: true,
-                    inStock: true,
-                    rating: 4.9,
-                    reviews: 67,
-                    tags: ['comercial', 'lavadero', 'negocio']
-                },
-                {
-                    id: '8',
-                    name: 'Pizza - Variante 2',
-                    description: 'Segunda versión del letrero para pizzería con diseño alternativo y efectos únicos.',
-                    price: 0,
-                    images: ['/images/pizza2.jpeg'],
-                    category: 'business',
-                    colors: [
-                        { name: 'Rojo', hex: '#ff0000', glowColor: '#ff6666' },
-                        { name: 'Blanco', hex: '#ffffff', glowColor: '#f0f0f0' },
-                        { name: 'Amarillo', hex: '#ffff00', glowColor: '#ffff66' }
-                    ],
-                    sizes: [
-                        { name: 'Mediano', dimensions: '60x30 cm', price: 0 },
-                        { name: 'Grande', dimensions: '80x40 cm', price: 0 }
-                    ],
-                    customizable: false,
+                    id: 'mock-3',
+                    name: 'Decoración Hogar Neón',
+                    description: 'Elementos decorativos de neón para ambientar espacios del hogar.',
+                    price: 8000,
+                    images: ['/images/placeholder-home.jpg'],
+                    category: 'home',
+                    colors: [{ name: 'Rosa Neón', hex: '#ff0080', glowColor: '#ff0080' }],
+                    sizes: [{ name: 'Pequeño', dimensions: '30x20cm', price: 0 }],
+                    customizable: true,
                     featured: false,
                     inStock: true,
-                    rating: 4.8,
-                    reviews: 43,
-                    tags: ['pizza', 'comercial', 'restaurante']
+                    rating: 4.7,
+                    reviews: 28,
+                    tags: ['hogar', 'decorativo', 'ambiente']
                 }
             ]
-
-            this.featuredProducts = this.products.filter(p => p.featured)
         },
 
         setFilters(filters: FilterOptions) {

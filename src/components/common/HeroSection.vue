@@ -42,7 +42,7 @@
               class="btn btn-primary btn-lg"
             >
               <MessageCircle :size="20" />
-              Cotizar por WhatsApp
+              Consultar
             </a>
             
             <RouterLink to="/galeria" class="btn btn-neon btn-lg">
@@ -55,10 +55,12 @@
         <div class="hero-visual">
           <div class="neon-showcase">
             <div class="neon-sign logo-sign">
-              <img src="/logo_neon.png" alt="NEONSigns LD Logo" class="neon-logo-large" />
+              <img src="/logo_neon.png" alt="Cuadros NEON LD Logo" class="neon-logo-large" />
             </div>
             <div class="neon-sign main-sign">
-              <span class="neon-text blue">OPEN</span>
+              <span class="neon-text blue glitch-open">
+                <span class="glitch-layer" data-text="OPEN">OPEN</span>
+              </span>
             </div>
             <div class="neon-sign secondary-sign">
               <span class="neon-text green">24/7</span>
@@ -90,7 +92,7 @@ const whatsappUrl = computed(() =>
 )
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .hero {
   position: relative;
   min-height: 100vh;
@@ -106,9 +108,9 @@ const whatsappUrl = computed(() =>
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 50%, rgba($neon-pink, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 20% 80%, rgba($neon-blue, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba($neon-purple, 0.1) 0%, transparent 50%);
+  background: radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(128, 0, 255, 0.1) 0%, transparent 50%);
 }
 
 .neon-grid {
@@ -117,9 +119,9 @@ const whatsappUrl = computed(() =>
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
-    linear-gradient(rgba($neon-pink, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba($neon-pink, 0.1) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(255, 0, 128, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 128, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
   animation: grid-move 20s linear infinite;
 }
@@ -127,15 +129,17 @@ const whatsappUrl = computed(() =>
 .hero-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: $spacing-2xl;
+  gap: 3rem;
   align-items: center;
   position: relative;
   z-index: 2;
-  
-  @media (max-width: $tablet) {
+}
+
+@media (max-width: 1024px) {
+  .hero-content {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: $spacing-xl;
+    gap: 2rem;
   }
 }
 
@@ -143,102 +147,117 @@ const whatsappUrl = computed(() =>
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 900;
   line-height: 1.1;
-  margin-bottom: $spacing-md;
-  font-family: $font-neon;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
   position: relative;
-  
-  .title-line {
-    display: inline-flex;
-    align-items: center;
-    gap: clamp(10px, 2vw, 24px);
-    white-space: nowrap; // mantener NEÓN y el logo en la misma línea
-  }
-  
-  .hero-logo-inline {
-    width: clamp(80px, 10vw, 140px);
-    height: clamp(80px, 10vw, 140px);
-    object-fit: contain;
-    filter: brightness(1.25) saturate(1.4) drop-shadow(0 0 14px rgba(255, 20, 147, 0.85));
-    animation: hero-neon-float 3s ease-in-out infinite;
-    vertical-align: middle;
-    margin-left: clamp(10px, 2vw, 28px); // empujar más a la derecha
+}
 
-    @media (max-width: $mobile) {
-      width: 60px;
-      height: 60px;
-      margin-left: 8px;
-    }
+.hero-title .title-line {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(10px, 2vw, 24px);
+  white-space: nowrap;
+}
+
+.hero-title .hero-logo-inline {
+  width: clamp(80px, 10vw, 140px);
+  height: clamp(80px, 10vw, 140px);
+  object-fit: contain;
+  filter: brightness(1.25) saturate(1.4) drop-shadow(0 0 14px rgba(255, 20, 147, 0.85));
+  animation: hero-neon-float 3s ease-in-out infinite;
+  vertical-align: middle;
+  margin-left: clamp(10px, 2vw, 28px);
+}
+
+@media (max-width: 768px) {
+  .hero-title .hero-logo-inline {
+    width: 60px;
+    height: 60px;
+    margin-left: 8px;
   }
-  
-  span {
-    display: block;
-    
-    &:first-child,
-    &:last-child {
-      font-size: 0.7em;
-      font-weight: 600;
-      color: $text-secondary;
-    }
-  }
+}
+
+.hero-title span {
+  display: block;
+}
+
+.hero-title span:first-child,
+.hero-title span:last-child {
+  font-size: 0.7em;
+  font-weight: 600;
+  color: #cccccc;
 }
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: $text-secondary;
-  margin-bottom: $spacing-xl;
+  color: #cccccc;
+  margin-bottom: 2rem;
   line-height: 1.6;
-  
-  strong {
-    color: $neon-pink;
-    font-weight: 600;
-  }
+}
+
+.hero-subtitle strong {
+  color: #ff0080;
+  font-weight: 600;
 }
 
 .hero-features {
   display: flex;
-  gap: $spacing-lg;
-  margin-bottom: $spacing-xl;
-  
-  @media (max-width: $mobile) {
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .hero-features {
     flex-direction: column;
-    gap: $spacing-sm;
+    gap: 0.25rem;
   }
 }
 
 .feature {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  color: $text-secondary;
-  
-  &-icon {
-    color: $neon-blue;
-  }
+  gap: 0.25rem;
+  color: #cccccc;
+}
+
+.feature-icon {
+  color: #00ffff;
 }
 
 .hero-actions {
   display: flex;
-  gap: $spacing-md;
-  
-  @media (max-width: $mobile) {
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .hero-actions {
     flex-direction: column;
   }
 }
 
 .btn-lg {
-  padding: $spacing-lg $spacing-2xl;
-  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 0.5rem;
   justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .btn-lg {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.05rem;
+  }
 }
 
 .hero-visual {
   position: relative;
   height: 400px;
-  
-  @media (max-width: $tablet) {
+}
+
+@media (max-width: 1024px) {
+  .hero-visual {
     height: 300px;
   }
 }
@@ -254,137 +273,325 @@ const whatsappUrl = computed(() =>
 
 .neon-sign {
   position: absolute;
-  padding: $spacing-lg $spacing-2xl;
+  padding: 1.5rem 3rem;
   border: 3px solid;
-  border-radius: $border-radius-lg;
+  border-radius: 12px;
   background: transparent;
   backdrop-filter: none;
+}
 
-  &.main-sign {
-    font-size: 3.5rem;
-    top: -8%;
-    right: 5%;
-    z-index: 3;
-    animation: float 3s ease-in-out infinite;
-    padding: $spacing-xl $spacing-3xl;
+.neon-sign.main-sign {
+  font-size: 3.5rem;
+  top: -8%;
+  right: 5%;
+  z-index: 3;
+  animation: float 3s ease-in-out infinite;
+  padding: 2rem 5rem;
+}
 
-    @media (max-width: $tablet) {
-      font-size: 2.5rem;
-      top: -6%;
-      right: 3%;
-      padding: $spacing-lg $spacing-xl;
-    }
+/* Glitch Effect for OPEN */
+.glitch-open {
+  position: relative;
+  display: inline-block;
+  animation: intense-flicker-open 6s infinite;
+}
 
-    @media (max-width: $mobile) {
-      font-size: 1.8rem;
-      padding: $spacing-md $spacing-lg;
-      top: -2%;
-      right: 2%;
-    }
+.glitch-layer {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-layer::before,
+.glitch-layer::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.glitch-layer::before {
+  color: #ff00ff;
+  animation: glitch-open-1 6s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  text-shadow: 
+    -3px 0 #ff00ff,
+    0 0 10px #ff00ff,
+    0 0 20px #ff00ff,
+    0 0 30px #ff00ff;
+}
+
+.glitch-layer::after {
+  color: #ffff00;
+  animation: glitch-open-2 6s infinite;
+  clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+  text-shadow: 
+    3px 0 #ffff00,
+    0 0 10px #ffff00,
+    0 0 20px #ffff00,
+    0 0 30px #ffff00;
+}
+
+@keyframes glitch-open-1 {
+  0%, 88%, 100% {
+    opacity: 0;
+    transform: translate(0, 0);
   }
-
-  &.secondary-sign {
-    font-size: 1.5rem;
-    top: 8%;
-    left: 8%;
-    z-index: 2;
-    animation: float 3s ease-in-out infinite 1s;
-    padding: $spacing-md $spacing-lg;
-
-    @media (max-width: $tablet) {
-      font-size: 1.2rem;
-      top: 6%;
-      left: 5%;
-      padding: $spacing-sm $spacing-md;
-    }
-
-    @media (max-width: $mobile) {
-      font-size: 0.9rem;
-      padding: $spacing-xs $spacing-sm;
-      top: 4%;
-      left: 3%;
-    }
+  89% {
+    opacity: 0.9;
+    transform: translate(-6px, -4px);
   }
-
-  &.tertiary-sign {
-    font-size: 2.2rem;
-    bottom: 15%;
-    left: 10%;
-    z-index: 1;
-    animation: float 3s ease-in-out infinite 2s;
-    padding: $spacing-lg $spacing-xl;
-
-    @media (max-width: $tablet) {
-      font-size: 1.8rem;
-      bottom: 12%;
-      left: 5%;
-      padding: $spacing-md $spacing-lg;
-    }
-
-    @media (max-width: $mobile) {
-      font-size: 1.3rem;
-      padding: $spacing-sm $spacing-md;
-      bottom: 8%;
-      left: 3%;
-    }
+  90% {
+    opacity: 0;
+    transform: translate(4px, 3px);
   }
+  91% {
+    opacity: 1;
+    transform: translate(-5px, 3px);
+  }
+  92% {
+    opacity: 0;
+    transform: translate(3px, -3px);
+  }
+  93% {
+    opacity: 0.8;
+    transform: translate(-4px, 2px);
+  }
+  94% {
+    opacity: 0;
+    transform: translate(2px, -2px);
+  }
+  95% {
+    opacity: 0.7;
+    transform: translate(-3px, 3px);
+  }
+}
 
-  &.logo-sign {
+@keyframes glitch-open-2 {
+  0%, 88%, 100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  89% {
+    opacity: 0.8;
+    transform: translate(5px, 4px);
+  }
+  90% {
+    opacity: 0;
+    transform: translate(-4px, -3px);
+  }
+  91% {
+    opacity: 0.9;
+    transform: translate(6px, -3px);
+  }
+  92% {
+    opacity: 0;
+    transform: translate(-3px, 4px);
+  }
+  93% {
+    opacity: 0.7;
+    transform: translate(5px, -2px);
+  }
+  94% {
+    opacity: 0;
+    transform: translate(-2px, 3px);
+  }
+  95% {
+    opacity: 0.6;
+    transform: translate(4px, -3px);
+  }
+}
+
+@keyframes intense-flicker-open {
+  0%, 87%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  /* Inicio del cortocircuito - parpadeo lento */
+  88% {
+    opacity: 0.4;
+    filter: brightness(1.3);
+  }
+  89% {
+    opacity: 0.1;
+    filter: brightness(2);
+  }
+  90% {
+    opacity: 0.6;
+    filter: brightness(0.7);
+  }
+  91% {
+    opacity: 0.2;
+    filter: brightness(2.5);
+  }
+  92% {
+    opacity: 0.05;
+    filter: brightness(3);
+  }
+  /* Parpadeo más intenso */
+  93% {
+    opacity: 0.5;
+    filter: brightness(1.5);
+  }
+  94% {
+    opacity: 0.1;
+    filter: brightness(2.8);
+  }
+  /* Recuperación gradual */
+  95% {
+    opacity: 0.7;
+    filter: brightness(1.8);
+  }
+  96% {
+    opacity: 0.9;
+    filter: brightness(1.3);
+  }
+  97% {
+    opacity: 1;
+    filter: brightness(1.1);
+  }
+  98% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@media (max-width: 1024px) {
+  .neon-sign.main-sign {
+    font-size: 2.5rem;
+    top: -6%;
+    right: 3%;
+    padding: 1.5rem 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .neon-sign.main-sign {
+    font-size: 1.8rem;
+    padding: 1rem 1.5rem;
+    top: -2%;
+    right: 2%;
+  }
+}
+
+.neon-sign.secondary-sign {
+  font-size: 1.5rem;
+  top: 8%;
+  left: 8%;
+  z-index: 2;
+  animation: float 3s ease-in-out infinite 1s;
+  padding: 1rem 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .neon-sign.secondary-sign {
+    font-size: 1.2rem;
+    top: 6%;
+    left: 5%;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .neon-sign.secondary-sign {
+    font-size: 0.9rem;
+    padding: 0.125rem 0.25rem;
+    top: 4%;
+    left: 3%;
+  }
+}
+
+.neon-sign.tertiary-sign {
+  font-size: 2.2rem;
+  bottom: 15%;
+  left: 10%;
+  z-index: 1;
+  animation: float 3s ease-in-out infinite 2s;
+  padding: 1.5rem 2rem;
+}
+
+@media (max-width: 1024px) {
+  .neon-sign.tertiary-sign {
+    font-size: 1.8rem;
+    bottom: 12%;
+    left: 5%;
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .neon-sign.tertiary-sign {
+    font-size: 1.3rem;
+    padding: 0.5rem 1rem;
+    bottom: 8%;
+    left: 3%;
+  }
+}
+
+.neon-sign.logo-sign {
+  top: 65%;
+  right: 15%;
+  transform: translateY(-50%);
+  z-index: 4;
+  animation: logo-float-right 3s ease-in-out infinite;
+  padding: 0;
+  border: none;
+  background: transparent;
+  animation-fill-mode: both;
+}
+
+@media (max-width: 1024px) {
+  .neon-sign.logo-sign {
+    right: 10%;
     top: 65%;
-    right: 15%;
-    transform: translateY(-50%);
-    z-index: 4;
-    animation: logo-float-right 3s ease-in-out infinite;
-    padding: 0;
-    border: none;
-    background: transparent;
-    animation-fill-mode: both;
+  }
+}
 
-    @media (max-width: $tablet) {
-      right: 10%;
-      top: 65%;
-    }
+@media (max-width: 768px) {
+  .neon-sign.logo-sign {
+    right: 5%;
+    top: 65%;
+  }
+}
 
-    @media (max-width: $mobile) {
-      right: 5%;
-      top: 65%;
-    }
+.neon-sign.logo-sign .neon-logo-large {
+  width: 280px;
+  height: 280px;
+  object-fit: contain;
+  filter: brightness(1.5) saturate(1.6) drop-shadow(0 0 30px rgba(255, 20, 147, 1))
+          drop-shadow(0 0 60px rgba(255, 20, 147, 0.8))
+          drop-shadow(0 0 100px rgba(255, 20, 147, 0.4));
+  animation: logo-pulse-enhanced 2.5s ease-in-out infinite;
+}
 
-    .neon-logo-large {
-      width: 280px;
-      height: 280px;
-      object-fit: contain;
-      filter: brightness(1.5) saturate(1.6) drop-shadow(0 0 30px rgba(255, 20, 147, 1))
-              drop-shadow(0 0 60px rgba(255, 20, 147, 0.8))
-              drop-shadow(0 0 100px rgba(255, 20, 147, 0.4));
-      animation: logo-pulse-enhanced 2.5s ease-in-out infinite;
+@media (max-width: 1024px) {
+  .neon-sign.logo-sign .neon-logo-large {
+    width: 220px;
+    height: 220px;
+  }
+}
 
-      @media (max-width: $tablet) {
-        width: 220px;
-        height: 220px;
-      }
-
-      @media (max-width: $mobile) {
-        width: 160px;
-        height: 160px;
-      }
-    }
+@media (max-width: 768px) {
+  .neon-sign.logo-sign .neon-logo-large {
+    width: 160px;
+    height: 160px;
   }
 }
 
 .scroll-indicator {
   position: absolute;
-  bottom: $spacing-xl;
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  color: $text-muted;
-  
-  .bounce {
-    animation: bounce 2s infinite;
-  }
+  color: #888888;
 }
 
-// Animations
+.scroll-indicator .bounce {
+  animation: bounce 2s infinite;
+}
+
 @keyframes grid-move {
   0% { transform: translate(0, 0); }
   100% { transform: translate(50px, 50px); }

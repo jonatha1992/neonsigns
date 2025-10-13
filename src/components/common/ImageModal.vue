@@ -121,7 +121,7 @@ watch(() => props.isOpen, (isOpen) => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -151,8 +151,10 @@ watch(() => props.isOpen, (isOpen) => {
     inset 0 1px 0 rgba(255, 0, 128, 0.1);
   overflow: hidden;
   animation: modalScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  @media (min-width: 768px) {
+}
+
+@media (min-width: 768px) {
+  .modal-container {
     max-width: 1000px;
     width: auto;
   }
@@ -175,21 +177,23 @@ watch(() => props.isOpen, (isOpen) => {
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
-  
-  &:hover {
-    background: rgba(255, 0, 128, 0.2);
-    border-color: #ff0080;
-    color: #ff0080;
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(255, 0, 128, 0.4);
-  }
+}
+
+.modal-close:hover {
+  background: rgba(255, 0, 128, 0.2);
+  border-color: #ff0080;
+  color: #ff0080;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 0, 128, 0.4);
 }
 
 .modal-content {
   display: grid;
   grid-template-columns: 1fr;
-  
-  @media (min-width: 768px) {
+}
+
+@media (min-width: 768px) {
+  .modal-content {
     grid-template-columns: 2fr 1fr;
     min-height: 500px;
   }
@@ -202,8 +206,10 @@ watch(() => props.isOpen, (isOpen) => {
   align-items: center;
   justify-content: center;
   min-height: 300px;
-  
-  @media (min-width: 768px) {
+}
+
+@media (min-width: 768px) {
+  .modal-image-container {
     min-height: 500px;
   }
 }
@@ -214,8 +220,10 @@ watch(() => props.isOpen, (isOpen) => {
   object-fit: cover;
   object-position: center;
   transition: opacity 0.3s ease;
-  
-  @media (min-width: 768px) {
+}
+
+@media (min-width: 768px) {
+  .modal-image {
     object-fit: contain;
     max-height: 500px;
   }
@@ -232,47 +240,47 @@ watch(() => props.isOpen, (isOpen) => {
   position: relative;
   width: 60px;
   height: 60px;
-  
-  .spinner-ring {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 2px solid transparent;
-    border-radius: 50%;
-    
-    &:nth-child(1) {
-      border-top-color: #ff0080;
-      animation: spin 1.5s linear infinite;
-      box-shadow: 0 0 10px rgba(255, 0, 128, 0.5);
-    }
-    
-    &:nth-child(2) {
-      border-right-color: #00ffff;
-      animation: spin 1s linear infinite reverse;
-      transform: scale(0.8);
-      box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
-    }
-    
-    &:nth-child(3) {
-      border-bottom-color: #00ff00;
-      animation: spin 0.8s linear infinite;
-      transform: scale(0.6);
-      box-shadow: 0 0 6px rgba(0, 255, 0, 0.3);
-    }
-  }
-  
-  .spinner-core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.5rem;
-    color: #ffff00;
-    filter: drop-shadow(0 0 8px #ffff00);
-    animation: pulse 1.2s ease-in-out infinite;
-  }
+}
+
+.neon-spinner .spinner-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+
+.neon-spinner .spinner-ring:nth-child(1) {
+  border-top-color: #ff0080;
+  animation: spin 1.5s linear infinite;
+  box-shadow: 0 0 10px rgba(255, 0, 128, 0.5);
+}
+
+.neon-spinner .spinner-ring:nth-child(2) {
+  border-right-color: #00ffff;
+  animation: spin 1s linear infinite reverse;
+  transform: scale(0.8);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+.neon-spinner .spinner-ring:nth-child(3) {
+  border-bottom-color: #00ff00;
+  animation: spin 0.8s linear infinite;
+  transform: scale(0.6);
+  box-shadow: 0 0 6px rgba(0, 255, 0, 0.3);
+}
+
+.neon-spinner .spinner-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  color: #ffff00;
+  filter: drop-shadow(0 0 8px #ffff00);
+  animation: pulse 1.2s ease-in-out infinite;
 }
 
 .modal-info {
@@ -302,8 +310,10 @@ watch(() => props.isOpen, (isOpen) => {
   color: #ffffff;
   line-height: 1.2;
   margin: 0;
-  
-  @media (max-width: 640px) {
+}
+
+@media (max-width: 640px) {
+  .modal-title {
     font-size: 1.5rem;
   }
 }
@@ -318,28 +328,28 @@ watch(() => props.isOpen, (isOpen) => {
   display: flex;
   gap: 1rem;
   margin-top: auto;
-  
-  .btn {
-    justify-content: center;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 1.1rem;
-    padding: 1rem 2rem;
-    
-    &:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 8px 25px rgba(255, 0, 128, 0.4);
-    }
-  }
-  
-  .btn-full-width {
-    width: 100%;
-  }
 }
 
-// Transiciones del modal
+.modal-actions .btn {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.1rem;
+  padding: 1rem 2rem;
+}
+
+.modal-actions .btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(255, 0, 128, 0.4);
+}
+
+.modal-actions .btn-full-width {
+  width: 100%;
+}
+
+/* Transiciones del modal */
 .modal-enter-active,
 .modal-leave-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

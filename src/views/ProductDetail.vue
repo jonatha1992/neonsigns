@@ -6,8 +6,8 @@
         Inicio
       </router-link>
       <ChevronRight :size="16" />
-      <router-link to="/products" class="breadcrumb-link">
-        Trabajos
+      <router-link to="/galeria" class="breadcrumb-link">
+        Galería
       </router-link>
       <ChevronRight :size="16" />
       <span v-if="product">{{ product.name }}</span>
@@ -27,8 +27,8 @@
       <div class="not-found-content">
         <h2>Trabajo no encontrado</h2>
         <p>El trabajo que buscas no existe.</p>
-        <router-link to="/products" class="btn btn-primary">
-          Ver todos los trabajos
+        <router-link to="/galeria" class="btn btn-primary">
+          Ver toda la galería
         </router-link>
       </div>
     </div>
@@ -57,18 +57,6 @@
           <div class="product-badge">{{ categoryName }}</div>
           
           <h1 class="product-title">{{ product.name }}</h1>
-          
-          <div class="product-rating">
-            <div class="stars">
-              <Star 
-                v-for="star in 5" 
-                :key="star"
-                :size="20"
-                :class="{ filled: star <= Math.floor(product.rating) }"
-              />
-            </div>
-            <span class="rating-text">{{ product.rating }} ({{ product.reviews }} reseñas)</span>
-          </div>
         </div>
 
         <div class="product-description-section">
@@ -117,7 +105,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { 
-  ChevronRight, Star, MessageCircle, 
+  ChevronRight, MessageCircle, 
   Shield, Truck, Wrench, Palette 
 } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
@@ -126,15 +114,11 @@ const route = useRoute()
 const productsStore = useProductsStore()
 
 const loading = ref(true)
-
-const product = computed(() => {
-  const id = route.params.id as string
-  return productsStore.products.find(p => p.id === id)
-})
+const product = ref(null)
+const dataSource = ref<'firebase' | 'mock' | null>(null)
 
 const categoryName = computed(() => {
   if (!product.value) return ''
-  
   const categoryNames: Record<string, string> = {
     business: 'Comercial',
     custom: 'Personalizado', 
@@ -143,27 +127,42 @@ const categoryName = computed(() => {
     signs: 'Señales',
     letters: 'Letras'
   }
-  
   return categoryNames[product.value.category] || 'Otros'
 })
 
 const whatsappUrlQuote = computed(() => {
   if (!product.value) return ''
-  
   const whatsappNumber = '5491140916764'
   const message = `Hola! Vi su trabajo "${product.value.name}" en la galería y me gustaría algo similar. ¿Podrían ayudarme con un diseño parecido? 🌟`
-  
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
-onMounted(() => {
-  setTimeout(() => {
+onMounted(async () => {
+  loading.value = true
+  const id = route.params.id as string
+  try {
+    // First fetch products if not loaded
+    if (productsStore.products.length === 0) {
+      await productsStore.fetchProducts()
+    }
+    
+    // Find product by id
+    const foundProduct = productsStore.getProductById(id)
+    if (foundProduct) {
+      product.value = foundProduct
+      dataSource.value = 'mock'
+    } else {
+      product.value = null
+    }
+  } catch (e) {
+    product.value = null
+  } finally {
     loading.value = false
-  }, 1000)
+  }
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .product-detail {
   min-height: 100vh;
   padding: 2rem 0;
@@ -181,7 +180,7 @@ onMounted(() => {
   .breadcrumb-link {
     color: #64ffda;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.15s ease;
 
     &:hover {
       color: #ffffff;
@@ -358,32 +357,6 @@ onMounted(() => {
       margin-bottom: 1rem;
       line-height: 1.2;
     }
-
-    .product-rating {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-
-      .stars {
-        display: flex;
-        gap: 0.25rem;
-
-        svg {
-          color: #555;
-          transition: color 0.3s ease;
-
-          &.filled {
-            color: #ffff00;
-            filter: drop-shadow(0 0 8px #ffff00);
-          }
-        }
-      }
-
-      .rating-text {
-        color: #8892b0;
-        font-size: 0.9rem;
-      }
-    }
   }
 
   .product-description-section {
@@ -416,7 +389,7 @@ onMounted(() => {
   text-decoration: none;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
   white-space: nowrap;
 
   &.btn-primary {

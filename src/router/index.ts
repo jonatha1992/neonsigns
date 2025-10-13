@@ -1,26 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+// import { guestGuard, adminGuard } from '@/middleware/auth.guard'
 
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
-        name: 'Home',
+        name: 'home',
         component: () => import('@/views/Home.vue'),
         meta: {
-            title: 'Inicio - Neon Signs Store'
+            title: 'Inicio - Cruados Neon LeD Store'
         }
     },
     {
         path: '/galeria',
-        name: 'Gallery',
+        name: 'gallery',
         component: () => import('@/views/Products.vue'),
         meta: {
             title: 'Galería - Trabajos de Neón'
         }
     },
     {
+        path: '/trabajos',
+        redirect: '/galeria'
+    },
+    {
         path: '/trabajo/:id',
-        name: 'WorkDetail',
+        name: 'work-detail',
         component: () => import('@/views/ProductDetail.vue'),
         meta: {
             title: 'Detalle del Trabajo'
@@ -28,12 +33,44 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/contacto',
-        name: 'Contact',
+        name: 'contact',
         component: () => import('@/views/Contact.vue'),
         meta: {
             title: 'Contacto - Neon Signs Store'
         }
     },
+    // Admin routes
+    {
+        path: '/admin/login',
+        name: 'admin-login',
+        component: () => import('@/views/admin/AdminLogin.vue'),
+        // beforeEnter: guestGuard,
+        meta: {
+            title: 'Acceso Administrativo - Cruados Neon Store',
+            hideLayout: true
+        }
+    },
+    {
+        path: '/admin',
+        redirect: '/admin/dashboard',
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true
+        }
+    },
+    {
+        path: '/admin/dashboard',
+        name: 'admin-dashboard',
+        component: () => import('@/views/admin/ProductsManager.vue'),
+        // beforeEnter: adminGuard,
+        meta: {
+            title: 'Panel de Administración - Cruados Neon Store',
+            requiresAuth: true,
+            requiresAdmin: true
+        }
+    },
+
+    // 404 - Not Found (Must be last)
     {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
@@ -58,7 +95,7 @@ const router = createRouter({
 
 // Global navigation guard for page titles
 router.beforeEach((to, _from, next) => {
-    document.title = to.meta.title as string || 'Neon Signs Store'
+    document.title = to.meta.title as string || 'Cruados Neon Store'
     next()
 })
 

@@ -6,24 +6,11 @@
         <h1 class="page-title">
           <span class="neon-text pink">Galería</span> de Trabajos
         </h1>
-        <p class="page-subtitle">
-          Explora nuestros trabajos realizados y diseños únicos de carteles de neón
-        </p>
       </div>
       
 
       
-      <!-- Gallery Info -->
-      <div class="results-info">
-        <p>{{ totalProducts }} trabajos realizados</p>
-        
-        <div class="whatsapp-cta">
-          <a :href="whatsappUrl" target="_blank" class="btn btn-neon">
-            <MessageCircle :size="18" />
-            Solicitar Cotización
-          </a>
-        </div>
-      </div>
+ 
       
       <!-- Products Grid -->
       <div v-if="loading" class="loading-state">
@@ -41,6 +28,12 @@
         </div>
       </div>
       
+      <div v-else-if="errorMessage" class="empty-state">
+        <Package :size="64" class="empty-icon" />
+        <h3>Galería temporalmente vacía</h3>
+        <p>{{ errorMessage }}</p>
+      </div>
+
       <div v-else-if="allProducts.length === 0" class="empty-state">
         <Package :size="64" class="empty-icon" />
         <h3>Cargando trabajos...</h3>
@@ -70,16 +63,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { MessageCircle, Package, Palette } from 'lucide-vue-next'
+import { computed, onMounted, ref } from 'vue'
+import { Package, Palette } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import ProductCard from '@/components/product/ProductCard.vue'
+import type { Product } from '@/types'
 
 const productsStore = useProductsStore()
 
-const loading = computed(() => productsStore.loading)
-const allProducts = computed(() => productsStore.products)
-const totalProducts = computed(() => productsStore.products.length)
+const allProducts = ref<Product[]>([])
+const dataSource = ref<'firebase' | 'mock'>('mock')
+const systemStats = ref<any>(null)
+const loading = ref(true)
+const errorMessage = ref<string | null>(null)
+
+const totalProducts = computed(() => allProducts.value.length)
 
 
 
@@ -98,307 +96,329 @@ const whatsappCustomUrl = computed(() => {
 
 
 
-onMounted(async () => {
-  if (productsStore.products.length === 0) {
+const loadData = async () => {
+  loading.value = true
+  errorMessage.value = null
+
+  try {
     await productsStore.fetchProducts()
+
+    if (productsStore.products.length > 0) {
+      allProducts.value = [...productsStore.products]
+      dataSource.value = 'mock'
+    } else {
+      errorMessage.value = 'No encontramos trabajos para mostrar todavía.'
+    }
+
+    systemStats.value = {
+      source: dataSource.value,
+      totalItems: allProducts.value.length
+    }
+  } catch (err) {
+    console.error('Error cargando datos en Products:', err)
+    errorMessage.value = 'No pudimos cargar la galería. Intentalo nuevamente más tarde.'
+  } finally {
+    loading.value = false
   }
+}
+
+onMounted(() => {
+  loadData()
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .products-page {
-  padding: $spacing-xl 0;
+  padding: 2rem 0;
   min-height: calc(100vh - 160px);
 }
 
 .page-header {
   text-align: center;
-  margin-bottom: $spacing-3xl;
+  margin-bottom: 4rem;
 }
 
 .page-title {
   font-size: 3rem;
   font-weight: 900;
-  margin-bottom: $spacing-md;
-  font-family: $font-neon;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
 }
 
 .page-subtitle {
   font-size: 1.3rem;
-  color: $text-secondary;
+  color: #cccccc;
   max-width: 600px;
   margin: 0 auto;
 }
 
 .filters-section {
-  background: rgba($card-bg, 0.5);
-  border: 1px solid rgba($neon-blue, 0.2);
-  border-radius: $border-radius-lg;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-xl;
+  background: rgba(26, 26, 26, 0.5);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .filters-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: $spacing-lg;
-  
-  h3 {
-    color: $text-primary;
-    font-weight: 600;
-    margin: 0;
-  }
+  margin-bottom: 1.5rem;
+}
+
+.filters-header h3 {
+  color: #ffffff;
+  font-weight: 600;
+  margin: 0;
 }
 
 .clear-filters {
   background: transparent;
-  border: 1px solid rgba($text-muted, 0.4);
-  color: $text-muted;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $border-radius-sm;
+  border: 1px solid rgba(136, 136, 136, 0.4);
+  color: #888888;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: $spacing-xs;
+  gap: 0.125rem;
   font-size: 0.9rem;
-  transition: all $transition-normal;
-  
-  &:hover {
-    color: $text-primary;
-    border-color: rgba($text-primary, 0.4);
-  }
+  transition: all 0.3s ease;
+}
+
+.clear-filters:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .filters-grid {
   display: grid;
-  gap: $spacing-xl;
-  
-  @media (min-width: $tablet) {
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .filters-grid {
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
 
-.filter-group {
-  label {
-    display: block;
-    color: $text-primary;
-    font-weight: 500;
-    margin-bottom: $spacing-sm;
-  }
+.filter-group label {
+  display: block;
+  color: #ffffff;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 .filter-options {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-sm;
+  gap: 0.5rem;
 }
 
 .filter-btn {
   background: transparent;
-  border: 1px solid rgba($neon-blue, 0.4);
-  color: $neon-blue;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $border-radius-md;
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  color: #00ffff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: all $transition-normal;
-  
-  &:hover {
-    background: rgba($neon-blue, 0.1);
-  }
-  
-  &.active {
-    background: $neon-blue;
-    color: $dark-bg;
-    font-weight: 600;
-  }
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(0, 255, 255, 0.1);
+}
+
+.filter-btn.active {
+  background: #00ffff;
+  color: #0a0a0a;
+  font-weight: 600;
 }
 
 .checkbox-label {
   display: flex !important;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 0.5rem;
   cursor: pointer;
-  
-  input[type="checkbox"] {
-    accent-color: $neon-pink;
-  }
+}
+
+.checkbox-label input[type="checkbox"] {
+  accent-color: #ff0080;
 }
 
 .results-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: $spacing-xl;
-  
-  @media (max-width: $mobile) {
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .results-info {
     flex-direction: column;
-    gap: $spacing-md;
+    gap: 1rem;
     text-align: center;
   }
-  
-  p {
-    color: $text-secondary;
-    margin: 0;
-  }
+}
+
+.results-info p {
+  color: #cccccc;
+  margin: 0;
 }
 
 .whatsapp-cta .btn {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 0.5rem;
 }
 
 .loading-state,
 .empty-state {
   text-align: center;
-  padding: $spacing-3xl;
+  padding: 4rem;
 }
 
-.loading-state {
-  .neon-spinner {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    margin: 0 auto $spacing-xl;
-    
-    .spinner-ring {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 3px solid transparent;
-      border-radius: 50%;
-      
-      &.ring-1 {
-        border-top-color: $neon-pink;
-        border-right-color: rgba($neon-pink, 0.3);
-        animation: neonSpin 2s linear infinite;
-        box-shadow: 0 0 20px rgba($neon-pink, 0.5), inset 0 0 20px rgba($neon-pink, 0.2);
-      }
-      
-      &.ring-2 {
-        border-right-color: $neon-blue;
-        border-bottom-color: rgba($neon-blue, 0.3);
-        animation: neonSpin 1.5s linear infinite reverse;
-        transform: scale(0.75);
-        box-shadow: 0 0 15px rgba($neon-blue, 0.4), inset 0 0 15px rgba($neon-blue, 0.2);
-      }
-      
-      &.ring-3 {
-        border-bottom-color: $neon-green;
-        border-left-color: rgba($neon-green, 0.3);
-        animation: neonSpin 1s linear infinite;
-        transform: scale(0.5);
-        box-shadow: 0 0 10px rgba($neon-green, 0.3), inset 0 0 10px rgba($neon-green, 0.2);
-      }
-    }
-    
-    .spinner-core {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 2.5rem;
-      color: $neon-yellow;
-      filter: drop-shadow(0 0 15px $neon-yellow) drop-shadow(0 0 25px rgba($neon-yellow, 0.5));
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-  }
-  
-  .loading-text {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: $spacing-lg;
-    animation: textGlow 2s ease-in-out infinite;
-  }
-  
-  .loading-dots {
-    display: flex;
-    gap: $spacing-sm;
-    justify-content: center;
-    
-    span {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: $neon-blue;
-      box-shadow: 0 0 10px $neon-blue;
-      animation: dotBounce 1.4s ease-in-out infinite;
-      
-      &:nth-child(1) { animation-delay: 0s; }
-      &:nth-child(2) { animation-delay: 0.2s; }
-      &:nth-child(3) { animation-delay: 0.4s; }
-    }
-  }
+.loading-state .neon-spinner {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 2rem;
 }
 
-.empty-state {
-  .empty-icon {
-    color: $text-muted;
-    margin-bottom: $spacing-lg;
-  }
-  
-  h3 {
-    color: $text-primary;
-    font-size: 1.5rem;
-    margin-bottom: $spacing-md;
-  }
-  
-  p {
-    color: $text-secondary;
-    margin-bottom: $spacing-xl;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: $spacing-sm;
-  }
+.loading-state .neon-spinner .spinner-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+}
+
+.loading-state .neon-spinner .spinner-ring.ring-1 {
+  border-top-color: #ff0080;
+  border-right-color: rgba(255, 0, 128, 0.3);
+  animation: neonSpin 2s linear infinite;
+  box-shadow: 0 0 20px rgba(255, 0, 128, 0.5), inset 0 0 20px rgba(255, 0, 128, 0.2);
+}
+
+.loading-state .neon-spinner .spinner-ring.ring-2 {
+  border-right-color: #00ffff;
+  border-bottom-color: rgba(0, 255, 255, 0.3);
+  animation: neonSpin 1.5s linear infinite reverse;
+  transform: scale(0.75);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.loading-state .neon-spinner .spinner-ring.ring-3 {
+  border-bottom-color: #00ff00;
+  border-left-color: rgba(0, 255, 0, 0.3);
+  animation: neonSpin 1s linear infinite;
+  transform: scale(0.5);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3), inset 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+.loading-state .neon-spinner .spinner-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.5rem;
+  color: #ffff00;
+  filter: drop-shadow(0 0 15px #ffff00) drop-shadow(0 0 25px rgba(255, 255, 0, 0.5));
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  animation: textGlow 2s ease-in-out infinite;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ffff;
+  box-shadow: 0 0 10px #00ffff;
+  animation: dotBounce 1.4s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: 0s; }
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+.empty-state .empty-icon {
+  color: #888888;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state h3 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  color: #cccccc;
+  margin-bottom: 2rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.empty-state .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: $spacing-lg;
-  margin-bottom: $spacing-2xl;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .load-more-section {
   text-align: center;
-  padding: $spacing-3xl;
-  background: linear-gradient(135deg, rgba($neon-purple, 0.1) 0%, rgba($neon-pink, 0.1) 100%);
-  border-radius: $border-radius-xl;
-  border: 1px solid rgba($neon-purple, 0.2);
+  padding: 4rem;
+  background: linear-gradient(135deg, rgba(128, 0, 255, 0.1) 0%, rgba(255, 0, 128, 0.1) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(128, 0, 255, 0.2);
 }
 
 .load-more-text {
   font-size: 1.1rem;
-  color: $text-secondary;
-  margin-bottom: $spacing-xl;
+  color: #cccccc;
+  margin-bottom: 2rem;
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .btn-lg {
-  padding: $spacing-lg $spacing-2xl;
+  padding: 1.5rem 3rem;
   font-size: 1.1rem;
   display: inline-flex;
   align-items: center;
-  gap: $spacing-sm;
-  
-  &:hover {
-    transform: translateY(-2px);
-  }
+  gap: 0.5rem;
 }
 
-// Keyframe animations
+.btn-lg:hover {
+  transform: translateY(-2px);
+}
+
+/* Keyframe animations */
 @keyframes neonSpin {
   0% { 
     transform: rotate(0deg);
@@ -445,11 +465,11 @@ onMounted(async () => {
   }
 }
 
-// Animaciones stagger para las cards
+/* Animaciones stagger para las cards */
 .fade-in-up {
   opacity: 0;
   transform: translateY(30px) scale(0.95);
-  animation: fadeInUpCard 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fadeInUpCard 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   animation-delay: var(--animation-delay);
 }
 
@@ -464,10 +484,14 @@ onMounted(async () => {
   }
 }
 
-// Clases de delay específicas
-@for $i from 0 through 10 {
-  .delay-#{$i * 50} {
-    animation-delay: #{$i * 50}ms;
-  }
-}
+/* Clases de delay específicas (0ms a 200ms) - Más rápido */
+.delay-0 { animation-delay: 0ms; }
+.delay-25 { animation-delay: 25ms; }
+.delay-50 { animation-delay: 50ms; }
+.delay-75 { animation-delay: 75ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-125 { animation-delay: 125ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-175 { animation-delay: 175ms; }
+.delay-200 { animation-delay: 200ms; }
 </style>

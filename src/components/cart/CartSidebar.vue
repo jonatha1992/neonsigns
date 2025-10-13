@@ -128,16 +128,16 @@ const clearCart = () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .cart-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba($dark-bg, 0.8);
+  background: rgba(10, 10, 10, 0.8);
   backdrop-filter: blur(5px);
-  z-index: $z-modal;
+  z-index: 9999;
   display: flex;
   justify-content: flex-end;
 }
@@ -146,8 +146,8 @@ const clearCart = () => {
   width: 400px;
   max-width: 90vw;
   height: 100vh;
-  background: $card-bg;
-  border-left: 1px solid rgba($neon-pink, 0.2);
+  background: #1a1a1a;
+  border-left: 1px solid rgba(255, 0, 128, 0.2);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -157,51 +157,51 @@ const clearCart = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: $spacing-md;
-  border-bottom: 1px solid rgba($text-muted, 0.2);
+  padding: 1rem;
+  border-bottom: 1px solid rgba(136, 136, 136, 0.2);
   
   h3 {
     margin: 0;
-    color: $text-primary;
+    color: #ffffff;
   }
 }
 
 .close-btn {
   background: transparent;
   border: none;
-  color: $text-muted;
+  color: #888888;
   cursor: pointer;
-  padding: $spacing-sm;
+  padding: 0.5rem;
   
   &:hover {
-    color: $neon-pink;
+    color: #ff0080;
   }
 }
 
 .cart-content {
   flex: 1;
   overflow-y: auto;
-  padding: $spacing-md;
+  padding: 1rem;
 }
 
 .empty-cart {
   text-align: center;
-  padding: $spacing-2xl;
+  padding: 3rem;
   
   .empty-icon {
-    color: $text-muted;
-    margin-bottom: $spacing-lg;
+    color: #888888;
+    margin-bottom: 1.5rem;
   }
   
   p {
-    color: $text-secondary;
-    margin-bottom: $spacing-lg;
+    color: #cccccc;
+    margin-bottom: 1.5rem;
   }
 }
 
 .cart-item {
-  border-bottom: 1px solid rgba($text-muted, 0.1);
-  padding: $spacing-md 0;
+  border-bottom: 1px solid rgba(136, 136, 136, 0.1);
+  padding: 1rem 0;
   
   &:last-child {
     border-bottom: none;
@@ -209,24 +209,24 @@ const clearCart = () => {
 }
 
 .item-info {
-  margin-bottom: $spacing-md;
+  margin-bottom: 1rem;
   
   h4 {
-    margin: 0 0 $spacing-sm;
-    color: $text-primary;
+    margin: 0 0 0.5rem;
+    color: #ffffff;
   }
   
   .item-details {
-    color: $text-secondary;
+    color: #cccccc;
     font-size: 0.9rem;
     margin: 0;
   }
   
   .custom-text {
-    color: $neon-pink;
+    color: #ff0080;
     font-size: 0.9rem;
     font-style: italic;
-    margin: $spacing-sm 0 0;
+    margin: 0.5rem 0 0;
   }
 }
 
@@ -234,18 +234,18 @@ const clearCart = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: $spacing-md;
+  gap: 1rem;
 }
 
 .quantity-controls {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 0.5rem;
   
   button {
-    background: rgba($neon-blue, 0.2);
-    border: 1px solid $neon-blue;
-    color: $neon-blue;
+    background: rgba(0, 255, 255, 0.2);
+    border: 1px solid #00ffff;
+    color: #00ffff;
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -255,7 +255,7 @@ const clearCart = () => {
     justify-content: center;
     
     &:hover {
-      background: rgba($neon-blue, 0.3);
+      background: rgba(0, 255, 255, 0.3);
     }
   }
   
@@ -268,15 +268,15 @@ const clearCart = () => {
 
 .item-price {
   font-weight: 600;
-  color: $neon-pink;
+  color: #ff0080;
 }
 
 .remove-btn {
   background: transparent;
   border: none;
-  color: $text-muted;
+  color: #888888;
   cursor: pointer;
-  padding: $spacing-sm;
+  padding: 0.5rem;
   
   &:hover {
     color: #ff4444;
@@ -284,20 +284,20 @@ const clearCart = () => {
 }
 
 .cart-footer {
-  border-top: 1px solid rgba($text-muted, 0.2);
-  padding: $spacing-md;
+  border-top: 1px solid rgba(136, 136, 136, 0.2);
+  padding: 1rem;
 }
 
 .total {
   text-align: center;
-  margin-bottom: $spacing-lg;
+  margin-bottom: 1.5rem;
   font-size: 1.2rem;
-  color: $text-primary;
+  color: #ffffff;
 }
 
 .cart-actions {
   display: flex;
-  gap: $spacing-md;
+  gap: 1rem;
   
   .btn {
     flex: 1;
@@ -307,11 +307,11 @@ const clearCart = () => {
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid $text-muted;
-  color: $text-muted;
+  border: 1px solid #888888;
+  color: #888888;
   
   &:hover {
-    background: rgba($text-muted, 0.1);
+    background: rgba(136, 136, 136, 0.1);
   }
 }
 </style>

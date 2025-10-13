@@ -21,6 +21,77 @@ Landing page profesional para mostrar trabajos realizados de carteles de neón L
 
 [Ver Portfolio](https://jonatha1992.github.io/neonsign)
 
+## 🔥 Sistema ABM de Administración (NUEVO)
+
+### Panel de Administración con Firebase
+
+Este proyecto ahora incluye un **sistema completo de administración (ABM)** para gestionar la galería de productos con Firebase:
+
+- ✅ **Autenticación**: Login seguro con Firebase Authentication
+- ✅ **CRUD Completo**: Crear, leer, actualizar y eliminar items de la galería
+- ✅ **Cloud Firestore**: Base de datos en tiempo real
+- ✅ **Firebase Storage**: Almacenamiento de imágenes con compresión
+- ✅ **Items Destacados**: Sistema para marcar exactamente 4 items destacados (se muestran en Home)
+- ✅ **Ordenamiento Manual**: Drag & drop para reordenar items
+- ✅ **Categorías**: Negocios, Personalizado, Hogar, Eventos, Decorativo
+
+### 📚 Documentación del Sistema ABM
+
+| Documento | Descripción |
+|-----------|-------------|
+| **[NEXT_STEPS.md](NEXT_STEPS.md)** | 🚀 **EMPEZAR AQUÍ** - Guía de configuración de Firebase (15-20 min) |
+| [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Plan completo de implementación con test suites |
+| [scripts/README.md](scripts/README.md) | Documentación de testing automatizado |
+
+### 🎯 Estado de Implementación
+
+| Fase | Estado | Descripción |
+|------|--------|-------------|
+| **1. Firebase Configuration** | ✅ Completado | Configuración de Firebase, tipos TypeScript, reglas de seguridad |
+| **2. Authentication System** | ✅ Completado | Login, guards de rutas, validación de admin |
+| **3. Core Services & CRUD** | ✅ Completado | Firestore CRUD, Storage, estados con Pinia |
+| **4. Admin Panel UI** | 📝 Pendiente | Dashboard, formularios, drag & drop |
+| **5. Frontend Integration** | 📝 Pendiente | Integrar Firestore con vistas existentes |
+| **6. Data Migration** | 📝 Pendiente | Migrar productos mock a Firestore |
+| **7. Documentation** | 📝 Pendiente | Docs completas y handoff a QA |
+
+### 🚀 Inicio Rápido - Admin Panel
+
+**Requisitos previos**: Firebase project configurado (ver [NEXT_STEPS.md](NEXT_STEPS.md))
+
+1. **Configurar Firebase**:
+   ```bash
+   cp .env.local.example .env.local
+   # Editar .env.local con tus credenciales de Firebase
+   ```
+
+2. **Iniciar servidor**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Acceder al panel de administración**:
+   ```
+   http://localhost:5173/admin/login
+   ```
+
+4. **Credenciales** (configuradas en Firebase Authentication):
+   - Email: `tecnofusion.it@gmail.com`
+   - Password: [Tu contraseña configurada en Firebase]
+
+### 🧪 Testing
+
+**Ejecutar tests automatizados** (22+ tests):
+```javascript
+// En la consola del navegador
+const tests = await import('/scripts/test-firebase.ts')
+await tests.runAllTests()
+```
+
+Ver [scripts/README.md](scripts/README.md) para más información sobre testing.
+
+---
+
 ## 📋 Requisitos Previos
 
 Antes de comenzar, asegúrate de tener instalado:
@@ -28,6 +99,7 @@ Antes de comenzar, asegúrate de tener instalado:
 - [Node.js](https://nodejs.org/) (versión 16 o superior)
 - [npm](https://www.npmjs.com/) o [yarn](https://yarnpkg.com/)
 - [Git](https://git-scm.com/)
+- **[Firebase Account](https://firebase.google.com/)** (para el sistema ABM)
 
 ## 🛠️ Instalación
 
