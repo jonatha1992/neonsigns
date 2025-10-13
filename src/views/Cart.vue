@@ -57,9 +57,9 @@ const openCart = () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .cart-page {
-  padding: $spacing-3xl 0;
+  padding: 4rem 0;
   min-height: calc(100vh - 160px);
   display: flex;
   align-items: center;
@@ -75,80 +75,80 @@ const openCart = () => {
 .redirect-content {
   text-align: center;
   max-width: 500px;
-  padding: $spacing-3xl;
-  background: rgba($card-bg, 0.8);
-  border: 1px solid rgba($neon-blue, 0.2);
-  border-radius: $border-radius-xl;
+  padding: 4rem;
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 16px;
 }
 
 .cart-icon {
-  color: $neon-blue;
-  margin-bottom: $spacing-lg;
+  color: #00ffff;
+  margin-bottom: 1.5rem;
   filter: drop-shadow(0 0 20px currentColor);
 }
 
 .redirect-content h1 {
   font-size: 2rem;
   font-weight: 900;
-  color: $text-primary;
-  margin-bottom: $spacing-md;
-  font-family: $font-neon;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
 }
 
 .redirect-content p {
-  color: $text-secondary;
+  color: #cccccc;
   font-size: 1.1rem;
-  margin-bottom: $spacing-xl;
+  margin-bottom: 2rem;
   line-height: 1.6;
 }
 
 .cart-summary {
-  background: rgba($darker-bg, 0.8);
-  border: 1px solid rgba($neon-pink, 0.2);
-  border-radius: $border-radius-md;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-xl;
+  background: rgba(5, 5, 5, 0.8);
+  border: 1px solid rgba(255, 0, 128, 0.2);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .summary-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: $spacing-sm;
+  margin-bottom: 0.5rem;
   
   &:last-child {
     margin-bottom: 0;
-    padding-top: $spacing-sm;
-    border-top: 1px solid rgba($text-muted, 0.2);
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(136, 136, 136, 0.2);
   }
   
   span {
-    color: $text-secondary;
+    color: #cccccc;
   }
   
   strong {
-    color: $text-primary;
+    color: #ffffff;
     font-size: 1.1rem;
   }
 }
 
 .cart-actions {
   display: flex;
-  gap: $spacing-md;
+  gap: 1rem;
   justify-content: center;
-  margin-bottom: $spacing-xl;
+  margin-bottom: 2rem;
   
-  @media (max-width: $mobile) {
+  @media (max-width: 768px) {
     flex-direction: column;
   }
 }
 
 .btn-lg {
-  padding: $spacing-lg $spacing-xl;
+  padding: 1.5rem 2rem;
   font-size: 1.1rem;
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 0.5rem;
   justify-content: center;
   
   &:hover {
@@ -158,9 +158,9 @@ const openCart = () => {
 
 .empty-message {
   p {
-    color: $text-muted;
+    color: #888888;
     font-style: italic;
-    margin-bottom: $spacing-lg;
+    margin-bottom: 1.5rem;
   }
 }
 </style>

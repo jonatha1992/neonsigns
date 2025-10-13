@@ -111,7 +111,7 @@ const handleSubmit = async () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .login-form-wrapper {
   width: 100%;
   max-width: 100%;
@@ -131,33 +131,33 @@ const handleSubmit = async () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
-  &-error {
-    background: linear-gradient(135deg, rgba(#ef4444, 0.15), rgba(#ef4444, 0.08));
-    border: 1.5px solid rgba(#ef4444, 0.4);
-    color: #fca5a5;
-  }
-  
-  &-success {
-    background: linear-gradient(135deg, rgba(#10b981, 0.15), rgba(#10b981, 0.08));
-    border: 1.5px solid rgba(#10b981, 0.4);
-    color: #6ee7b7;
-  }
+}
+
+.alert-error {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08));
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.alert-success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08));
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
 }
 
 .form-group {
   margin-bottom: 1rem;
+}
 
-  &:last-of-type {
-    margin-bottom: 1.25rem;
-  }
+.form-group:last-of-type {
+  margin-bottom: 1.25rem;
 }
 
 .form-label {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  color: $text-primary;
+  color: #ffffff;
   margin-bottom: 0.375rem;
   font-weight: 600;
   font-size: 0.8rem;
@@ -167,38 +167,38 @@ const handleSubmit = async () => {
 .form-input {
   width: 100%;
   padding: 0.625rem 0.875rem;
-  background: rgba($dark-bg, 0.6);
-  border: 2px solid rgba($neon-purple, 0.2);
+  background: rgba(10, 10, 10, 0.6);
+  border: 2px solid rgba(128, 0, 255, 0.2);
   border-radius: 0.5rem;
-  color: $text-primary;
+  color: #ffffff;
   font-size: 0.9rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  &:focus {
-    outline: none;
-    border-color: $neon-pink;
-    background: rgba($dark-bg, 0.8);
-    box-shadow: 
-      0 0 0 4px rgba($neon-pink, 0.1),
-      0 0 20px rgba($neon-pink, 0.15);
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  &::placeholder {
-    color: rgba($text-secondary, 0.5);
-  }
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #ff0080;
+  background: rgba(10, 10, 10, 0.8);
+  box-shadow: 
+    0 0 0 4px rgba(255, 0, 128, 0.1),
+    0 0 20px rgba(255, 0, 128, 0.15);
+}
+
+.form-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-input::placeholder {
+  color: rgba(204, 204, 204, 0.5);
 }
 
 .password-input-wrapper {
   position: relative;
+}
 
-  .form-input {
-    padding-right: 3.5rem;
-  }
+.password-input-wrapper .form-input {
+  padding-right: 3.5rem;
 }
 
 .password-toggle {
@@ -206,7 +206,7 @@ const handleSubmit = async () => {
   right: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: $text-secondary;
+  color: #cccccc;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -216,21 +216,21 @@ const handleSubmit = async () => {
   align-items: center;
   justify-content: center;
   border-radius: 0.375rem;
-  
-  &:hover {
-    color: $neon-purple;
-    background: rgba($neon-purple, 0.1);
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+}
+
+.password-toggle:hover {
+  color: #8000ff;
+  background: rgba(128, 0, 255, 0.1);
+}
+
+.password-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .submit-btn {
   width: 100%;
-  background: linear-gradient(135deg, $neon-pink, $neon-purple);
+  background: linear-gradient(135deg, #ff0080, #8000ff);
   color: white;
   font-weight: 700;
   padding: 0.75rem 1rem;
@@ -245,42 +245,42 @@ const handleSubmit = async () => {
   font-size: 0.9rem;
   letter-spacing: 0.5px;
   box-shadow: 
-    0 4px 15px rgba($neon-pink, 0.3),
-    0 0 20px rgba($neon-pink, 0.2);
+    0 4px 15px rgba(255, 0, 128, 0.3),
+    0 0 20px rgba(255, 0, 128, 0.2);
   position: relative;
   overflow: hidden;
+}
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-  }
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
 
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 
-      0 8px 25px rgba($neon-pink, 0.4),
-      0 0 30px rgba($neon-pink, 0.3);
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 25px rgba(255, 0, 128, 0.4),
+    0 0 30px rgba(255, 0, 128, 0.3);
+}
 
-    &::before {
-      left: 100%;
-    }
-  }
+.submit-btn:hover:not(:disabled)::before {
+  left: 100%;
+}
 
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .spinner {
@@ -296,11 +296,11 @@ const handleSubmit = async () => {
   }
 }
 
-// Responsive
-@media (max-width: $mobile) {
+/* Responsive */
+@media (max-width: 768px) {
   .form-input {
     padding: 0.625rem 0.75rem;
-    font-size: 16px; // Previene zoom en iOS
+    font-size: 16px; /* Previene zoom en iOS */
   }
 
   .password-input-wrapper .form-input {

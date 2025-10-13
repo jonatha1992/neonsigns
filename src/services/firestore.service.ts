@@ -64,6 +64,37 @@ export class FirestoreService {
   }
 
   /**
+   * Get ALL items without complex filters (for admin)
+   * Simple query that doesn't require composite index
+   */
+  static async getAllItems(): Promise<GalleryItem[]> {
+    try {
+      const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+
+      const items: GalleryItem[] = [];
+      querySnapshot.forEach((doc) => {
+        items.push({
+          id: doc.id,
+          ...doc.data()
+        } as GalleryItem);
+      });
+
+      // Sort in memory to avoid index requirement
+      items.sort((a, b) => {
+        if (a.orderIndex !== undefined && b.orderIndex !== undefined) {
+          return a.orderIndex - b.orderIndex;
+        }
+        return 0;
+      });
+
+      return items;
+    } catch (error) {
+      console.error('Error getting all gallery items:', error);
+      throw new Error('Error al obtener elementos de galería');
+    }
+  }
+
+  /**
    * Get a single gallery item by ID
    */
   static async getItem(id: string): Promise<GalleryItem | null> {

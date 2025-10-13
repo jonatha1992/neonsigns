@@ -1,5 +1,11 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import {
+  getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
+  inMemoryPersistence,
+  type Auth
+} from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getStorage, type FirebaseStorage } from 'firebase/storage';
 
@@ -25,13 +31,47 @@ if (missingKeys.length > 0) {
 
 // Initialize Firebase
 let app: FirebaseApp;
-let auth: ReturnType<typeof getAuth>;
+let auth: Auth;
 let db: Firestore;
 let storage: FirebaseStorage;
 
 try {
   app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
+
+  // Choose auth persistence strategy and clear stale tokens when project changes
+  const isBrowser = typeof window !== 'undefined';
+  const currentProjectId = firebaseConfig.projectId || '';
+
+  if (isBrowser) {
+    const PROJECT_KEY = 'neonsigns:firebaseProjectId';
+    const previousProjectId = window.localStorage.getItem(PROJECT_KEY);
+    const projectChanged = !!previousProjectId && previousProjectId !== currentProjectId;
+
+    if (projectChanged) {
+      // Remove stale Firebase auth entries from localStorage to avoid INVALID_ID_TOKEN lookups
+      Object.keys(window.localStorage)
+        .filter((k) => k.startsWith('firebase:'))
+        .forEach((k) => window.localStorage.removeItem(k));
+
+      // Best-effort cleanup of IndexedDB storage used by Firebase Auth
+      try {
+        // Deleting DB prevents reloading stale users; use in-memory for this session
+        window.indexedDB?.deleteDatabase('firebaseLocalStorageDb');
+      } catch {
+        // ignore cleanup errors
+      }
+    }
+
+    auth = initializeAuth(app, {
+      // If the project changed this session, avoid reading persisted tokens to prevent 400s
+      persistence: projectChanged ? inMemoryPersistence : indexedDBLocalPersistence
+    });
+
+    window.localStorage.setItem(PROJECT_KEY, currentProjectId);
+  } else {
+    // Fallback (SSR or no window)
+    auth = getAuth(app);
+  }
   db = getFirestore(app);
   storage = getStorage(app);
 

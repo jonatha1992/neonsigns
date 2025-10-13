@@ -90,7 +90,7 @@ const whatsappUrl = computed(() =>
 )
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .hero {
   position: relative;
   min-height: 100vh;
@@ -106,9 +106,9 @@ const whatsappUrl = computed(() =>
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 50%, rgba($neon-pink, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 20% 80%, rgba($neon-blue, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba($neon-purple, 0.1) 0%, transparent 50%);
+  background: radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(128, 0, 255, 0.1) 0%, transparent 50%);
 }
 
 .neon-grid {
@@ -117,9 +117,9 @@ const whatsappUrl = computed(() =>
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
-    linear-gradient(rgba($neon-pink, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba($neon-pink, 0.1) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(255, 0, 128, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 128, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
   animation: grid-move 20s linear infinite;
 }
@@ -127,15 +127,17 @@ const whatsappUrl = computed(() =>
 .hero-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: $spacing-2xl;
+  gap: 3rem;
   align-items: center;
   position: relative;
   z-index: 2;
-  
-  @media (max-width: $tablet) {
+}
+
+@media (max-width: 1024px) {
+  .hero-content {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: $spacing-xl;
+    gap: 2rem;
   }
 }
 
@@ -143,102 +145,110 @@ const whatsappUrl = computed(() =>
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 900;
   line-height: 1.1;
-  margin-bottom: $spacing-md;
-  font-family: $font-neon;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
   position: relative;
-  
-  .title-line {
-    display: inline-flex;
-    align-items: center;
-    gap: clamp(10px, 2vw, 24px);
-    white-space: nowrap; // mantener NEÓN y el logo en la misma línea
-  }
-  
-  .hero-logo-inline {
-    width: clamp(80px, 10vw, 140px);
-    height: clamp(80px, 10vw, 140px);
-    object-fit: contain;
-    filter: brightness(1.25) saturate(1.4) drop-shadow(0 0 14px rgba(255, 20, 147, 0.85));
-    animation: hero-neon-float 3s ease-in-out infinite;
-    vertical-align: middle;
-    margin-left: clamp(10px, 2vw, 28px); // empujar más a la derecha
+}
 
-    @media (max-width: $mobile) {
-      width: 60px;
-      height: 60px;
-      margin-left: 8px;
-    }
+.hero-title .title-line {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(10px, 2vw, 24px);
+  white-space: nowrap;
+}
+
+.hero-title .hero-logo-inline {
+  width: clamp(80px, 10vw, 140px);
+  height: clamp(80px, 10vw, 140px);
+  object-fit: contain;
+  filter: brightness(1.25) saturate(1.4) drop-shadow(0 0 14px rgba(255, 20, 147, 0.85));
+  animation: hero-neon-float 3s ease-in-out infinite;
+  vertical-align: middle;
+  margin-left: clamp(10px, 2vw, 28px);
+}
+
+@media (max-width: 768px) {
+  .hero-title .hero-logo-inline {
+    width: 60px;
+    height: 60px;
+    margin-left: 8px;
   }
-  
-  span {
-    display: block;
-    
-    &:first-child,
-    &:last-child {
-      font-size: 0.7em;
-      font-weight: 600;
-      color: $text-secondary;
-    }
-  }
+}
+
+.hero-title span {
+  display: block;
+}
+
+.hero-title span:first-child,
+.hero-title span:last-child {
+  font-size: 0.7em;
+  font-weight: 600;
+  color: #cccccc;
 }
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: $text-secondary;
-  margin-bottom: $spacing-xl;
+  color: #cccccc;
+  margin-bottom: 2rem;
   line-height: 1.6;
-  
-  strong {
-    color: $neon-pink;
-    font-weight: 600;
-  }
+}
+
+.hero-subtitle strong {
+  color: #ff0080;
+  font-weight: 600;
 }
 
 .hero-features {
   display: flex;
-  gap: $spacing-lg;
-  margin-bottom: $spacing-xl;
-  
-  @media (max-width: $mobile) {
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .hero-features {
     flex-direction: column;
-    gap: $spacing-sm;
+    gap: 0.25rem;
   }
 }
 
 .feature {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  color: $text-secondary;
-  
-  &-icon {
-    color: $neon-blue;
-  }
+  gap: 0.25rem;
+  color: #cccccc;
+}
+
+.feature-icon {
+  color: #00ffff;
 }
 
 .hero-actions {
   display: flex;
-  gap: $spacing-md;
-  
-  @media (max-width: $mobile) {
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .hero-actions {
     flex-direction: column;
   }
 }
 
 .btn-lg {
-  padding: $spacing-lg $spacing-2xl;
+  padding: 1.5rem 3rem;
   font-size: 1.1rem;
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 0.25rem;
   justify-content: center;
 }
 
 .hero-visual {
   position: relative;
   height: 400px;
-  
-  @media (max-width: $tablet) {
+}
+
+@media (max-width: 1024px) {
+  .hero-visual {
     height: 300px;
   }
 }
@@ -254,137 +264,156 @@ const whatsappUrl = computed(() =>
 
 .neon-sign {
   position: absolute;
-  padding: $spacing-lg $spacing-2xl;
+  padding: 1.5rem 3rem;
   border: 3px solid;
-  border-radius: $border-radius-lg;
+  border-radius: 12px;
   background: transparent;
   backdrop-filter: none;
+}
 
-  &.main-sign {
-    font-size: 3.5rem;
-    top: -8%;
-    right: 5%;
-    z-index: 3;
-    animation: float 3s ease-in-out infinite;
-    padding: $spacing-xl $spacing-3xl;
+.neon-sign.main-sign {
+  font-size: 3.5rem;
+  top: -8%;
+  right: 5%;
+  z-index: 3;
+  animation: float 3s ease-in-out infinite;
+  padding: 2rem 5rem;
+}
 
-    @media (max-width: $tablet) {
-      font-size: 2.5rem;
-      top: -6%;
-      right: 3%;
-      padding: $spacing-lg $spacing-xl;
-    }
-
-    @media (max-width: $mobile) {
-      font-size: 1.8rem;
-      padding: $spacing-md $spacing-lg;
-      top: -2%;
-      right: 2%;
-    }
+@media (max-width: 1024px) {
+  .neon-sign.main-sign {
+    font-size: 2.5rem;
+    top: -6%;
+    right: 3%;
+    padding: 1.5rem 2rem;
   }
+}
 
-  &.secondary-sign {
-    font-size: 1.5rem;
-    top: 8%;
-    left: 8%;
-    z-index: 2;
-    animation: float 3s ease-in-out infinite 1s;
-    padding: $spacing-md $spacing-lg;
-
-    @media (max-width: $tablet) {
-      font-size: 1.2rem;
-      top: 6%;
-      left: 5%;
-      padding: $spacing-sm $spacing-md;
-    }
-
-    @media (max-width: $mobile) {
-      font-size: 0.9rem;
-      padding: $spacing-xs $spacing-sm;
-      top: 4%;
-      left: 3%;
-    }
+@media (max-width: 768px) {
+  .neon-sign.main-sign {
+    font-size: 1.8rem;
+    padding: 1rem 1.5rem;
+    top: -2%;
+    right: 2%;
   }
+}
 
-  &.tertiary-sign {
-    font-size: 2.2rem;
-    bottom: 15%;
-    left: 10%;
-    z-index: 1;
-    animation: float 3s ease-in-out infinite 2s;
-    padding: $spacing-lg $spacing-xl;
+.neon-sign.secondary-sign {
+  font-size: 1.5rem;
+  top: 8%;
+  left: 8%;
+  z-index: 2;
+  animation: float 3s ease-in-out infinite 1s;
+  padding: 1rem 1.5rem;
+}
 
-    @media (max-width: $tablet) {
-      font-size: 1.8rem;
-      bottom: 12%;
-      left: 5%;
-      padding: $spacing-md $spacing-lg;
-    }
-
-    @media (max-width: $mobile) {
-      font-size: 1.3rem;
-      padding: $spacing-sm $spacing-md;
-      bottom: 8%;
-      left: 3%;
-    }
+@media (max-width: 1024px) {
+  .neon-sign.secondary-sign {
+    font-size: 1.2rem;
+    top: 6%;
+    left: 5%;
+    padding: 0.5rem 1rem;
   }
+}
 
-  &.logo-sign {
+@media (max-width: 768px) {
+  .neon-sign.secondary-sign {
+    font-size: 0.9rem;
+    padding: 0.125rem 0.25rem;
+    top: 4%;
+    left: 3%;
+  }
+}
+
+.neon-sign.tertiary-sign {
+  font-size: 2.2rem;
+  bottom: 15%;
+  left: 10%;
+  z-index: 1;
+  animation: float 3s ease-in-out infinite 2s;
+  padding: 1.5rem 2rem;
+}
+
+@media (max-width: 1024px) {
+  .neon-sign.tertiary-sign {
+    font-size: 1.8rem;
+    bottom: 12%;
+    left: 5%;
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .neon-sign.tertiary-sign {
+    font-size: 1.3rem;
+    padding: 0.5rem 1rem;
+    bottom: 8%;
+    left: 3%;
+  }
+}
+
+.neon-sign.logo-sign {
+  top: 65%;
+  right: 15%;
+  transform: translateY(-50%);
+  z-index: 4;
+  animation: logo-float-right 3s ease-in-out infinite;
+  padding: 0;
+  border: none;
+  background: transparent;
+  animation-fill-mode: both;
+}
+
+@media (max-width: 1024px) {
+  .neon-sign.logo-sign {
+    right: 10%;
     top: 65%;
-    right: 15%;
-    transform: translateY(-50%);
-    z-index: 4;
-    animation: logo-float-right 3s ease-in-out infinite;
-    padding: 0;
-    border: none;
-    background: transparent;
-    animation-fill-mode: both;
+  }
+}
 
-    @media (max-width: $tablet) {
-      right: 10%;
-      top: 65%;
-    }
+@media (max-width: 768px) {
+  .neon-sign.logo-sign {
+    right: 5%;
+    top: 65%;
+  }
+}
 
-    @media (max-width: $mobile) {
-      right: 5%;
-      top: 65%;
-    }
+.neon-sign.logo-sign .neon-logo-large {
+  width: 280px;
+  height: 280px;
+  object-fit: contain;
+  filter: brightness(1.5) saturate(1.6) drop-shadow(0 0 30px rgba(255, 20, 147, 1))
+          drop-shadow(0 0 60px rgba(255, 20, 147, 0.8))
+          drop-shadow(0 0 100px rgba(255, 20, 147, 0.4));
+  animation: logo-pulse-enhanced 2.5s ease-in-out infinite;
+}
 
-    .neon-logo-large {
-      width: 280px;
-      height: 280px;
-      object-fit: contain;
-      filter: brightness(1.5) saturate(1.6) drop-shadow(0 0 30px rgba(255, 20, 147, 1))
-              drop-shadow(0 0 60px rgba(255, 20, 147, 0.8))
-              drop-shadow(0 0 100px rgba(255, 20, 147, 0.4));
-      animation: logo-pulse-enhanced 2.5s ease-in-out infinite;
+@media (max-width: 1024px) {
+  .neon-sign.logo-sign .neon-logo-large {
+    width: 220px;
+    height: 220px;
+  }
+}
 
-      @media (max-width: $tablet) {
-        width: 220px;
-        height: 220px;
-      }
-
-      @media (max-width: $mobile) {
-        width: 160px;
-        height: 160px;
-      }
-    }
+@media (max-width: 768px) {
+  .neon-sign.logo-sign .neon-logo-large {
+    width: 160px;
+    height: 160px;
   }
 }
 
 .scroll-indicator {
   position: absolute;
-  bottom: $spacing-xl;
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  color: $text-muted;
-  
-  .bounce {
-    animation: bounce 2s infinite;
-  }
+  color: #888888;
 }
 
-// Animations
+.scroll-indicator .bounce {
+  animation: bounce 2s infinite;
+}
+
 @keyframes grid-move {
   0% { transform: translate(0, 0); }
   100% { transform: translate(50px, 50px); }

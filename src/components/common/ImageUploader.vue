@@ -607,9 +607,7 @@ watch(uploadError, (error) => {
 })
 </script>
 
-<style scoped lang="scss">
-@import '@/styles/variables.scss';
-
+<style scoped>
 .image-uploader {
   width: 100%;
   max-width: 600px;
@@ -629,71 +627,71 @@ watch(uploadError, (error) => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
 
-  &:hover {
-    border-color: var(--neon-pink);
-    background: linear-gradient(145deg, #ffffff, #fef3f9);
-    box-shadow: 
-      0 0 20px rgba(var(--neon-pink-rgb), 0.2),
-      0 8px 16px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-  }
+.upload-zone:hover {
+  border-color: var(--neon-pink);
+  background: linear-gradient(145deg, #ffffff, #fef3f9);
+  box-shadow: 
+    0 0 20px rgba(var(--neon-pink-rgb), 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
 
-  &.drag-over {
-    border-color: var(--neon-pink);
-    background: linear-gradient(145deg, #fff0f9, #ffe6f5);
-    transform: scale(1.02);
-    box-shadow: 
-      0 0 30px rgba(var(--neon-pink-rgb), 0.4),
-      inset 0 0 20px rgba(var(--neon-pink-rgb), 0.1);
-  }
+.upload-zone.drag-over {
+  border-color: var(--neon-pink);
+  background: linear-gradient(145deg, #fff0f9, #ffe6f5);
+  transform: scale(1.02);
+  box-shadow: 
+    0 0 30px rgba(var(--neon-pink-rgb), 0.4),
+    inset 0 0 20px rgba(var(--neon-pink-rgb), 0.1);
+}
 
-  &.has-file {
-    border-color: var(--neon-purple);
-    background: white;
-    box-shadow: 
-      0 0 20px rgba(var(--neon-purple-rgb), 0.15),
-      0 8px 16px rgba(0, 0, 0, 0.08);
-  }
+.upload-zone.has-file {
+  border-color: var(--neon-purple);
+  background: white;
+  box-shadow: 
+    0 0 20px rgba(var(--neon-purple-rgb), 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.08);
+}
 
-  &.uploading {
-    border-color: var(--neon-blue);
-    background: linear-gradient(145deg, #f0f9ff, #e0f2fe);
-    cursor: not-allowed;
-    box-shadow: 
-      0 0 25px rgba(var(--neon-blue-rgb), 0.3),
-      inset 0 0 15px rgba(var(--neon-blue-rgb), 0.05);
-  }
+.upload-zone.uploading {
+  border-color: var(--neon-blue);
+  background: linear-gradient(145deg, #f0f9ff, #e0f2fe);
+  cursor: not-allowed;
+  box-shadow: 
+    0 0 25px rgba(var(--neon-blue-rgb), 0.3),
+    inset 0 0 15px rgba(var(--neon-blue-rgb), 0.05);
+}
 
-  &.error {
-    border-color: #ef4444;
-    background: linear-gradient(145deg, #fef2f2, #fee2e2);
-    box-shadow: 
-      0 0 20px rgba(239, 68, 68, 0.2),
-      0 4px 12px rgba(239, 68, 68, 0.15);
-  }
+.upload-zone.error {
+  border-color: #ef4444;
+  background: linear-gradient(145deg, #fef2f2, #fee2e2);
+  box-shadow: 
+    0 0 20px rgba(239, 68, 68, 0.2),
+    0 4px 12px rgba(239, 68, 68, 0.15);
 }
 
 .upload-prompt {
   color: #6b7280;
+}
 
-  h3 {
-    color: #1f2937;
-    margin: 1.5rem 0 0.75rem 0;
-    font-size: 1.375rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+.upload-prompt h3 {
+  color: #1f2937;
+  margin: 1.5rem 0 0.75rem 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  p {
-    margin: 0 0 2rem 0;
-    color: #6b7280;
-    font-size: 1rem;
-    font-weight: 500;
-  }
+.upload-prompt p {
+  margin: 0 0 2rem 0;
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .upload-icon {
@@ -714,32 +712,32 @@ watch(uploadError, (error) => {
   background: rgba(var(--neon-pink-rgb), 0.05);
   border-radius: 0.5rem;
   border: 1px solid rgba(var(--neon-pink-rgb), 0.1);
+}
 
-  small {
-    color: #6b7280;
-    font-size: 0.875rem;
-    font-weight: 500;
-    
-    &:first-child {
-      color: var(--neon-purple);
-      font-weight: 600;
-    }
-  }
+.upload-specs small {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.upload-specs small:first-child {
+  color: var(--neon-purple);
+  font-weight: 600;
 }
 
 .image-preview {
   position: relative;
   max-width: 100%;
+}
 
-  img {
-    max-width: 100%;
-    max-height: 350px;
-    object-fit: contain;
-    border-radius: 0.75rem;
-    box-shadow: 
-      0 10px 30px rgba(0, 0, 0, 0.15),
-      0 0 20px rgba(var(--neon-purple-rgb), 0.1);
-  }
+.image-preview img {
+  max-width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 0 20px rgba(var(--neon-purple-rgb), 0.1);
 }
 
 .image-overlay {
@@ -757,10 +755,10 @@ watch(uploadError, (error) => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
-  .image-preview:hover & {
-    opacity: 1;
-  }
+.image-preview:hover .image-overlay {
+  opacity: 1;
 }
 
 .image-actions {
@@ -780,28 +778,28 @@ watch(uploadError, (error) => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 1.125rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
 
-  &.delete {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
+.action-btn.delete {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
 
-    &:hover {
-      background: linear-gradient(135deg, #dc2626, #b91c1c);
-      transform: scale(1.15);
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
-    }
-  }
+.action-btn.delete:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+}
 
-  &.replace {
-    background: linear-gradient(135deg, var(--neon-blue), #2563eb);
-    color: white;
+.action-btn.replace {
+  background: linear-gradient(135deg, var(--neon-blue), #2563eb);
+  color: white;
+}
 
-    &:hover {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      transform: scale(1.15);
-      box-shadow: 0 0 20px rgba(var(--neon-blue-rgb), 0.6);
-    }
-  }
+.action-btn.replace:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(var(--neon-blue-rgb), 0.6);
 }
 
 .image-info {
@@ -814,23 +812,23 @@ watch(uploadError, (error) => {
   border-radius: 0.5rem;
   border: 2px solid rgba(var(--neon-purple-rgb), 0.1);
   font-size: 0.9rem;
+}
 
-  .file-name {
-    font-weight: 600;
-    color: #1f2937;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 60%;
-  }
+.image-info .file-name {
+  font-weight: 600;
+  color: #1f2937;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 60%;
+}
 
-  .file-size {
-    color: var(--neon-purple);
-    font-weight: 600;
-    padding: 0.25rem 0.75rem;
-    background: rgba(var(--neon-purple-rgb), 0.1);
-    border-radius: 1rem;
-  }
+.image-info .file-size {
+  color: var(--neon-purple);
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  background: rgba(var(--neon-purple-rgb), 0.1);
+  border-radius: 1rem;
 }
 
 .upload-progress {
@@ -838,14 +836,14 @@ watch(uploadError, (error) => {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+}
 
-  p {
-    color: var(--neon-blue);
-    font-weight: 600;
-    font-size: 1.125rem;
-    margin: 0;
-    text-shadow: 0 0 10px rgba(var(--neon-blue-rgb), 0.3);
-  }
+.upload-progress p {
+  color: var(--neon-blue);
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(var(--neon-blue-rgb), 0.3);
 }
 
 .progress-circle {
@@ -897,26 +895,26 @@ watch(uploadError, (error) => {
 
 .upload-error {
   color: #dc2626;
+}
 
-  .error-icon {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-    color: #ef4444;
-    filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.3));
-  }
+.upload-error .error-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  color: #ef4444;
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.3));
+}
 
-  h4 {
-    margin: 0 0 0.75rem 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #991b1b;
-  }
+.upload-error h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #991b1b;
+}
 
-  p {
-    margin: 0 0 2rem 0;
-    color: #7f1d1d;
-    font-weight: 500;
-  }
+.upload-error p {
+  margin: 0 0 2rem 0;
+  color: #7f1d1d;
+  font-weight: 500;
 }
 
 .retry-btn {
@@ -929,12 +927,12 @@ watch(uploadError, (error) => {
   font-weight: 600;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
 
-  &:hover {
-    background: linear-gradient(135deg, #b91c1c, #991b1b);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
-  }
+.retry-btn:hover {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
 }
 
 .advanced-options {
@@ -950,10 +948,10 @@ watch(uploadError, (error) => {
 
 .option-group {
   margin-bottom: 1.5rem;
+}
 
-  &:last-child {
-    margin-bottom: 0;
-  }
+.option-group:last-child {
+  margin-bottom: 0;
 }
 
 .option-label {
@@ -965,24 +963,24 @@ watch(uploadError, (error) => {
   color: #1f2937;
   margin-bottom: 0.75rem;
   transition: color 0.2s ease;
+}
 
-  &:hover {
-    color: var(--neon-purple);
-  }
+.option-label:hover {
+  color: var(--neon-purple);
 }
 
 .option-checkbox {
   display: none;
+}
 
-  &:checked + .checkmark {
-    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-    border-color: var(--neon-purple);
-    box-shadow: 0 0 10px rgba(var(--neon-purple-rgb), 0.4);
+.option-checkbox:checked + .checkmark {
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 10px rgba(var(--neon-purple-rgb), 0.4);
+}
 
-    &::after {
-      opacity: 1;
-    }
-  }
+.option-checkbox:checked + .checkmark::after {
+  opacity: 1;
 }
 
 .checkmark {
@@ -994,20 +992,20 @@ watch(uploadError, (error) => {
   background: white;
   transition: all 0.3s ease;
   flex-shrink: 0;
+}
 
-  &::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 6px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    transform: rotate(45deg);
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
+.checkmark::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .option-description {
@@ -1035,41 +1033,41 @@ watch(uploadError, (error) => {
   outline: none;
   -webkit-appearance: none;
   appearance: none;
+}
 
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 
-      0 2px 8px rgba(0, 0, 0, 0.2),
-      0 0 15px rgba(var(--neon-purple-rgb), 0.4);
-    transition: transform 0.2s ease;
+.quality-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 0 15px rgba(var(--neon-purple-rgb), 0.4);
+  transition: transform 0.2s ease;
+}
 
-    &:hover {
-      transform: scale(1.2);
-    }
-  }
+.quality-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
 
-  &::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
-    box-shadow: 
-      0 2px 8px rgba(0, 0, 0, 0.2),
-      0 0 15px rgba(var(--neon-purple-rgb), 0.4);
-    transition: transform 0.2s ease;
+.quality-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 0 15px rgba(var(--neon-purple-rgb), 0.4);
+  transition: transform 0.2s ease;
+}
 
-    &:hover {
-      transform: scale(1.2);
-    }
-  }
+.quality-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
 }
 
 .upload-actions {
@@ -1091,43 +1089,43 @@ watch(uploadError, (error) => {
   gap: 0.75rem;
   text-decoration: none;
   font-size: 1rem;
+}
 
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-    filter: grayscale(0.5);
-  }
+.upload-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  filter: grayscale(0.5);
+}
 
-  &.primary {
-    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-    color: white;
-    box-shadow: 
-      0 4px 12px rgba(var(--neon-purple-rgb), 0.3),
-      0 0 20px rgba(var(--neon-pink-rgb), 0.2);
+.upload-btn.primary {
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+  color: white;
+  box-shadow: 
+    0 4px 12px rgba(var(--neon-purple-rgb), 0.3),
+    0 0 20px rgba(var(--neon-pink-rgb), 0.2);
+}
 
-    &:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 
-        0 8px 20px rgba(var(--neon-purple-rgb), 0.4),
-        0 0 30px rgba(var(--neon-pink-rgb), 0.3);
-    }
+.upload-btn.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 20px rgba(var(--neon-purple-rgb), 0.4),
+    0 0 30px rgba(var(--neon-pink-rgb), 0.3);
+}
 
-    &:active:not(:disabled) {
-      transform: translateY(0);
-    }
-  }
+.upload-btn.primary:active:not(:disabled) {
+  transform: translateY(0);
+}
 
-  &.secondary {
-    background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
-    color: #374151;
-    border: 2px solid rgba(var(--neon-purple-rgb), 0.2);
+.upload-btn.secondary {
+  background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
+  color: #374151;
+  border: 2px solid rgba(var(--neon-purple-rgb), 0.2);
+}
 
-    &:hover:not(:disabled) {
-      background: linear-gradient(145deg, #e5e7eb, #d1d5db);
-      border-color: var(--neon-purple);
-      color: var(--neon-purple);
-    }
-  }
+.upload-btn.secondary:hover:not(:disabled) {
+  background: linear-gradient(145deg, #e5e7eb, #d1d5db);
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
 }
 
 @media (max-width: 640px) {
@@ -1148,14 +1146,13 @@ watch(uploadError, (error) => {
   .image-info {
     flex-direction: column;
     gap: 0.5rem;
+  }
 
-    .file-name {
-      max-width: 100%;
-    }
+  .image-info .file-name {
+    max-width: 100%;
   }
 }
-
-// Añadir variables CSS para colores neon si no existen
+/* Añadir variables CSS para colores neon si no existen */
 :root {
   --neon-pink: #ff0080;
   --neon-pink-rgb: 255, 0, 128;

@@ -185,7 +185,9 @@ const featuredSlotsText = computed(() => {
 const mostPopularCategory = computed(() => {
   if (categoryEntries.value.length === 0) return 'Sin datos'
   const sorted = [...categoryEntries.value].sort(([, a], [, b]) => b - a)
-  const [category, count] = sorted[0]
+  const top = sorted[0]
+  if (!top) return 'Sin datos'
+  const [category, count] = top as [string, number]
   return count > 0 ? `Más pedidos: ${getCategoryLabel(category)}` : 'Sin datos'
 })
 
@@ -240,20 +242,18 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="scss">
-@use '@/styles/variables' as *;
-
+<style scoped>
 .admin-dashboard {
   display: flex;
   flex-direction: column;
-  gap: $spacing-2xl;
-  color: $text-primary;
+  gap: 3rem;
+  color: #ffffff;
 }
 
 .page-heading {
   display: flex;
   flex-direction: column;
-  gap: $spacing-xs;
+  gap: 0.125rem;
 
   h1 {
     font-size: 1.75rem;
@@ -263,7 +263,7 @@ onMounted(() => {
 
   p {
     font-size: 0.95rem;
-    color: rgba($text-secondary, 0.9);
+    color: rgba(204, 204, 204, 0.9);
     max-width: 620px;
   }
 }
@@ -271,54 +271,54 @@ onMounted(() => {
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: $spacing-xl;
+  gap: 2rem;
 }
 
 .summary-card {
-  background: rgba($card-bg, 0.9);
-  border: 1px solid rgba($neon-blue, 0.12);
-  border-radius: $border-radius-lg;
-  padding: $spacing-xl;
+  background: rgba(26, 26, 26, 0.9);
+  border: 1px solid rgba(0, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: 0.5rem;
 
   header {
     font-size: 0.85rem;
     text-transform: uppercase;
-    color: rgba($text-secondary, 0.8);
+    color: rgba(204, 204, 204, 0.8);
     letter-spacing: 0.05em;
   }
 
   .summary-value {
     font-size: 2.25rem;
     font-weight: 700;
-    color: $text-primary;
+    color: #ffffff;
   }
 
   .summary-meta {
     font-size: 0.85rem;
-    color: rgba($text-secondary, 0.85);
+    color: rgba(204, 204, 204, 0.85);
   }
 }
 
 .panel-group {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: $spacing-xl;
+  gap: 2rem;
 }
 
 .panel {
-  background: rgba($card-bg, 0.92);
-  border: 1px solid rgba($neon-blue, 0.1);
-  border-radius: $border-radius-xl;
-  padding: $spacing-xl;
+  background: rgba(26, 26, 26, 0.92);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: 1rem;
 
   &.actions-panel {
-    gap: $spacing-lg;
+    gap: 1.5rem;
   }
 }
 
@@ -326,7 +326,7 @@ onMounted(() => {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: $spacing-sm;
+  gap: 0.5rem;
 
   h2 {
     margin: 0;
@@ -336,26 +336,26 @@ onMounted(() => {
 
   .panel-caption {
     font-size: 0.75rem;
-    color: rgba($text-secondary, 0.8);
+    color: rgba(204, 204, 204, 0.8);
   }
 }
 
 .panel-action {
   font-size: 0.85rem;
-  color: $neon-blue;
+  color: #00ffff;
   text-decoration: none;
   border-bottom: 1px solid transparent;
   padding-bottom: 2px;
-  transition: border-color $transition-fast;
+  transition: border-color 0.2s ease;
 
   &:hover {
-    border-color: rgba($neon-blue, 0.6);
+    border-color: rgba(0, 255, 255, 0.6);
   }
 }
 
 .table-wrapper {
-  border: 1px solid rgba($neon-blue, 0.08);
-  border-radius: $border-radius-lg;
+  border: 1px solid rgba(0, 255, 255, 0.08);
+  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -365,31 +365,31 @@ onMounted(() => {
   font-size: 0.85rem;
 
   thead {
-    background: rgba($neon-blue, 0.08);
+    background: rgba(0, 255, 255, 0.08);
     text-transform: uppercase;
     letter-spacing: 0.04em;
 
     th {
-      padding: $spacing-sm $spacing-md;
+      padding: 0.5rem 1rem;
       text-align: left;
       font-weight: 600;
-      color: rgba($text-secondary, 0.85);
+      color: rgba(204, 204, 204, 0.85);
     }
   }
 
   tbody {
     tr {
       &:nth-child(odd) {
-        background: rgba($card-bg, 0.6);
+        background: rgba(26, 26, 26, 0.6);
       }
 
       &:hover {
-        background: rgba($neon-blue, 0.08);
+        background: rgba(0, 255, 255, 0.08);
       }
 
       td {
-        padding: $spacing-sm $spacing-md;
-        border-top: 1px solid rgba($neon-blue, 0.05);
+        padding: 0.5rem 1rem;
+        border-top: 1px solid rgba(0, 255, 255, 0.05);
         vertical-align: middle;
       }
     }
@@ -404,12 +404,12 @@ onMounted(() => {
 
 .inline-link {
   font-size: 0.75rem;
-  color: rgba($neon-blue, 0.8);
+  color: rgba(0, 255, 255, 0.8);
   text-decoration: none;
   border-bottom: 1px solid transparent;
 
   &:hover {
-    border-color: rgba($neon-blue, 0.6);
+    border-color: rgba(0, 255, 255, 0.6);
   }
 }
 
@@ -417,19 +417,19 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
-  border-radius: $border-radius-sm;
+  border-radius: 4px;
   font-size: 0.75rem;
-  background: rgba($neon-green, 0.12);
-  color: rgba($neon-green, 0.9);
+  background: rgba(0, 255, 0, 0.12);
+  color: rgba(0, 255, 0, 0.9);
 
   &.inactive {
-    background: rgba($neon-orange, 0.12);
-    color: rgba($neon-orange, 0.85);
+    background: rgba(255, 69, 0, 0.12);
+    color: rgba(255, 69, 0, 0.85);
   }
 
   &.featured {
-    background: rgba($neon-pink, 0.12);
-    color: rgba($neon-pink, 0.9);
+    background: rgba(255, 0, 128, 0.12);
+    color: rgba(255, 0, 128, 0.9);
   }
 }
 
@@ -439,13 +439,13 @@ onMounted(() => {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: 1rem;
 }
 
 .category-row {
   display: flex;
   flex-direction: column;
-  gap: $spacing-xs;
+  gap: 0.125rem;
 }
 
 .category-label {
@@ -459,45 +459,45 @@ onMounted(() => {
   }
 
   small {
-    color: rgba($text-secondary, 0.8);
+    color: rgba(204, 204, 204, 0.8);
   }
 }
 
 .progress {
   width: 100%;
   height: 6px;
-  border-radius: $border-radius-sm;
-  background: rgba($text-secondary, 0.15);
+  border-radius: 4px;
+  background: rgba(204, 204, 204, 0.15);
   overflow: hidden;
 }
 
 .progress-bar {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, rgba($neon-blue, 0.8), rgba($neon-purple, 0.7));
+  background: linear-gradient(90deg, rgba(0, 255, 255, 0.8), rgba(128, 0, 255, 0.7));
 }
 
 .category-count {
-  color: rgba($text-secondary, 0.8);
+  color: rgba(204, 204, 204, 0.8);
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-md;
+  gap: 1rem;
 }
 
 .action-btn {
   display: inline-flex;
   align-items: center;
-  gap: $spacing-xs;
-  padding: $spacing-sm $spacing-lg;
-  border-radius: $border-radius-md;
-  border: 1px solid rgba($neon-blue, 0.15);
-  color: $text-primary;
+  gap: 0.125rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 255, 0.15);
+  color: #ffffff;
   text-decoration: none;
   font-size: 0.85rem;
-  transition: transform $transition-fast, box-shadow $transition-fast, border-color $transition-fast;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 
   i {
     font-size: 0.85rem;
@@ -505,34 +505,34 @@ onMounted(() => {
 
   &:hover {
     transform: translateY(-1px);
-    border-color: rgba($neon-blue, 0.4);
+    border-color: rgba(0, 255, 255, 0.4);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
   }
 
   &.primary {
-    background: linear-gradient(120deg, rgba($neon-pink, 0.9), rgba($neon-purple, 0.8));
+    background: linear-gradient(120deg, rgba(255, 0, 128, 0.9), rgba(128, 0, 255, 0.8));
     border-color: transparent;
     color: white;
 
     &:hover {
-      box-shadow: 0 10px 22px rgba($neon-pink, 0.35);
+      box-shadow: 0 10px 22px rgba(255, 0, 128, 0.35);
     }
   }
 }
 
 .empty-state {
   font-size: 0.85rem;
-  color: rgba($text-secondary, 0.8);
-  padding: $spacing-lg;
-  border-radius: $border-radius-md;
-  background: rgba($card-bg, 0.8);
-  border: 1px dashed rgba($neon-blue, 0.15);
+  color: rgba(204, 204, 204, 0.8);
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px dashed rgba(0, 255, 255, 0.15);
 }
 
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba($darker-bg, 0.88);
+  background: rgba(5, 5, 5, 0.88);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -541,21 +541,21 @@ onMounted(() => {
 
 .loading-indicator {
   text-align: center;
-  padding: $spacing-xl;
-  border-radius: $border-radius-lg;
-  background: rgba($card-bg, 0.95);
-  border: 1px solid rgba($neon-blue, 0.25);
+  padding: 2rem;
+  border-radius: 12px;
+  background: rgba(26, 26, 26, 0.95);
+  border: 1px solid rgba(0, 255, 255, 0.25);
 
   i {
     font-size: 1.5rem;
-    color: $neon-blue;
-    margin-bottom: $spacing-sm;
+    color: #00ffff;
+    margin-bottom: 0.5rem;
   }
 
   p {
     margin: 0;
     font-size: 0.9rem;
-    color: rgba($text-secondary, 0.9);
+    color: rgba(204, 204, 204, 0.9);
   }
 }
 
@@ -571,11 +571,11 @@ onMounted(() => {
   .items-table tbody tr {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: $spacing-sm;
+    gap: 0.5rem;
 
     td {
       border: none;
-      padding: $spacing-xs 0;
+      padding: 0.125rem 0;
 
       &:first-child {
         grid-column: 1 / -1;

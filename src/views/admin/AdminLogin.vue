@@ -48,7 +48,7 @@ import { X } from 'lucide-vue-next'
 import LoginForm from '@/components/auth/LoginForm.vue'
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .login-modal-backdrop {
   position: fixed;
   top: 0;
@@ -56,9 +56,9 @@ import LoginForm from '@/components/auth/LoginForm.vue'
   right: 0;
   bottom: 0;
   background: linear-gradient(135deg, 
-    rgba($dark-bg, 0.98) 0%, 
-    rgba($darker-bg, 0.95) 50%,
-    rgba($dark-bg, 0.98) 100%
+    rgba(10, 10, 10, 0.98) 0%, 
+    rgba(5, 5, 5, 0.95) 50%,
+    rgba(10, 10, 10, 0.98) 100%
   );
   backdrop-filter: blur(20px);
   display: flex;
@@ -67,22 +67,22 @@ import LoginForm from '@/components/auth/LoginForm.vue'
   padding: 1.5rem;
   overflow-y: auto;
   z-index: 9999;
-  
-  // Animated gradient background
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-      radial-gradient(circle at 20% 30%, rgba($neon-pink, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba($neon-purple, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 50% 50%, rgba($neon-blue, 0.05) 0%, transparent 60%);
-    animation: gradient-shift 15s ease infinite;
-    pointer-events: none;
-  }
+}
+
+/* Animated gradient background */
+.login-modal-backdrop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 0, 128, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(128, 0, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.05) 0%, transparent 60%);
+  animation: gradient-shift 15s ease infinite;
+  pointer-events: none;
 }
 
 @keyframes gradient-shift {
@@ -105,26 +105,28 @@ import LoginForm from '@/components/auth/LoginForm.vue'
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba($card-bg, 0.9), rgba($card-bg, 0.7));
-  border: 2px solid rgba($neon-pink, 0.3);
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.7));
+  border: 2px solid rgba(255, 0, 128, 0.3);
   border-radius: 50%;
-  color: $text-secondary;
+  color: #cccccc;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10000;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  
-  &:hover {
-    background: linear-gradient(135deg, rgba($neon-pink, 0.2), rgba($neon-purple, 0.2));
-    border-color: $neon-pink;
-    color: $neon-pink;
-    transform: rotate(90deg) scale(1.1);
-    box-shadow: 
-      0 0 30px rgba($neon-pink, 0.4),
-      0 8px 25px rgba(0, 0, 0, 0.4);
-  }
+}
 
-  @media (max-width: $mobile) {
+.close-button:hover {
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.2), rgba(128, 0, 255, 0.2));
+  border-color: #ff0080;
+  color: #ff0080;
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 
+    0 0 30px rgba(255, 0, 128, 0.4),
+    0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+  .close-button {
     top: 1rem;
     right: 1rem;
     width: 3rem;
@@ -135,24 +137,26 @@ import LoginForm from '@/components/auth/LoginForm.vue'
 .login-modal {
   position: relative;
   background: linear-gradient(145deg, 
-    rgba($card-bg, 0.95) 0%, 
-    rgba($darker-bg, 0.9) 100%
+    rgba(26, 26, 26, 0.95) 0%, 
+    rgba(5, 5, 5, 0.9) 100%
   );
-  border: 1px solid rgba($neon-pink, 0.3);
+  border: 1px solid rgba(255, 0, 128, 0.3);
   border-radius: 1.5rem;
   padding: 1.5rem 1.5rem;
   max-width: 380px;
   width: 100%;
   box-shadow: 
     0 25px 60px rgba(0, 0, 0, 0.6),
-    0 0 40px rgba($neon-pink, 0.2),
-    0 0 80px rgba($neon-pink, 0.1),
+    0 0 40px rgba(255, 0, 128, 0.2),
+    0 0 80px rgba(255, 0, 128, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
   animation: modal-appear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
+}
 
-  @media (max-width: $mobile) {
+@media (max-width: 768px) {
+  .login-modal {
     padding: 1.25rem 1rem;
     border-radius: 1.25rem;
     max-width: 100%;
@@ -174,38 +178,40 @@ import LoginForm from '@/components/auth/LoginForm.vue'
   text-align: center;
   margin-bottom: 1rem;
   position: relative;
+}
 
-  .logo-glow {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(
-      circle,
-      rgba($neon-pink, 0.3) 0%,
-      rgba($neon-purple, 0.2) 50%,
-      transparent 70%
-    );
-    filter: blur(30px);
-    animation: glow-pulse 3s ease-in-out infinite;
-    pointer-events: none;
-  }
+.modal-logo .logo-glow {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 0, 128, 0.3) 0%,
+    rgba(128, 0, 255, 0.2) 50%,
+    transparent 70%
+  );
+  filter: blur(30px);
+  animation: glow-pulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
 
-  .neon-logo {
-    width: 90px;
-    height: auto;
-    margin: 0 auto 0.75rem;
-    display: block;
-    filter: drop-shadow(0 0 20px rgba($neon-pink, 0.5));
-    animation: logo-float 4s ease-in-out infinite;
-    position: relative;
-    z-index: 1;
+.modal-logo .neon-logo {
+  width: 90px;
+  height: auto;
+  margin: 0 auto 0.75rem;
+  display: block;
+  filter: drop-shadow(0 0 20px rgba(255, 0, 128, 0.5));
+  animation: logo-float 4s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
 
-    @media (max-width: $mobile) {
-      width: 80px;
-    }
+@media (max-width: 768px) {
+  .modal-logo .neon-logo {
+    width: 80px;
   }
 }
 
@@ -232,22 +238,24 @@ import LoginForm from '@/components/auth/LoginForm.vue'
 .brand-title {
   font-size: 1.75rem;
   font-weight: 900;
-  font-family: $font-neon;
+  font-family: 'Orbitron', monospace;
   margin: 0 0 0.25rem 0;
   line-height: 1.2;
   position: relative;
   z-index: 1;
+}
 
-  .neon-text {
-    display: inline-block;
-    animation: neon-flicker 3s ease-in-out infinite;
-  }
+.brand-title .neon-text {
+  display: inline-block;
+  animation: neon-flicker 3s ease-in-out infinite;
+}
 
-  .text-white {
-    color: $text-primary;
-  }
+.brand-title .text-white {
+  color: #ffffff;
+}
 
-  @media (max-width: $mobile) {
+@media (max-width: 768px) {
+  .brand-title {
     font-size: 1.5rem;
   }
 }
@@ -255,28 +263,30 @@ import LoginForm from '@/components/auth/LoginForm.vue'
 @keyframes neon-flicker {
   0%, 100% {
     text-shadow: 
-      0 0 10px rgba($neon-pink, 0.8),
-      0 0 20px rgba($neon-pink, 0.6),
-      0 0 30px rgba($neon-pink, 0.4);
+      0 0 10px rgba(255, 0, 128, 0.8),
+      0 0 20px rgba(255, 0, 128, 0.6),
+      0 0 30px rgba(255, 0, 128, 0.4);
   }
   50% {
     text-shadow: 
-      0 0 15px rgba($neon-pink, 1),
-      0 0 25px rgba($neon-pink, 0.8),
-      0 0 40px rgba($neon-pink, 0.6);
+      0 0 15px rgba(255, 0, 128, 1),
+      0 0 25px rgba(255, 0, 128, 0.8),
+      0 0 40px rgba(255, 0, 128, 0.6);
   }
 }
 
 .brand-subtitle {
-  color: $text-secondary;
+  color: #cccccc;
   font-size: 0.8rem;
   font-weight: 500;
   margin: 0 0 0.25rem 0;
   letter-spacing: 0.5px;
   position: relative;
   z-index: 1;
+}
 
-  @media (max-width: $mobile) {
+@media (max-width: 768px) {
+  .brand-subtitle {
     font-size: 0.75rem;
   }
 }
@@ -288,17 +298,16 @@ import LoginForm from '@/components/auth/LoginForm.vue'
 .modal-footer {
   text-align: center;
   padding-top: 1rem;
-  border-top: 1px solid rgba($neon-purple, 0.15);
-
-  .footer-text {
-    color: $text-secondary;
-    font-size: 0.75rem;
-    margin: 0;
-    opacity: 0.7;
-  }
+  border-top: 1px solid rgba(128, 0, 255, 0.15);
 }
 
-// Decorative circles
+.modal-footer .footer-text {
+  color: #cccccc;
+  font-size: 0.75rem;
+  margin: 0;
+  opacity: 0.7;
+}
+/* Decorative circles */
 .decorative-circles {
   position: fixed;
   top: 0;
@@ -308,40 +317,40 @@ import LoginForm from '@/components/auth/LoginForm.vue'
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
+}
 
-  .circle {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    animation: float-circles 20s ease-in-out infinite;
+.decorative-circles .circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: float-circles 20s ease-in-out infinite;
+}
 
-    &.circle-1 {
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba($neon-pink, 0.15), transparent);
-      top: 10%;
-      left: 5%;
-      animation-delay: 0s;
-    }
+.decorative-circles .circle.circle-1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 0, 128, 0.15), transparent);
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
 
-    &.circle-2 {
-      width: 250px;
-      height: 250px;
-      background: radial-gradient(circle, rgba($neon-purple, 0.12), transparent);
-      bottom: 15%;
-      right: 10%;
-      animation-delay: -7s;
-    }
+.decorative-circles .circle.circle-2 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(128, 0, 255, 0.12), transparent);
+  bottom: 15%;
+  right: 10%;
+  animation-delay: -7s;
+}
 
-    &.circle-3 {
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba($neon-blue, 0.1), transparent);
-      top: 50%;
-      left: 50%;
-      animation-delay: -14s;
-    }
-  }
+.decorative-circles .circle.circle-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.1), transparent);
+  top: 50%;
+  left: 50%;
+  animation-delay: -14s;
 }
 
 @keyframes float-circles {
@@ -359,27 +368,25 @@ import LoginForm from '@/components/auth/LoginForm.vue'
   }
 }
 
-// Responsive adjustments
-@media (max-width: $mobile) {
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .login-modal-backdrop {
     padding: 1rem;
   }
 
-  .decorative-circles .circle {
-    &.circle-1 {
-      width: 200px;
-      height: 200px;
-    }
+  .decorative-circles .circle.circle-1 {
+    width: 200px;
+    height: 200px;
+  }
 
-    &.circle-2 {
-      width: 180px;
-      height: 180px;
-    }
+  .decorative-circles .circle.circle-2 {
+    width: 180px;
+    height: 180px;
+  }
 
-    &.circle-3 {
-      width: 150px;
-      height: 150px;
-    }
+  .decorative-circles .circle.circle-3 {
+    width: 150px;
+    height: 150px;
   }
 }
 </style>

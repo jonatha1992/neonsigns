@@ -101,179 +101,180 @@ const whatsappUrl = computed(() =>
 )
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .footer {
-  background: linear-gradient(135deg, $darker-bg 0%, $dark-bg 100%);
-  border-top: 1px solid rgba($neon-pink, 0.2);
-  margin-top: $spacing-3xl;
+  background: linear-gradient(135deg, #050505 0%, #0a0a0a 100%);
+  border-top: 1px solid rgba(255, 0, 128, 0.2);
+  margin-top: 5rem;
 }
 
 .footer-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: $spacing-xl;
-  padding: $spacing-2xl 0 $spacing-lg;
-  
-  @media (max-width: $mobile) {
+  gap: 2rem;
+  padding: 3rem 0 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
     grid-template-columns: 1fr;
-    gap: $spacing-lg;
-    padding: $spacing-xl 0;
+    gap: 1.5rem;
+    padding: 2rem 0;
   }
 }
 
-.footer-section {
-  .logo {
-    font-size: 1.5rem;
-    font-weight: 900;
-    font-family: $font-neon;
-    margin-bottom: $spacing-md;
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-      filter: brightness(1.2) saturate(1.3) drop-shadow(0 0 10px rgba(255, 20, 147, 0.8));
-      margin-left: $spacing-sm;
-      animation: neon-pulse 2s ease-in-out infinite alternate;
-      transition: all 0.3s ease;
-      
-      &:hover {
-        filter: brightness(1.5) saturate(1.5) drop-shadow(0 0 20px rgba(255, 20, 147, 1));
-        transform: scale(1.1);
-      }
-    }
-  }
+.footer-section .logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-family: 'Orbitron', monospace;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.footer-section .logo .logo-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: brightness(1.2) saturate(1.3) drop-shadow(0 0 10px rgba(255, 20, 147, 0.8));
+  margin-left: 0.25rem;
+  animation: neon-pulse 2s ease-in-out infinite alternate;
+  transition: all 0.3s ease;
+}
+
+.footer-section .logo .logo-icon:hover {
+  filter: brightness(1.5) saturate(1.5) drop-shadow(0 0 20px rgba(255, 20, 147, 1));
+  transform: scale(1.1);
 }
 
 .footer-description {
-  color: $text-secondary;
+  color: #cccccc;
   line-height: 1.6;
-  margin-bottom: $spacing-lg;
+  margin-bottom: 1.5rem;
 }
 
 .footer-title {
-  color: $text-primary;
+  color: #ffffff;
   font-size: 1.1rem;
   font-weight: 600;
-  margin-bottom: $spacing-lg;
+  margin-bottom: 1.5rem;
   position: relative;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 30px;
-    height: 2px;
-    background: $neon-pink;
-    box-shadow: $neon-glow-sm $neon-pink;
-  }
+}
+
+.footer-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: #ff0080;
+  box-shadow: 0 0 5px #ff0080;
 }
 
 .footer-links {
   list-style: none;
-  
-  li {
-    margin-bottom: $spacing-sm;
-  }
-  
-  a {
-    color: $text-secondary;
-    text-decoration: none;
-    transition: all $transition-normal;
-    
-    &:hover {
-      color: $neon-pink;
-      padding-left: $spacing-sm;
-    }
-    
-    &.admin-link {
-      opacity: 0.3;
-      font-size: 0.85rem;
-      
-      &:hover {
-        opacity: 1;
-        color: $neon-blue;
-      }
-    }
-  }
+}
+
+.footer-links li {
+  margin-bottom: 0.25rem;
+}
+
+.footer-links a {
+  color: #cccccc;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-links a:hover {
+  color: #ff0080;
+  padding-left: 0.25rem;
+}
+
+.footer-links a.admin-link {
+  opacity: 0.3;
+  font-size: 0.85rem;
+}
+
+.footer-links a.admin-link:hover {
+  opacity: 1;
+  color: #00ffff;
 }
 
 .contact-info {
-  margin-bottom: $spacing-lg;
+  margin-bottom: 1.5rem;
 }
 
 .contact-item {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  color: $text-secondary;
-  margin-bottom: $spacing-sm;
-  
-  svg {
-    color: $neon-blue;
-  }
+  gap: 0.25rem;
+  color: #cccccc;
+  margin-bottom: 0.25rem;
+}
+
+.contact-item svg {
+  color: #00ffff;
 }
 
 .whatsapp-cta {
   display: inline-flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 0.25rem;
   background: linear-gradient(45deg, #25d366, #128c7e);
   color: white;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $border-radius-lg;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
   text-decoration: none;
   font-weight: 600;
-  transition: all $transition-normal;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
-  }
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.whatsapp-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba($text-muted, 0.2);
-  padding: $spacing-md 0;
-  
-  &-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    @media (max-width: $mobile) {
-      flex-direction: column;
-      gap: $spacing-md;
-      text-align: center;
-    }
-    
-    p {
-      color: $text-muted;
-      font-size: 0.9rem;
-    }
+  border-top: 1px solid rgba(136, 136, 136, 0.2);
+  padding: 1rem 0;
+}
+
+.footer-bottom-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .footer-bottom-content {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
   }
+}
+
+.footer-bottom-content p {
+  color: #888888;
+  font-size: 0.9rem;
 }
 
 .social-links {
   display: flex;
-  gap: $spacing-md;
+  gap: 1rem;
 }
 
 .social-link {
-  color: $text-muted;
-  transition: all $transition-normal;
-  
-  &:hover {
-    color: $neon-pink;
-    transform: translateY(-2px);
-  }
+  color: #888888;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-// Animations
+.social-link:hover {
+  color: #ff0080;
+  transform: translateY(-2px);
+}
+
 @keyframes neon-pulse {
   0% {
     filter: brightness(1.2) saturate(1.3) drop-shadow(0 0 10px rgba(255, 20, 147, 0.8));

@@ -161,27 +161,27 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .featured-section {
-  padding: $spacing-2xl 0;
-  background: rgba($darker-bg, 0.5);
+  padding: 3rem 0;
+  background: rgba(5, 5, 5, 0.5);
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: $spacing-2xl;
+  margin-bottom: 3rem;
 }
 
 .section-title {
   font-size: 2.5rem;
   font-weight: 900;
-  margin-bottom: $spacing-md;
-  font-family: $font-neon;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
 }
 
 .section-subtitle {
   font-size: 1.2rem;
-  color: $text-secondary;
+  color: #cccccc;
   max-width: 600px;
   margin: 0 auto;
 }
@@ -189,21 +189,21 @@ onMounted(() => {
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: $spacing-xl;
-  margin-bottom: $spacing-2xl;
+  gap: 2rem;
+  margin-bottom: 3rem;
   
-  // En desktop, máximo 4 columnas
+  /* En desktop, máximo 4 columnas */
   @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
   }
   
-  // En tablet, máximo 2 columnas
-  @media (min-width: $tablet) and (max-width: 1199px) {
+  /* En tablet, máximo 2 columnas */
+  @media (min-width: 1024px) and (max-width: 1199px) {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  // En móvil, 1 columna
-  @media (max-width: $mobile) {
+  /* En móvil, 1 columna */
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 }
@@ -213,33 +213,33 @@ onMounted(() => {
 }
 
 .features-section {
-  padding: $spacing-2xl 0;
+  padding: 3rem 0;
 }
 
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: $spacing-2xl;
+  gap: 3rem;
 }
 
 .feature-card {
   text-align: center;
-  padding: $spacing-xl;
-  border-radius: $border-radius-lg;
-  background: rgba($card-bg, 0.5);
-  border: 1px solid rgba($neon-blue, 0.2);
-  transition: all $transition-normal;
-  
-  &:hover {
-    transform: translateY(-10px);
-    background: rgba($card-bg, 0.8);
-    box-shadow: $neon-glow-md rgba($neon-blue, 0.3);
-  }
+  padding: 2rem;
+  border-radius: 12px;
+  background: rgba(26, 26, 26, 0.5);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  background: rgba(26, 26, 26, 0.8);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
 .feature-icon {
-  color: $neon-blue;
-  margin-bottom: $spacing-lg;
+  color: #00ffff;
+  margin-bottom: 1.5rem;
   display: flex;
   justify-content: center;
 }
@@ -247,100 +247,100 @@ onMounted(() => {
 .feature-card h3 {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: $spacing-md;
-  color: $text-primary;
+  margin-bottom: 1rem;
+  color: #ffffff;
 }
 
 .feature-card p {
-  color: $text-secondary;
+  color: #cccccc;
   line-height: 1.6;
 }
 
 .cta-section {
-  padding: $spacing-2xl 0;
-  background: linear-gradient(135deg, rgba($neon-pink, 0.1) 0%, rgba($neon-purple, 0.1) 100%);
+  padding: 3rem 0;
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(128, 0, 255, 0.1) 100%);
   text-align: center;
 }
 
 .cta-content h2 {
   font-size: 2.5rem;
   font-weight: 900;
-  margin-bottom: $spacing-md;
-  font-family: $font-neon;
-  color: $text-primary;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
+  color: #ffffff;
 }
 
 .cta-content p {
   font-size: 1.2rem;
-  color: $text-secondary;
-  margin-bottom: $spacing-xl;
+  color: #cccccc;
+  margin-bottom: 2rem;
 }
 
 .cta-btn {
   font-size: 1.2rem;
-  padding: $spacing-md $spacing-xl;
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: $neon-glow-lg $neon-pink;
-  }
+  padding: 1rem 2rem;
 }
 
-// Loading State Styles
+.cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px #ff0080;
+}
+
+/* Loading State Styles */
 .loading-state {
   text-align: center;
-  padding: $spacing-3xl;
+  padding: 4rem;
 }
 
 .neon-spinner {
   position: relative;
   width: 100px;
   height: 100px;
-  margin: 0 auto $spacing-xl;
-  
-  .spinner-ring {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 3px solid transparent;
-    border-radius: 50%;
-    
-    &.ring-1 {
-      border-top-color: $neon-pink;
-      border-right-color: rgba($neon-pink, 0.3);
-      animation: neonSpin 2s linear infinite;
-      box-shadow: 0 0 15px rgba($neon-pink, 0.4);
-    }
-    
-    &.ring-2 {
-      border-right-color: $neon-blue;
-      border-bottom-color: rgba($neon-blue, 0.3);
-      animation: neonSpin 1.5s linear infinite reverse;
-      transform: scale(0.75);
-      box-shadow: 0 0 12px rgba($neon-blue, 0.3);
-    }
-    
-    &.ring-3 {
-      border-bottom-color: $neon-green;
-      border-left-color: rgba($neon-green, 0.3);
-      animation: neonSpin 1s linear infinite;
-      transform: scale(0.5);
-      box-shadow: 0 0 10px rgba($neon-green, 0.3);
-    }
-  }
-  
-  .spinner-core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    color: $neon-yellow;
-    filter: drop-shadow(0 0 10px $neon-yellow);
-    animation: pulse 1.5s ease-in-out infinite;
-  }
+  margin: 0 auto 2rem;
+}
+
+.neon-spinner .spinner-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+}
+
+.neon-spinner .spinner-ring.ring-1 {
+  border-top-color: #ff0080;
+  border-right-color: rgba(255, 0, 128, 0.3);
+  animation: neonSpin 2s linear infinite;
+  box-shadow: 0 0 15px rgba(255, 0, 128, 0.4);
+}
+
+.neon-spinner .spinner-ring.ring-2 {
+  border-right-color: #00ffff;
+  border-bottom-color: rgba(0, 255, 255, 0.3);
+  animation: neonSpin 1.5s linear infinite reverse;
+  transform: scale(0.75);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+}
+
+.neon-spinner .spinner-ring.ring-3 {
+  border-bottom-color: #00ff00;
+  border-left-color: rgba(0, 255, 0, 0.3);
+  animation: neonSpin 1s linear infinite;
+  transform: scale(0.5);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.neon-spinner .spinner-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: #ffff00;
+  filter: drop-shadow(0 0 10px #ffff00);
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 .loading-text {
@@ -349,19 +349,19 @@ onMounted(() => {
   animation: textGlow 2s ease-in-out infinite;
 }
 
-// Animation classes for cards
+/* Animation classes for cards */
 .fade-in-up {
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.8s ease-out forwards;
-  
-  &.delay-0 { animation-delay: 0ms; }
-  &.delay-100 { animation-delay: 100ms; }
-  &.delay-200 { animation-delay: 200ms; }
-  &.delay-300 { animation-delay: 300ms; }
 }
 
-// Keyframe animations
+.fade-in-up.delay-0 { animation-delay: 0ms; }
+.fade-in-up.delay-100 { animation-delay: 100ms; }
+.fade-in-up.delay-200 { animation-delay: 200ms; }
+.fade-in-up.delay-300 { animation-delay: 300ms; }
+
+/* Keyframe animations */
 @keyframes neonSpin {
   0% { 
     transform: rotate(0deg);

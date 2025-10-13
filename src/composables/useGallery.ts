@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useGalleryStore } from '@/stores/gallery';
 import type {
   CreateGalleryItemData,
@@ -14,16 +15,27 @@ import type {
 export function useGallery() {
   const galleryStore = useGalleryStore();
 
-  // Reactive state
-  const items = computed(() => galleryStore.items);
-  const featuredItems = computed(() => galleryStore.featuredItems);
-  const currentItem = computed(() => galleryStore.currentItem);
-  const loading = computed(() => galleryStore.loading);
-  const error = computed(() => galleryStore.error);
-  const stats = computed(() => galleryStore.stats);
+  // Use storeToRefs to maintain reactivity when destructuring store state
+  const {
+    items,
+    featuredItems,
+    currentItem,
+    loading,
+    error,
+    stats
+  } = storeToRefs(galleryStore);
+
+  // Computed properties from store (these are already computed, just extract them)
   const activeItems = computed(() => galleryStore.activeItems);
   const inactiveItems = computed(() => galleryStore.inactiveItems);
   const totalItems = computed(() => galleryStore.totalItems);
+
+  /**
+   * Fetch ALL items (admin - no complex filters)
+   */
+  const fetchAllItems = async (): Promise<void> => {
+    await galleryStore.fetchAllItems();
+  };
 
   /**
    * Fetch all items
@@ -143,6 +155,7 @@ export function useGallery() {
     totalItems,
 
     // Methods
+    fetchAllItems,
     fetchItems,
     fetchFeaturedItems,
     fetchPublicItems,

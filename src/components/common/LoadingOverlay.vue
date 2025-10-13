@@ -17,19 +17,19 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at center, rgba($dark-bg, 0.95) 0%, rgba($dark-bg, 0.98) 100%);
+  background: radial-gradient(circle at center, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.98) 100%);
   backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: $z-modal;
+  z-index: 9999;
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -41,9 +41,10 @@
   position: relative;
   width: 120px;
   height: 120px;
-  margin: 0 auto $spacing-xl;
-  
-  .spinner-ring {
+  margin: 0 auto 2rem;
+}
+
+.neon-spinner .spinner-ring {
     position: absolute;
     top: 0;
     left: 0;
@@ -53,66 +54,65 @@
     border-radius: 50%;
     
     &.ring-1 {
-      border-top-color: $neon-pink;
-      border-right-color: rgba($neon-pink, 0.3);
+      border-top-color: #ff0080;
+      border-right-color: rgba(255, 0, 128, 0.3);
       animation: neonSpin 2s linear infinite;
-      box-shadow: 0 0 20px rgba($neon-pink, 0.5), inset 0 0 20px rgba($neon-pink, 0.2);
+      box-shadow: 0 0 20px rgba(255, 0, 128, 0.5), inset 0 0 20px rgba(255, 0, 128, 0.2);
     }
     
     &.ring-2 {
-      border-right-color: $neon-blue;
-      border-bottom-color: rgba($neon-blue, 0.3);
+      border-right-color: #00ffff;
+      border-bottom-color: rgba(0, 255, 255, 0.3);
       animation: neonSpin 1.5s linear infinite reverse;
       transform: scale(0.75);
-      box-shadow: 0 0 15px rgba($neon-blue, 0.4), inset 0 0 15px rgba($neon-blue, 0.2);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.2);
     }
     
     &.ring-3 {
-      border-bottom-color: $neon-green;
-      border-left-color: rgba($neon-green, 0.3);
+      border-bottom-color: #00ff00;
+      border-left-color: rgba(0, 255, 0, 0.3);
       animation: neonSpin 1s linear infinite;
       transform: scale(0.5);
-      box-shadow: 0 0 10px rgba($neon-green, 0.3), inset 0 0 10px rgba($neon-green, 0.2);
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3), inset 0 0 10px rgba(0, 255, 0, 0.2);
     }
   }
   
-  .spinner-core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2.5rem;
-    color: $neon-yellow;
-    filter: drop-shadow(0 0 15px $neon-yellow) drop-shadow(0 0 25px rgba($neon-yellow, 0.5));
-    animation: pulse 1.5s ease-in-out infinite;
-  }
+.neon-spinner .spinner-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.5rem;
+  color: #ffff00;
+  filter: drop-shadow(0 0 15px #ffff00) drop-shadow(0 0 25px rgba(255, 255, 0, 0.5));
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 .loading-text {
   font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: $spacing-lg;
+  margin-bottom: 1.5rem;
   animation: textGlow 2s ease-in-out infinite;
 }
 
 .loading-dots {
   display: flex;
-  gap: $spacing-sm;
+  gap: 0.5rem;
   justify-content: center;
-  
-  span {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: $neon-blue;
-    box-shadow: 0 0 10px $neon-blue;
-    animation: dotBounce 1.4s ease-in-out infinite;
-    
-    &:nth-child(1) { animation-delay: 0s; }
-    &:nth-child(2) { animation-delay: 0.2s; }
-    &:nth-child(3) { animation-delay: 0.4s; }
-  }
 }
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ffff;
+  box-shadow: 0 0 10px #00ffff;
+  animation: dotBounce 1.4s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: 0s; }
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes neonSpin {
   0% { 

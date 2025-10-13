@@ -119,13 +119,11 @@ const whatsappProductUrl = computed(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-@use "sass:color";
-
+<style scoped>
 .product-card {
-  background: $card-bg;
-  border-radius: $border-radius-lg;
-  border: 1px solid rgba($neon-blue, 0.2);
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 255, 0.2);
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
@@ -133,79 +131,78 @@ const whatsappProductUrl = computed(() => {
   flex-direction: column;
   animation: fadeInUp 0.8s ease-out;
   position: relative;
-  
-  // Efecto de brillo sutil
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      transparent, 
-      rgba($neon-blue, 0.1), 
-      transparent
-    );
-    transition: left 0.6s ease;
-    z-index: 1;
-    pointer-events: none;
-  }
-  
-  &:hover {
-    transform: translateY(-12px) scale(1.03);
-    box-shadow: 
-      $neon-glow-md rgba($neon-blue, 0.5),
-      0 25px 50px rgba($neon-pink, 0.3),
-      0 0 0 1px rgba($neon-pink, 0.4),
-      inset 0 0 50px rgba($neon-blue, 0.1);
-    border-color: rgba($neon-pink, 0.8);
-    
-    &::before {
-      left: 100%;
-    }
-    
-    .product-img {
-      transform: scale(1.1) rotate(1deg);
-      filter: brightness(1.2) saturate(1.3) contrast(1.1);
-    }
-    
-    .product-name {
-      color: $neon-pink;
-      text-shadow: 0 0 15px rgba($neon-pink, 0.6);
-      transform: translateY(-2px);
-    }
-    
-    .badge {
-      transform: scale(1.15) translateY(-2px);
-      box-shadow: 0 0 20px currentColor;
-    }
-    
-    .product-category {
-      color: $neon-blue;
-      text-shadow: 0 0 10px rgba($neon-blue, 0.5);
-    }
-  }
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(0, 255, 255, 0.1), 
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.product-card:hover {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 
+    0 0 10px rgba(0, 255, 255, 0.5),
+    0 25px 50px rgba(255, 0, 128, 0.3),
+    0 0 0 1px rgba(255, 0, 128, 0.4),
+    inset 0 0 50px rgba(0, 255, 255, 0.1);
+  border-color: rgba(255, 0, 128, 0.8);
+}
+
+.product-card:hover::before {
+  left: 100%;
+}
+
+.product-card:hover .product-img {
+  transform: scale(1.1) rotate(1deg);
+  filter: brightness(1.2) saturate(1.3) contrast(1.1);
+}
+
+.product-card:hover .product-name {
+  color: #ff0080;
+  text-shadow: 0 0 15px rgba(255, 0, 128, 0.6);
+  transform: translateY(-2px);
+}
+
+.product-card:hover .badge {
+  transform: scale(1.15) translateY(-2px);
+  box-shadow: 0 0 20px currentColor;
+}
+
+.product-card:hover .product-category {
+  color: #00ffff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 .product-image {
   position: relative;
   height: 200px;
-  background: linear-gradient(135deg, rgba($neon-pink, 0.1) 0%, rgba($neon-blue, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(0, 255, 255, 0.1) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   cursor: pointer;
-  
-  &:hover .image-overlay {
-    opacity: 1;
-  }
-  
-  &:hover .product-img {
-    transform: scale(1.05);
-    filter: brightness(0.8);
-  }
+}
+
+.product-image:hover .image-overlay {
+  opacity: 1;
+}
+
+.product-image:hover .product-img {
+  transform: scale(1.05);
+  filter: brightness(0.8);
 }
 
 .product-img {
@@ -222,7 +219,7 @@ const whatsappProductUrl = computed(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba($dark-bg, 0.8);
+  background: rgba(10, 10, 10, 0.8);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -230,21 +227,21 @@ const whatsappProductUrl = computed(() => {
   opacity: 0;
   transition: all 0.3s ease;
   backdrop-filter: blur(4px);
-  
-  .overlay-icon {
-    color: $neon-blue;
-    margin-bottom: $spacing-sm;
-    filter: drop-shadow(0 0 10px currentColor);
-    animation: float 2s ease-in-out infinite;
-  }
-  
-  .overlay-text {
-    color: $text-primary;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-align: center;
-    padding: 0 $spacing-md;
-  }
+}
+
+.image-overlay .overlay-icon {
+  color: #00ffff;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 0 10px currentColor);
+  animation: float 2s ease-in-out infinite;
+}
+
+.image-overlay .overlay-text {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 0 1rem;
 }
 
 @keyframes float {
@@ -257,7 +254,7 @@ const whatsappProductUrl = computed(() => {
 }
 
 .image-placeholder {
-  color: rgba($neon-blue, 0.6);
+  color: rgba(0, 255, 255, 0.6);
 }
 
 .placeholder-icon {
@@ -266,78 +263,80 @@ const whatsappProductUrl = computed(() => {
 
 .product-badges {
   position: absolute;
-  top: $spacing-md;
-  right: $spacing-md;
+  top: 1rem;
+  right: 1rem;
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: 0.5rem;
 }
 
 .badge {
-  padding: $spacing-xs $spacing-sm;
-  border-radius: $border-radius-sm;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
-  
-    &.featured {
-      background: linear-gradient(45deg, $neon-pink, color.scale($neon-pink, $lightness: 20%));
-      color: $dark-bg;
-      box-shadow: 0 0 10px rgba($neon-pink, 0.4);
-      animation: neonPulse 2s ease-in-out infinite;
-    }
-    
-    &.discount {
-      background: linear-gradient(45deg, $neon-green, color.scale($neon-green, $lightness: 20%));
-      color: $dark-bg;
-      box-shadow: 0 0 10px rgba($neon-green, 0.4);
-    }  &.category {
-    background: linear-gradient(45deg, rgba($neon-blue, 0.9), rgba($neon-blue, 0.7));
-    color: white;
-    border: 1px solid rgba($neon-blue, 0.3);
-    box-shadow: 0 0 8px rgba($neon-blue, 0.3);
-  }
+}
+
+.badge.featured {
+  background: linear-gradient(45deg, #ff0080, #ff3399);
+  color: #0a0a0a;
+  box-shadow: 0 0 10px rgba(255, 0, 128, 0.4);
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+.badge.discount {
+  background: linear-gradient(45deg, #00ff00, #33ff33);
+  color: #0a0a0a;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+}
+
+.badge.category {
+  background: linear-gradient(45deg, rgba(0, 255, 255, 0.9), rgba(0, 255, 255, 0.7));
+  color: white;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
 }
 
 @keyframes neonPulse {
   0%, 100% {
-    box-shadow: 0 0 10px rgba($neon-pink, 0.4);
+    box-shadow: 0 0 10px rgba(255, 0, 128, 0.4);
   }
   50% {
-    box-shadow: 0 0 20px rgba($neon-pink, 0.6), 0 0 30px rgba($neon-pink, 0.3);
+    box-shadow: 0 0 20px rgba(255, 0, 128, 0.6), 0 0 30px rgba(255, 0, 128, 0.3);
   }
 }
 
 .product-info {
-  padding: $spacing-md;
+  padding: 1rem;
   flex: 1;
 }
 
 .product-category {
-  color: $neon-blue;
+  color: #00ffff;
   font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
-  margin-bottom: $spacing-sm;
+  margin-bottom: 0.5rem;
   transition: all 0.3s ease;
 }
 
 .product-name {
   font-size: 1.25rem;
   font-weight: 700;
-  color: $text-primary;
-  margin-bottom: $spacing-sm;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
   line-height: 1.3;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .product-description {
-  color: $text-secondary;
+  color: #cccccc;
   font-size: 0.9rem;
   line-height: 1.5;
-  margin-bottom: $spacing-lg;
+  margin-bottom: 1.5rem;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
@@ -350,28 +349,28 @@ const whatsappProductUrl = computed(() => {
 .product-pricing {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  margin-bottom: $spacing-md;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .current-price {
   font-size: 1.5rem;
   font-weight: 900;
-  color: $neon-pink;
-  font-family: $font-neon;
+  color: #ff0080;
+  font-family: 'Orbitron', monospace;
 }
 
 .original-price {
   font-size: 1rem;
-  color: $text-muted;
+  color: #888888;
   text-decoration: line-through;
 }
 
 .product-rating {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  margin-bottom: $spacing-lg;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .stars {
@@ -380,25 +379,25 @@ const whatsappProductUrl = computed(() => {
 }
 
 .stars svg {
-  color: $text-muted;
-  
-  &.filled {
-    color: $neon-yellow;
-    fill: currentColor;
-  }
+  color: #888888;
+}
+
+.stars svg.filled {
+  color: #ffff00;
+  fill: currentColor;
 }
 
 .rating-text {
   font-size: 0.85rem;
-  color: $text-secondary;
+  color: #cccccc;
 }
 
 .product-actions {
-  padding: $spacing-md;
-  border-top: 1px solid rgba($text-muted, 0.1);
+  padding: 1rem;
+  border-top: 1px solid rgba(136, 136, 136, 0.1);
   display: flex;
   flex-direction: column;
-  gap: $spacing-xs;
+  gap: 0.125rem;
 }
 
 .btn-full {
@@ -406,38 +405,38 @@ const whatsappProductUrl = computed(() => {
   justify-content: center;
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: 0.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(white, 0.1), transparent);
-    transition: left 0.6s ease;
-  }
-  
-  &:hover::before {
-    left: 100%;
-  }
+}
+
+.btn-full::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn-full:hover::before {
+  left: 100%;
 }
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid rgba($text-secondary, 0.4);
-  color: $text-secondary;
-  
-  &:hover {
-    background: rgba($text-secondary, 0.1);
-    color: $text-primary;
-    border-color: rgba($text-primary, 0.6);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba($text-secondary, 0.2);
-  }
+  border: 1px solid rgba(204, 204, 204, 0.4);
+  color: #cccccc;
+}
+
+.btn-secondary:hover {
+  background: rgba(204, 204, 204, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(204, 204, 204, 0.2);
 }
 </style>

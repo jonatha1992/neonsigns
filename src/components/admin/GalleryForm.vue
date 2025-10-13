@@ -519,7 +519,7 @@ watch(() => formData.isFeatured, (newValue) => {
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .gallery-form-modal {
   position: fixed;
   top: 0;

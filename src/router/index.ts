@@ -89,6 +89,15 @@ const routes: RouteRecordRaw[] = [
             title: 'Administrador de Datos'
         }
     },
+    // Tailwind Demo (for development)
+    {
+        path: '/tailwind-demo',
+        name: 'TailwindDemo',
+        component: () => import('@/views/TailwindDemo.vue'),
+        meta: {
+            title: 'Tailwind CSS Demo - Neon Effects'
+        }
+    },
     // 404 - Not Found (Must be last)
     {
         path: '/:pathMatch(.*)*',

@@ -281,187 +281,185 @@ onUnmounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: $z-fixed;
-  background: rgba($dark-bg, 0.95);
+  z-index: 1030;
+  background: rgba(10, 10, 10, 0.95);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba($neon-pink, 0.2);
+  border-bottom: 1px solid rgba(255, 0, 128, 0.2);
 }
 
 .navbar {
-  padding: $spacing-lg 0;
+  padding: 0.75rem 0;
+}
 
-  &-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  &-actions {
-    display: flex;
-    align-items: center;
-    gap: $spacing-md;
-  }
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .logo {
   font-size: 1.5rem;
   font-weight: 900;
   text-decoration: none;
-  font-family: $font-neon;
+  font-family: 'Orbitron', monospace;
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  
-  .logo-icon {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-    filter: brightness(1.2) saturate(1.3) drop-shadow(0 0 10px rgba(255, 20, 147, 0.8));
-    margin-left: $spacing-sm;
-    animation: neon-pulse 2s ease-in-out infinite alternate;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      filter: brightness(1.5) saturate(1.5) drop-shadow(0 0 20px rgba(255, 20, 147, 1));
-      transform: scale(1.1);
-    }
-  }
-  
-  &:hover {
-    .neon-text {
-      animation: neon-flicker 0.5s;
-    }
-  }
+  gap: 0.25rem;
+}
+
+.logo .logo-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: brightness(1.2) saturate(1.3) drop-shadow(0 0 10px rgba(255, 20, 147, 0.8));
+  margin-left: 0.25rem;
+  animation: neon-pulse 2s ease-in-out infinite alternate;
+  transition: all 0.3s ease;
+}
+
+.logo .logo-icon:hover {
+  filter: brightness(1.5) saturate(1.5) drop-shadow(0 0 20px rgba(255, 20, 147, 1));
+  transform: scale(1.1);
+}
+
+.logo:hover .neon-text {
+  animation: neon-flicker 0.5s;
 }
 
 .nav-links {
   display: flex;
-  gap: $spacing-xl;
+  gap: 1rem;
 }
 
 .nav-link {
   text-decoration: none;
-  color: $text-secondary;
+  color: #cccccc;
   font-weight: 500;
-  transition: all $transition-normal;
-  padding: $spacing-xs $spacing-sm;
-  border-radius: $border-radius-md;
-  
-  &:hover,
-  &.router-link-active {
-    color: $neon-pink;
-    background: rgba($neon-pink, 0.1);
-  }
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.125rem 0.25rem;
+  border-radius: 8px;
+}
+
+.nav-link:hover,
+.nav-link.router-link-active {
+  color: #ff0080;
+  background: rgba(255, 0, 128, 0.1);
 }
 
 .whatsapp-btn {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-xs $spacing-sm;
-  
-  &:hover {
-    transform: translateY(-2px);
-  }
+  gap: 0.25rem;
+  padding: 0.125rem 0.25rem;
+}
+
+.whatsapp-btn:hover {
+  transform: translateY(-2px);
 }
 
 .mobile-menu-btn {
   background: transparent;
   border: none;
-  color: $text-primary;
+  color: #ffffff;
   cursor: pointer;
-  padding: $spacing-sm;
+  padding: 0.25rem;
 }
 
 .mobile-nav {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
-  padding: $spacing-lg 0;
-  border-top: 1px solid rgba($neon-pink, 0.2);
-  margin-top: $spacing-md;
+  gap: 0.25rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid rgba(255, 0, 128, 0.2);
+  margin-top: 0.5rem;
 }
 
 .mobile-nav-link {
   text-decoration: none;
-  color: $text-secondary;
+  color: #cccccc;
   font-weight: 500;
-  padding: $spacing-sm;
-  border-radius: $border-radius-md;
-  transition: all $transition-normal;
-  
-  &:hover,
-  &.router-link-active {
-    color: $neon-pink;
-    background: rgba($neon-pink, 0.1);
-  }
+  padding: 0.25rem;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-// Responsive
-.desktop-only {
-  @media (max-width: $mobile) {
+.mobile-nav-link:hover,
+.mobile-nav-link.router-link-active {
+  color: #ff0080;
+  background: rgba(255, 0, 128, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .desktop-only {
     display: none;
   }
 }
 
-.mobile-only {
-  @media (min-width: $mobile) {
+@media (min-width: 768px) {
+  .mobile-only {
     display: none;
   }
 }
 
-// User Menu Styles
+/* User Menu Styles */
 .user-menu {
   position: relative;
 }
 
 .logout-btn {
   position: relative;
+}
 
-  .chevron-icon {
-    transition: transform $transition-normal;
-  }
+.logout-btn .chevron-icon {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  &:hover .chevron-icon {
-    transform: translateY(2px);
-  }
+.logout-btn:hover .chevron-icon {
+  transform: translateY(2px);
 }
 
 .user-dropdown {
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  background: rgba($dark-bg, 0.98);
-  border: 1px solid rgba($neon-purple, 0.3);
-  border-radius: $border-radius-lg;
+  background: rgba(10, 10, 10, 0.98);
+  border: 1px solid rgba(128, 0, 255, 0.3);
+  border-radius: 12px;
   min-width: 280px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba($neon-purple, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(128, 0, 255, 0.2);
   backdrop-filter: blur(10px);
   overflow: hidden;
   z-index: 1000;
 }
 
 .dropdown-header {
-  padding: $spacing-lg;
-  background: linear-gradient(135deg, rgba($neon-pink, 0.1), rgba($neon-purple, 0.1));
+  padding: 0.75rem;
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.1), rgba(128, 0, 255, 0.1));
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
+  gap: 0.5rem;
 }
 
 .user-avatar-lg {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, $neon-pink, $neon-purple);
+  background: linear-gradient(135deg, #ff0080, #8000ff);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -473,151 +471,152 @@ onUnmounted(() => {
 .user-details {
   flex: 1;
   min-width: 0;
+}
 
-  .user-email {
-    font-weight: 500;
-    color: $text-primary;
-    margin: 0 0 4px 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.user-details .user-email {
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-  .user-role {
-    font-size: 0.85rem;
-    color: $text-secondary;
-    margin: 0;
-  }
+.user-details .user-role {
+  font-size: 0.85rem;
+  color: #cccccc;
+  margin: 0;
 }
 
 .dropdown-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba($neon-purple, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(128, 0, 255, 0.3), transparent);
 }
 
 .dropdown-menu {
-  padding: $spacing-sm 0;
+  padding: 0.25rem 0;
 }
 
 .dropdown-item {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
-  padding: $spacing-md $spacing-lg;
-  color: $text-secondary;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: #cccccc;
   text-decoration: none;
   background: transparent;
   border: none;
   width: 100%;
   cursor: pointer;
-  transition: all $transition-normal;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 0.95rem;
+}
 
-  &:hover {
-    background: rgba($neon-purple, 0.1);
-    color: $neon-purple;
-  }
+.dropdown-item:hover {
+  background: rgba(128, 0, 255, 0.1);
+  color: #8000ff;
+}
 
-  &.logout-item {
-    color: #ef4444;
+.dropdown-item.logout-item {
+  color: #ef4444;
+}
 
-    &:hover {
-      background: rgba(#ef4444, 0.1);
-      color: #ef4444;
-    }
-  }
+.dropdown-item.logout-item:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .login-btn,
 .logout-btn {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-
-  span {
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
+  gap: 0.25rem;
 }
 
-// Mobile Auth
+.login-btn span,
+.logout-btn span {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Mobile Auth */
 .mobile-auth {
-  border-top: 1px solid rgba($neon-pink, 0.2);
-  margin-top: $spacing-md;
-  padding-top: $spacing-md;
-
-  .mobile-user-info {
-    display: flex;
-    align-items: center;
-    gap: $spacing-md;
-    padding: $spacing-md;
-    background: linear-gradient(135deg, rgba($neon-pink, 0.1), rgba($neon-purple, 0.1));
-    border-radius: $border-radius-md;
-    margin-bottom: $spacing-md;
-  }
-
-  .mobile-user-avatar {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, $neon-pink, $neon-purple);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    flex-shrink: 0;
-  }
-
-  .mobile-user-details {
-    flex: 1;
-    min-width: 0;
-
-    .mobile-user-email {
-      font-weight: 500;
-      color: $text-primary;
-      margin: 0 0 4px 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 0.9rem;
-    }
-
-    .mobile-user-role {
-      font-size: 0.75rem;
-      color: $text-secondary;
-      margin: 0;
-    }
-  }
-
-  .admin-link {
-    color: $neon-purple !important;
-    font-weight: 600;
-  }
-
-  .logout-link,
-  .login-link {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    background: transparent;
-    border: none;
-    width: 100%;
-    cursor: pointer;
-    text-align: left;
-    font-size: inherit;
-    font-weight: 600;
-  }
-
-  .logout-link {
-    color: #ef4444 !important;
-  }
-
-  .login-link {
-    color: $neon-pink !important;
-  }
+  border-top: 1px solid rgba(255, 0, 128, 0.2);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
 }
 
-// Dropdown transition
+.mobile-auth .mobile-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.1), rgba(128, 0, 255, 0.1));
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-auth .mobile-user-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #ff0080, #8000ff);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.mobile-auth .mobile-user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-auth .mobile-user-details .mobile-user-email {
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.mobile-auth .mobile-user-details .mobile-user-role {
+  font-size: 0.75rem;
+  color: #cccccc;
+  margin: 0;
+}
+
+.mobile-auth .admin-link {
+  color: #8000ff !important;
+  font-weight: 600;
+}
+
+.mobile-auth .logout-link,
+.mobile-auth .login-link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: transparent;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.mobile-auth .logout-link {
+  color: #ef4444 !important;
+}
+
+.mobile-auth .login-link {
+  color: #ff0080 !important;
+}
+
+/* Dropdown transition */
 .dropdown-enter-active,
 .dropdown-leave-active {
   transition: all 0.2s ease;
@@ -629,7 +628,7 @@ onUnmounted(() => {
   transform: translateY(-10px);
 }
 
-// Animations
+/* Animations */
 @keyframes neon-pulse {
   0% {
     filter: brightness(1.2) saturate(1.3) drop-shadow(0 0 10px rgba(255, 20, 147, 0.8));

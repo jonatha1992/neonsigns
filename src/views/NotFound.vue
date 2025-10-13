@@ -59,13 +59,13 @@ const whatsappUrl = computed(() =>
 )
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .not-found {
   min-height: calc(100vh - 160px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $spacing-3xl 0;
+  padding: 4rem 0;
 }
 
 .error-content {
@@ -76,10 +76,10 @@ const whatsappUrl = computed(() =>
 .neon-404 {
   font-size: 8rem;
   font-weight: 900;
-  font-family: $font-neon;
-  margin-bottom: $spacing-lg;
+  font-family: 'Orbitron', monospace;
+  margin-bottom: 1.5rem;
   
-  @media (max-width: $mobile) {
+  @media (max-width: 768px) {
     font-size: 5rem;
   }
 }
@@ -87,28 +87,28 @@ const whatsappUrl = computed(() =>
 .error-content h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: $text-primary;
-  margin-bottom: $spacing-lg;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
   
-  @media (max-width: $mobile) {
+  @media (max-width: 768px) {
     font-size: 1.5rem;
   }
 }
 
 .error-message {
   font-size: 1.1rem;
-  color: $text-secondary;
+  color: #cccccc;
   line-height: 1.6;
-  margin-bottom: $spacing-2xl;
+  margin-bottom: 3rem;
 }
 
 .error-actions {
   display: flex;
-  gap: $spacing-lg;
+  gap: 1.5rem;
   justify-content: center;
-  margin-bottom: $spacing-3xl;
+  margin-bottom: 4rem;
   
-  @media (max-width: $mobile) {
+  @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
   }
@@ -117,33 +117,33 @@ const whatsappUrl = computed(() =>
 .error-actions .btn {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-md $spacing-lg;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
 }
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid rgba($text-secondary, 0.4);
-  color: $text-secondary;
+  border: 1px solid rgba(204, 204, 204, 0.4);
+  color: #cccccc;
   
   &:hover {
-    background: rgba($text-secondary, 0.1);
-    color: $text-primary;
+    background: rgba(204, 204, 204, 0.1);
+    color: #ffffff;
   }
 }
 
 .helpful-links {
   text-align: left;
-  background: rgba($card-bg, 0.5);
-  border: 1px solid rgba($neon-blue, 0.2);
-  border-radius: $border-radius-lg;
-  padding: $spacing-xl;
+  background: rgba(26, 26, 26, 0.5);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
   
   h3 {
-    color: $neon-blue;
+    color: #00ffff;
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: $spacing-md;
+    margin-bottom: 1rem;
   }
   
   ul {
@@ -153,7 +153,7 @@ const whatsappUrl = computed(() =>
   }
   
   li {
-    margin-bottom: $spacing-sm;
+    margin-bottom: 0.5rem;
     
     &:last-child {
       margin-bottom: 0;
@@ -161,13 +161,13 @@ const whatsappUrl = computed(() =>
   }
   
   a {
-    color: $text-secondary;
+    color: #cccccc;
     text-decoration: none;
-    transition: all $transition-normal;
+    transition: all 0.3s ease;
     
     &:hover {
-      color: $neon-pink;
-      padding-left: $spacing-sm;
+      color: #ff0080;
+      padding-left: 0.5rem;
     }
   }
 }

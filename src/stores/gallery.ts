@@ -29,6 +29,26 @@ export const useGalleryStore = defineStore('gallery', () => {
   const totalItems = computed(() => items.value.length);
 
   /**
+   * Fetch ALL items (for admin panel - no complex filters)
+   * This avoids the composite index requirement
+   */
+  const fetchAllItems = async (): Promise<void> => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      items.value = await FirestoreService.getAllItems();
+      console.log('[GalleryStore] Fetched all items:', items.value.length);
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Error al cargar elementos';
+      console.error('Error fetching all items:', err);
+      items.value = []; // Ensure items is always an array
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  /**
    * Fetch all items with optional filters
    */
   const fetchItems = async (filters?: GalleryFilters, sort?: GallerySortOptions): Promise<void> => {
@@ -40,6 +60,7 @@ export const useGalleryStore = defineStore('gallery', () => {
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Error al cargar elementos';
       console.error('Error fetching items:', err);
+      items.value = []; // Ensure items is always an array
     } finally {
       loading.value = false;
     }
@@ -339,6 +360,7 @@ export const useGalleryStore = defineStore('gallery', () => {
     totalItems,
 
     // Actions
+    fetchAllItems,
     fetchItems,
     fetchFeaturedItems,
     fetchPublicItems,

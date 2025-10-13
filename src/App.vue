@@ -35,7 +35,7 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="scss">
+<style>
 .main-content {
   min-height: calc(100vh - 120px);
   padding-top: 60px;

@@ -166,32 +166,32 @@ const whatsappCotizacionUrl = computed(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .contact-page {
-  padding: $spacing-2xl 0;
+  padding: 3rem 0;
   min-height: calc(100vh - 160px);
   background: linear-gradient(
     135deg,
-    rgba($dark-bg, 1) 0%,
-    rgba($darker-bg, 1) 50%,
-    rgba($dark-bg, 1) 100%
+    rgba(10, 10, 10, 1) 0%,
+    rgba(5, 5, 5, 1) 50%,
+    rgba(10, 10, 10, 1) 100%
   );
 }
 
 .page-header {
   text-align: center;
-  margin-bottom: $spacing-3xl;
-  padding: $spacing-xl 0;
+  margin-bottom: 4rem;
+  padding: 2rem 0;
 }
 
 .page-title {
   font-size: 2.5rem;
   font-weight: 900;
-  margin-bottom: $spacing-md;
-  font-family: $font-neon;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
   letter-spacing: 2px;
   
-  @media (min-width: $desktop) {
+  @media (min-width: 1200px) {
     font-size: 2.2rem;
     letter-spacing: 3px;
   }
@@ -199,13 +199,13 @@ const whatsappCotizacionUrl = computed(() => {
 
 .page-subtitle {
   font-size: 1.1rem;
-  color: $text-secondary;
+  color: #cccccc;
   max-width: 600px;
   margin: 0 auto;
   font-weight: 300;
   letter-spacing: 0.5px;
   
-  @media (min-width: $desktop) {
+  @media (min-width: 1200px) {
     font-size: 1rem;
   }
 }
@@ -213,31 +213,31 @@ const whatsappCotizacionUrl = computed(() => {
 .contact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: $spacing-2xl;
-  margin-bottom: $spacing-3xl;
-  padding: 0 $spacing-md;
+  gap: 3rem;
+  margin-bottom: 4rem;
+  padding: 0 1rem;
   
-  @media (min-width: $tablet) {
-    gap: $spacing-xl;
-    padding: 0 $spacing-lg;
+  @media (min-width: 1024px) {
+    gap: 2rem;
+    padding: 0 1.5rem;
   }
   
-  @media (min-width: $desktop) {
+  @media (min-width: 1200px) {
     grid-template-columns: repeat(3, 1fr);
-    gap: $spacing-3xl;
+    gap: 4rem;
     max-width: 1200px;
-    margin: 0 auto $spacing-3xl auto;
+    margin: 0 auto 4rem auto;
     padding: 0;
   }
 }
 
 .contact-card {
-  background: linear-gradient(145deg, rgba($card-bg, 0.95), rgba($darker-bg, 0.9));
-  border: 1px solid rgba($neon-blue, 0.2);
-  border-radius: $border-radius-xl;
-  padding: $spacing-2xl;
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.95), rgba(5, 5, 5, 0.9));
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 3rem;
   text-align: center;
-  transition: all $transition-normal;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(10px);
@@ -249,19 +249,19 @@ const whatsappCotizacionUrl = computed(() => {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba($neon-blue, 0.5), transparent);
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.5), transparent);
     opacity: 0;
-    transition: opacity $transition-normal;
+    transition: opacity 0.3s ease;
   }
   
-  @media (min-width: $desktop) {
-    padding: $spacing-lg $spacing-xl;
+  @media (min-width: 1200px) {
+    padding: 1.5rem 2rem;
   }
   
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    border-color: rgba($neon-blue, 0.3);
+    border-color: rgba(0, 255, 255, 0.3);
     
     &::before {
       opacity: 1;
@@ -269,25 +269,25 @@ const whatsappCotizacionUrl = computed(() => {
   }
   
   &.primary {
-    border-color: rgba($neon-pink, 0.2);
-    background: linear-gradient(135deg, rgba($neon-pink, 0.03) 0%, rgba($card-bg, 1) 100%);
+    border-color: rgba(255, 0, 128, 0.2);
+    background: linear-gradient(135deg, rgba(255, 0, 128, 0.03) 0%, rgba(26, 26, 26, 1) 100%);
     
     &::before {
-      background: linear-gradient(90deg, transparent, rgba($neon-pink, 0.6), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 0, 128, 0.6), transparent);
     }
     
     &:hover {
-      border-color: rgba($neon-pink, 0.4);
+      border-color: rgba(255, 0, 128, 0.4);
     }
   }
 }
 
 .card-icon {
-  color: $neon-blue;
-  margin-bottom: $spacing-md;
+  color: #00ffff;
+  margin-bottom: 1rem;
   
-  @media (min-width: $desktop) {
-    margin-bottom: $spacing-sm;
+  @media (min-width: 1200px) {
+    margin-bottom: 0.5rem;
     
     svg {
       width: 36px;
@@ -296,34 +296,34 @@ const whatsappCotizacionUrl = computed(() => {
   }
   
   .primary & {
-    color: $neon-pink;
+    color: #ff0080;
   }
 }
 
 .contact-card h2 {
   font-size: 1.3rem;
   font-weight: 700;
-  margin-bottom: $spacing-md;
-  color: $text-primary;
+  margin-bottom: 1rem;
+  color: #ffffff;
   letter-spacing: 1px;
   text-transform: uppercase;
   font-size: 1.1rem;
   
-  @media (min-width: $desktop) {
+  @media (min-width: 1200px) {
     font-size: 1rem;
-    margin-bottom: $spacing-sm;
+    margin-bottom: 0.5rem;
   }
 }
 
 .contact-card p {
-  color: $text-secondary;
-  margin-bottom: $spacing-lg;
+  color: #cccccc;
+  margin-bottom: 1.5rem;
   line-height: 1.6;
   font-size: 0.95rem;
   font-weight: 300;
   
-  @media (min-width: $desktop) {
-    margin-bottom: $spacing-md;
+  @media (min-width: 1200px) {
+    margin-bottom: 1rem;
     font-size: 0.88rem;
     line-height: 1.5;
   }
@@ -332,12 +332,12 @@ const whatsappCotizacionUrl = computed(() => {
 .whatsapp-options {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
-  margin-bottom: $spacing-lg;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
   
-  @media (min-width: $desktop) {
-    gap: $spacing-xs;
-    margin-bottom: $spacing-md;
+  @media (min-width: 1200px) {
+    gap: 0.125rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -345,41 +345,41 @@ const whatsappCotizacionUrl = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: $spacing-sm;
-  color: $text-secondary;
+  gap: 0.5rem;
+  color: #cccccc;
   font-weight: 500;
   font-size: 0.9rem;
   
-  @media (min-width: $desktop) {
+  @media (min-width: 1200px) {
     font-size: 0.85rem;
   }
   
   &.vertical {
     flex-direction: column;
     align-items: stretch;
-    gap: $spacing-md;
+    gap: 1rem;
     
-    @media (min-width: $desktop) {
-      gap: $spacing-sm;
+    @media (min-width: 1200px) {
+      gap: 0.5rem;
     }
   }
   
   svg {
-    color: $neon-blue;
+    color: #00ffff;
   }
 }
 
 .info-item {
   display: flex;
   align-items: flex-start;
-  gap: $spacing-sm;
+  gap: 0.5rem;
   text-align: left;
   
   svg {
     margin-top: 2px;
     flex-shrink: 0;
     
-    @media (min-width: $desktop) {
+    @media (min-width: 1200px) {
       width: 16px;
       height: 16px;
     }
@@ -387,16 +387,16 @@ const whatsappCotizacionUrl = computed(() => {
 }
 
 .faq-section {
-  margin-bottom: $spacing-3xl;
-  padding: $spacing-2xl $spacing-md 0;
+  margin-bottom: 4rem;
+  padding: 3rem 1rem 0;
   
-  @media (min-width: $tablet) {
-    padding: $spacing-3xl $spacing-lg 0;
+  @media (min-width: 1024px) {
+    padding: 4rem 1.5rem 0;
   }
   
-  @media (min-width: $desktop) {
-    margin-bottom: $spacing-3xl;
-    padding: $spacing-3xl 0 0;
+  @media (min-width: 1200px) {
+    margin-bottom: 4rem;
+    padding: 4rem 0 0;
   }
 }
 
@@ -404,69 +404,69 @@ const whatsappCotizacionUrl = computed(() => {
   font-size: 2rem;
   font-weight: 900;
   text-align: center;
-  margin-bottom: $spacing-xl;
-  font-family: $font-neon;
+  margin-bottom: 2rem;
+  font-family: 'Orbitron', monospace;
   
-  @media (min-width: $desktop) {
+  @media (min-width: 1200px) {
     font-size: 1.8rem;
-    margin-bottom: $spacing-lg;
+    margin-bottom: 1.5rem;
   }
 }
 
 .faq-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: $spacing-xl;
+  gap: 2rem;
   
-  @media (min-width: $tablet) {
-    gap: $spacing-lg;
+  @media (min-width: 1024px) {
+    gap: 1.5rem;
   }
   
-  @media (min-width: $desktop) {
+  @media (min-width: 1200px) {
     grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-xl;
+    gap: 2rem;
     max-width: 1000px;
     margin: 0 auto;
   }
 }
 
 .faq-item {
-  background: linear-gradient(135deg, rgba($card-bg, 0.8), rgba($darker-bg, 0.6));
-  border: 1px solid rgba($neon-purple, 0.2);
-  border-radius: $border-radius-lg;
-  padding: $spacing-xl;
-  transition: all $transition-normal;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(5, 5, 5, 0.6));
+  border: 1px solid rgba(128, 0, 255, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s ease;
   backdrop-filter: blur(5px);
   
-  @media (min-width: $desktop) {
-    padding: $spacing-xl $spacing-2xl;
+  @media (min-width: 1200px) {
+    padding: 2rem 3rem;
   }
   
   &:hover {
-    border-color: rgba($neon-purple, 0.3);
-    background: rgba($card-bg, 0.7);
+    border-color: rgba(128, 0, 255, 0.3);
+    background: rgba(26, 26, 26, 0.7);
   }
   
   h3 {
-    color: $neon-purple;
+    color: #8000ff;
     font-size: 1rem;
     font-weight: 600;
-    margin-bottom: $spacing-sm;
+    margin-bottom: 0.5rem;
     letter-spacing: 0.3px;
     
-    @media (min-width: $desktop) {
+    @media (min-width: 1200px) {
       font-size: 0.92rem;
     }
   }
   
   p {
-    color: $text-secondary;
+    color: #cccccc;
     line-height: 1.5;
     margin: 0;
     font-size: 0.9rem;
     font-weight: 300;
     
-    @media (min-width: $desktop) {
+    @media (min-width: 1200px) {
       font-size: 0.85rem;
     }
   }
@@ -474,18 +474,18 @@ const whatsappCotizacionUrl = computed(() => {
 
 .final-cta {
   text-align: center;
-  padding: $spacing-3xl $spacing-xl;
-  margin: $spacing-3xl $spacing-md 0;
-  background: linear-gradient(135deg, rgba($neon-pink, 0.1) 0%, rgba($neon-purple, 0.1) 100%);
-  border-radius: $border-radius-2xl;
-  border: 1px solid rgba($neon-pink, 0.3);
+  padding: 4rem 2rem;
+  margin: 4rem 1rem 0;
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(128, 0, 255, 0.1) 100%);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 0, 128, 0.3);
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(20px);
   
-  @media (min-width: $tablet) {
-    margin: $spacing-3xl $spacing-lg 0;
-    padding: $spacing-3xl $spacing-2xl;
+  @media (min-width: 1024px) {
+    margin: 4rem 1.5rem 0;
+    padding: 4rem 3rem;
   }
   
   &::before {
@@ -495,19 +495,19 @@ const whatsappCotizacionUrl = computed(() => {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, $neon-pink, $neon-purple, $neon-pink);
-    border-radius: $border-radius-xl;
+    background: linear-gradient(45deg, #ff0080, #8000ff, #ff0080);
+    border-radius: 16px;
     opacity: 0;
     z-index: -1;
-    transition: opacity $transition-normal;
+    transition: opacity 0.3s ease;
   }
   
   &:hover::before {
     opacity: 0.1;
   }
   
-  @media (min-width: $desktop) {
-    padding: $spacing-xl $spacing-2xl;
+  @media (min-width: 1200px) {
+    padding: 2rem 3rem;
     max-width: 700px;
     margin: 0 auto;
   }
@@ -516,41 +516,41 @@ const whatsappCotizacionUrl = computed(() => {
 .cta-content h2 {
   font-size: 1.6rem;
   font-weight: 900;
-  margin-bottom: $spacing-md;
-  color: $text-primary;
-  font-family: $font-neon;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  font-family: 'Orbitron', monospace;
   letter-spacing: 1px;
   
-  @media (min-width: $desktop) {
+  @media (min-width: 1200px) {
     font-size: 1.5rem;
   }
 }
 
 .cta-content p {
   font-size: 1rem;
-  color: $text-secondary;
-  margin-bottom: $spacing-lg;
+  color: #cccccc;
+  margin-bottom: 1.5rem;
   font-weight: 300;
   
-  @media (min-width: $desktop) {
+  @media (min-width: 1200px) {
     font-size: 0.95rem;
-    margin-bottom: $spacing-md;
+    margin-bottom: 1rem;
   }
 }
 
 .btn-lg {
-  padding: $spacing-md $spacing-xl;
+  padding: 1rem 2rem;
   font-size: 1rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: $spacing-sm;
+  gap: 0.5rem;
   font-weight: 600;
   letter-spacing: 0.5px;
-  transition: all $transition-normal;
+  transition: all 0.3s ease;
   
-  @media (min-width: $desktop) {
-    padding: $spacing-md $spacing-lg;
+  @media (min-width: 1200px) {
+    padding: 1rem 1.5rem;
     font-size: 0.92rem;
   }
   
@@ -562,13 +562,13 @@ const whatsappCotizacionUrl = computed(() => {
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid rgba($text-secondary, 0.3);
-  color: $text-secondary;
+  border: 1px solid rgba(204, 204, 204, 0.3);
+  color: #cccccc;
   
   &:hover {
-    background: rgba($text-secondary, 0.08);
-    color: $text-primary;
-    border-color: rgba($text-secondary, 0.5);
+    background: rgba(204, 204, 204, 0.08);
+    color: #ffffff;
+    border-color: rgba(204, 204, 204, 0.5);
   }
 }
 </style>

@@ -120,21 +120,17 @@ import {
   ChevronRight, Star, MessageCircle, 
   Shield, Truck, Wrench, Palette 
 } from 'lucide-vue-next'
-import { useProductsStore } from '@/stores/products'
+import { useHybridGallery } from '@/services/hybrid-gallery.service'
 
 const route = useRoute()
-const productsStore = useProductsStore()
+const { service: hybridGallery, isLoading, error } = useHybridGallery()
 
 const loading = ref(true)
-
-const product = computed(() => {
-  const id = route.params.id as string
-  return productsStore.products.find(p => p.id === id)
-})
+const product = ref(null)
+const dataSource = ref<'firebase' | 'mock' | null>(null)
 
 const categoryName = computed(() => {
   if (!product.value) return ''
-  
   const categoryNames: Record<string, string> = {
     business: 'Comercial',
     custom: 'Personalizado', 
@@ -143,32 +139,37 @@ const categoryName = computed(() => {
     signs: 'Señales',
     letters: 'Letras'
   }
-  
   return categoryNames[product.value.category] || 'Otros'
 })
 
 const whatsappUrlQuote = computed(() => {
   if (!product.value) return ''
-  
   const whatsappNumber = '5491140916764'
   const message = `Hola! Vi su trabajo "${product.value.name}" en la galería y me gustaría algo similar. ¿Podrían ayudarme con un diseño parecido? 🌟`
-  
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
 onMounted(async () => {
-  // Cargar productos si no están cargados
-  if (productsStore.products.length === 0) {
-    await productsStore.fetchProducts()
-  }
-  
-  setTimeout(() => {
+  loading.value = true
+  const id = route.params.id as string
+  try {
+    const { item, source } = await hybridGallery.getItemById(id)
+    if (item) {
+      // Si viene de firebase, convertir a Product
+      product.value = source === 'firebase' ? hybridGallery.convertGalleryItemToProduct(item) : item
+      dataSource.value = source
+    } else {
+      product.value = null
+    }
+  } catch (e) {
+    product.value = null
+  } finally {
     loading.value = false
-  }, 1000)
+  }
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .product-detail {
   min-height: 100vh;
   padding: 2rem 0;

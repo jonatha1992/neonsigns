@@ -105,8 +105,23 @@ export class AuthService {
     if (!user || !user.email) {
       return false;
     }
-    // Check if user email matches admin email
-    return user.email === 'tecnofusion.it@gmail.com';
+    // If admin requirement is disabled, any authenticated user is considered admin
+    const requireAdmin = ((import.meta as any)?.env?.VITE_REQUIRE_ADMIN ?? 'true').toString().toLowerCase() !== 'false';
+    if (!requireAdmin) {
+      return true;
+    }
+    // Allow configuring admin emails via env (comma-separated)
+    const envAdmins = (import.meta as any)?.env?.VITE_ADMIN_EMAILS as string | undefined;
+    if (envAdmins && envAdmins.trim().length > 0) {
+      const allowed = envAdmins
+        .split(',')
+        .map(e => e.trim().toLowerCase())
+        .filter(Boolean);
+      return allowed.includes(user.email.toLowerCase());
+    }
+
+    // Fallback to legacy single admin email
+    return user.email.toLowerCase() === 'tecnofusion.it@gmail.com';
   }
 
   /**
@@ -121,6 +136,7 @@ export class AuthService {
    */
   private static getErrorMessage(errorCode: string): string {
     const errorMessages: Record<string, string> = {
+      'auth/invalid-login-credentials': 'Credenciales inválidas',
       'auth/invalid-email': 'El correo electrónico no es válido',
       'auth/user-disabled': 'Esta cuenta ha sido deshabilitada',
       'auth/user-not-found': 'No se encontró ninguna cuenta con este correo electrónico',

@@ -693,7 +693,7 @@ watch(filteredItems, (newItems) => {
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .gallery-list {
   display: flex;
   flex-direction: column;

@@ -270,11 +270,11 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #0a0a0a;
 }
 
 /* Sidebar */
@@ -450,17 +450,26 @@ onUnmounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
+  background-color: #0a0a0a;
+  min-height: 100vh;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background-color: #0a0a0a;
 }
 
 .admin-header {
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .header-left {
@@ -470,7 +479,7 @@ onUnmounted(() => {
 .page-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #ffffff;
   margin: 0;
 }
 
@@ -487,7 +496,7 @@ onUnmounted(() => {
 .notification-btn {
   background: none;
   border: none;
-  color: #6b7280;
+  color: #9ca3af;
   font-size: 1.125rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -495,7 +504,7 @@ onUnmounted(() => {
   transition: color 0.2s;
 
   &:hover {
-    color: #374151;
+    color: #ffffff;
   }
 }
 
@@ -546,10 +555,10 @@ onUnmounted(() => {
   position: absolute;
   top: 100%;
   right: 0;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: #1a1a1a;
+  border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
   min-width: 200px;
   z-index: 50;
   margin-top: 0.25rem;
@@ -560,30 +569,25 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  color: #374151;
+  color: #ffffff;
   text-decoration: none;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #f9fafb;
+    background-color: rgba(0, 255, 255, 0.1);
   }
 
   i {
     width: 16px;
     text-align: center;
+    color: #00ffff;
   }
 }
 
 .dropdown-divider {
   border: none;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgba(0, 255, 255, 0.1);
   margin: 0.25rem 0;
-}
-
-.admin-content {
-  flex: 1;
-  padding: 1.5rem;
-  overflow-y: auto;
 }
 
 /* Modals */

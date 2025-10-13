@@ -10,6 +10,12 @@ export const authGuard = async (
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ): Promise<void> => {
+  const requireAuth = ((import.meta as any)?.env?.VITE_REQUIRE_AUTH ?? 'true').toString().toLowerCase() !== 'false'
+  if (!requireAuth) {
+    // Bypass auth guard (development/testing)
+    next()
+    return
+  }
   const authStore = useAuthStore();
 
   // Wait for auth initialization if still loading
@@ -40,6 +46,12 @@ export const adminGuard = async (
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ): Promise<void> => {
+  const requireAuth = ((import.meta as any)?.env?.VITE_REQUIRE_AUTH ?? 'true').toString().toLowerCase() !== 'false'
+  if (!requireAuth) {
+    // Bypass admin guard (development/testing)
+    next()
+    return
+  }
   const authStore = useAuthStore();
 
   // Wait for auth initialization if still loading
@@ -76,6 +88,12 @@ export const guestGuard = async (
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ): Promise<void> => {
+  const requireAuth = ((import.meta as any)?.env?.VITE_REQUIRE_AUTH ?? 'true').toString().toLowerCase() !== 'false'
+  if (!requireAuth) {
+    // Allow access to guest routes without redirects when auth is disabled
+    next()
+    return
+  }
   const authStore = useAuthStore();
 
   // Wait for auth initialization if still loading
