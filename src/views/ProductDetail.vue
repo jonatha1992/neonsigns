@@ -57,18 +57,6 @@
           <div class="product-badge">{{ categoryName }}</div>
           
           <h1 class="product-title">{{ product.name }}</h1>
-          
-          <div class="product-rating">
-            <div class="stars">
-              <Star 
-                v-for="star in 5" 
-                :key="star"
-                :size="20"
-                :class="{ filled: star <= Math.floor(product.rating) }"
-              />
-            </div>
-            <span class="rating-text">{{ product.rating }} ({{ product.reviews }} reseñas)</span>
-          </div>
         </div>
 
         <div class="product-description-section">
@@ -117,13 +105,13 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { 
-  ChevronRight, Star, MessageCircle, 
+  ChevronRight, MessageCircle, 
   Shield, Truck, Wrench, Palette 
 } from 'lucide-vue-next'
-import { useHybridGallery } from '@/services/hybrid-gallery.service'
+import { useProductsStore } from '@/stores/products'
 
 const route = useRoute()
-const { service: hybridGallery, isLoading, error } = useHybridGallery()
+const productsStore = useProductsStore()
 
 const loading = ref(true)
 const product = ref(null)
@@ -153,11 +141,16 @@ onMounted(async () => {
   loading.value = true
   const id = route.params.id as string
   try {
-    const { item, source } = await hybridGallery.getItemById(id)
-    if (item) {
-      // Si viene de firebase, convertir a Product
-      product.value = source === 'firebase' ? hybridGallery.convertGalleryItemToProduct(item) : item
-      dataSource.value = source
+    // First fetch products if not loaded
+    if (productsStore.products.length === 0) {
+      await productsStore.fetchProducts()
+    }
+    
+    // Find product by id
+    const foundProduct = productsStore.getProductById(id)
+    if (foundProduct) {
+      product.value = foundProduct
+      dataSource.value = 'mock'
     } else {
       product.value = null
     }
@@ -363,32 +356,6 @@ onMounted(async () => {
       font-weight: 700;
       margin-bottom: 1rem;
       line-height: 1.2;
-    }
-
-    .product-rating {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-
-      .stars {
-        display: flex;
-        gap: 0.25rem;
-
-        svg {
-          color: #555;
-          transition: color 0.3s ease;
-
-          &.filled {
-            color: #ffff00;
-            filter: drop-shadow(0 0 8px #ffff00);
-          }
-        }
-      }
-
-      .rating-text {
-        color: #8892b0;
-        font-size: 0.9rem;
-      }
     }
   }
 

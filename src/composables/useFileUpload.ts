@@ -1,6 +1,18 @@
 import { ref } from 'vue';
 import StorageService from '@/services/storage.service';
-import type { UploadProgress, UploadResult } from '@/types/gallery.types';
+
+// Types
+interface UploadProgress {
+  loaded: number;
+  total: number;
+  percentage: number;
+}
+
+interface UploadResult {
+  url: string;
+  path: string;
+  name: string;
+}
 
 /**
  * Composable for file upload operations
@@ -27,11 +39,11 @@ export function useFileUpload() {
     try {
       const result = isTemp
         ? await StorageService.uploadTempImage(file, (prog) => {
-            progress.value = prog;
-          })
+          progress.value = prog;
+        })
         : await StorageService.uploadImage(file, (prog) => {
-            progress.value = prog;
-          });
+          progress.value = prog;
+        });
 
       uploadedFile.value = result;
       return result;

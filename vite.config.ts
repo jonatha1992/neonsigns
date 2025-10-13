@@ -11,20 +11,11 @@ export default defineConfig({
             '@components': path.resolve(__dirname, './src/components'),
             '@views': path.resolve(__dirname, './src/views'),
             '@assets': path.resolve(__dirname, './src/assets'),
-            '@styles': path.resolve(__dirname, './src/styles'),
             '@utils': path.resolve(__dirname, './src/utils'),
             '@stores': path.resolve(__dirname, './src/stores')
         }
     },
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: 'modern',
-                additionalData: `@use "@/styles/variables.scss" as *;`,
-                silenceDeprecations: ['legacy-js-api']
-            }
-        }
-    },
+
     server: {
         port: 3000,
         open: true

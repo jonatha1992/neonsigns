@@ -7,7 +7,19 @@ import {
   type UploadTaskSnapshot
 } from 'firebase/storage';
 import { storage } from '@/config/firebase';
-import type { UploadProgress, UploadResult } from '@/types/gallery.types';
+
+// Types
+interface UploadProgress {
+  loaded: number;
+  total: number;
+  percentage: number;
+}
+
+interface UploadResult {
+  url: string;
+  path: string;
+  name: string;
+}
 
 /**
  * Storage Service

@@ -15,7 +15,6 @@ console.log('==========================================\n');
 // Verificar archivos esenciales
 const essentialFiles = [
     '.env.local',
-    'src/stores/gallery.ts',
     'src/views/admin/AdminLogin.vue',
     'public/images'
 ];

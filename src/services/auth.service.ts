@@ -121,7 +121,7 @@ export class AuthService {
     }
 
     // Fallback to legacy single admin email
-    return user.email.toLowerCase() === 'tecnofusion.it@gmail.com';
+    return user.email.toLowerCase() === 'ldesidel@hotmail.com';
   }
 
   /**

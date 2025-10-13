@@ -18,9 +18,10 @@
         "firebase:serve": "firebase serve",
         "firebase-setup": "npx tsx scripts/firebase-setup-guide.ts",
         "project-status": "npx tsx scripts/project-status.ts",
-        "test-gallery-data": "npx tsx scripts/test-gallery-data.ts",
         "final-verification": "npx tsx scripts/final-verification.ts",
         "test-firebase": "npx tsx scripts/test-firebase.ts",
+        "migrate-images": "npx tsx scripts/migrate-images-authenticated.ts",
+        "check-firestore": "npx tsx scripts/check-firestore-collections.ts",
         "deploy:auto": "git add . && git commit -m 'deploy: Update website' && git push origin master",
         "push": "git add . && git commit && git push origin master"
     },

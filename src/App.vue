@@ -17,22 +17,23 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useProductsStore } from '@/stores/products'
+// import { useProductsStore } from '@/stores/products'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import LoadingOverlay from '@/components/common/LoadingOverlay.vue'
 
 const route = useRoute()
-const productsStore = useProductsStore()
+// const productsStore = useProductsStore()
 
-const isLoading = computed(() => productsStore.loading)
+// const isLoading = computed(() => productsStore.loading)
+const isLoading = computed(() => false) // Temporarily disabled
 const showLayout = computed(() => !route.meta.hideLayout)
 
-onMounted(async () => {
-  await productsStore.fetchProducts()
-})
+// onMounted(async () => {
+//   await productsStore.fetchProducts() // Temporarily disabled
+// })
 </script>
 
 <style>

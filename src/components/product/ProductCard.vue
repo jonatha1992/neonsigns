@@ -27,20 +27,6 @@
       <div class="product-category">{{ categoryName }}</div>
       <h3 class="product-name">{{ product.name }}</h3>
       <p class="product-description">{{ product.description }}</p>
-      
-
-      
-      <div class="product-rating">
-        <div class="stars">
-          <Star 
-            v-for="star in 5" 
-            :key="star"
-            :size="16"
-            :class="{ filled: star <= Math.floor(product.rating) }"
-          />
-        </div>
-        <span class="rating-text">{{ product.rating }} ({{ product.reviews }})</span>
-      </div>
     </div>
     
     <div class="product-actions">

@@ -15,7 +15,7 @@
         <h3>Enlaces útiles</h3>
         <ul>
           <li><a href="/admin" class="btn btn-outline">Volver al Admin</a></li>
-          <li><a href="/admin/gallery" class="btn btn-outline">Gallery Manager</a></li>
+          <li><a href="/galeria" class="btn btn-outline">Ver Galería</a></li>
           <li><a href="/README.md" class="btn btn-outline">Docs del Repositorio</a></li>
         </ul>
       </div>

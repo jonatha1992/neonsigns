@@ -18,25 +18,33 @@
           <div class="card-icon">
             <MessageCircle :size="40" />
           </div>
-          <h2>WhatsApp</h2>
+          <h2>Redes Sociales</h2>
           <p>Respuesta inmediata para cotizaciones y consultas generales.</p>
           
           <div class="whatsapp-options">
-            <a 
-              :href="whatsappConsultaUrl" 
-              target="_blank" 
-              class="btn btn-primary btn-lg"
-            >
-              Consulta General
-            </a>
-            
-            <a 
-              :href="whatsappCotizacionUrl" 
-              target="_blank" 
-              class="btn btn-neon btn-lg"
-            >
-              Pedir Cotización
-            </a>
+            <div class="quote-section">
+              <p class="quote-label">Consultar por:</p>
+              <div class="quote-buttons">
+                <a 
+                  :href="whatsappCotizacionUrl" 
+                  target="_blank" 
+                  class="btn btn-quote btn-whatsapp"
+                  title="Cotizar por WhatsApp"
+                >
+                  <MessageCircle :size="18" />
+                  WhatsApp
+                </a>
+                <a 
+                  :href="instagramUrl" 
+                  target="_blank" 
+                  class="btn btn-quote btn-instagram"
+                  title="Cotizar por Instagram"
+                >
+                  <Instagram :size="18" />
+                  Instagram
+                </a>
+              </div>
+            </div>
           </div>
           
           <div class="contact-info">
@@ -54,15 +62,16 @@
           <p>Consultas detalladas y envío de archivos de diseño personalizados.</p>
           
           <a 
-            href="mailto:info@neonsigns.com?subject=Consulta%20sobre%20carteles%20de%20ne%C3%B3n%20-%20Zona%20Sur"
+            href="mailto:Ldesidel@hotmail.com?subject=Consulta%20carteles%20de%20neon&body=Hola!%20Me%20gustaria%20consultar%20sobre%20carteles%20de%20neon%20personalizados.%0D%0A%0D%0AGracias!"
             class="btn btn-secondary btn-lg"
           >
+            <Mail :size="18" />
             Enviar Email
           </a>
           
           <div class="contact-info">
             <Mail :size="20" />
-            <span>info@neonsigns.com</span>
+            <span>Ldesidel@hotmail.com</span>
           </div>
         </div>
         
@@ -79,7 +88,7 @@
               <MapPin :size="20" />
               <div>
                 <strong>Zona Sur, Buenos Aires</strong><br>
-                <span>Zona CABA - Consultanos ubicación exacta</span>
+                <span>Ezeiza - Consultanos ubicación exacta</span>
               </div>
             </div>
             
@@ -145,7 +154,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { MessageCircle, Mail, Phone, MapPin, Clock } from 'lucide-vue-next'
+import { MessageCircle, Mail, Phone, MapPin, Clock, Instagram } from 'lucide-vue-next'
 
 // WhatsApp configuration
 const whatsappNumber = '+5491140916764'
@@ -164,6 +173,13 @@ const whatsappCotizacionUrl = computed(() => {
                   '¡Gracias! 🌟'
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
+
+const whatsappEmailUrl = computed(() => {
+  const message = 'Hola! Quisiera hacer una consulta detallada sobre carteles de neón personalizados. ¿Podrían ayudarme? También puedo escribir a Ldesidel@hotmail.com si prefieren. ¡Gracias! 🌟'
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+})
+
+const instagramUrl = 'https://www.instagram.com/neonsignsld/'
 </script>
 
 <style scoped>
@@ -180,8 +196,13 @@ const whatsappCotizacionUrl = computed(() => {
 
 .page-header {
   text-align: center;
-  margin-bottom: 4rem;
-  padding: 2rem 0;
+  margin-bottom: 3rem;
+  padding: 1rem 0;
+  
+  @media (min-width: 1200px) {
+    margin-bottom: 2rem;
+    padding: 0.5rem 0;
+  }
 }
 
 .page-title {
@@ -213,20 +234,20 @@ const whatsappCotizacionUrl = computed(() => {
 .contact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 3rem;
-  margin-bottom: 4rem;
+  gap: 2rem;
+  margin-bottom: 3rem;
   padding: 0 1rem;
   
   @media (min-width: 1024px) {
-    gap: 2rem;
+    gap: 1.5rem;
     padding: 0 1.5rem;
   }
   
   @media (min-width: 1200px) {
     grid-template-columns: repeat(3, 1fr);
-    gap: 4rem;
+    gap: 1.5rem;
     max-width: 1200px;
-    margin: 0 auto 4rem auto;
+    margin: 0 auto 3rem auto;
     padding: 0;
   }
 }
@@ -235,7 +256,7 @@ const whatsappCotizacionUrl = computed(() => {
   background: linear-gradient(145deg, rgba(26, 26, 26, 0.95), rgba(5, 5, 5, 0.9));
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 16px;
-  padding: 3rem;
+  padding: 2rem;
   text-align: center;
   transition: all 0.3s ease;
   position: relative;
@@ -332,12 +353,75 @@ const whatsappCotizacionUrl = computed(() => {
 .whatsapp-options {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
   
   @media (min-width: 1200px) {
-    gap: 0.125rem;
+    gap: 0.5rem;
     margin-bottom: 1rem;
+  }
+}
+
+.quote-section {
+  border-top: 1px solid rgba(255, 0, 128, 0.2);
+  padding-top: 0.75rem;
+}
+
+.quote-label {
+  font-size: 0.85rem;
+  color: #cccccc;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.quote-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-quote {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  
+  @media (min-width: 1200px) {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.85rem;
+  }
+}
+
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: white;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  
+  &:hover {
+    background: linear-gradient(135deg, #2edf71, #13a087);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+  }
+}
+
+.btn-instagram {
+  background: linear-gradient(135deg, #E4405F, #C13584, #833AB4);
+  color: white;
+  border: 1px solid rgba(228, 64, 95, 0.3);
+  
+  &:hover {
+    background: linear-gradient(135deg, #ea4c6d, #d63f92, #9347c4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(228, 64, 95, 0.4);
   }
 }
 
@@ -387,16 +471,16 @@ const whatsappCotizacionUrl = computed(() => {
 }
 
 .faq-section {
-  margin-bottom: 4rem;
-  padding: 3rem 1rem 0;
+  margin-bottom: 3rem;
+  padding: 2rem 1rem 0;
   
   @media (min-width: 1024px) {
-    padding: 4rem 1.5rem 0;
+    padding: 2rem 1.5rem 0;
   }
   
   @media (min-width: 1200px) {
-    margin-bottom: 4rem;
-    padding: 4rem 0 0;
+    margin-bottom: 2rem;
+    padding: 2rem 0 0;
   }
 }
 
@@ -404,12 +488,12 @@ const whatsappCotizacionUrl = computed(() => {
   font-size: 2rem;
   font-weight: 900;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-family: 'Orbitron', monospace;
   
   @media (min-width: 1200px) {
     font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -434,12 +518,12 @@ const whatsappCotizacionUrl = computed(() => {
   background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(5, 5, 5, 0.6));
   border: 1px solid rgba(128, 0, 255, 0.2);
   border-radius: 12px;
-  padding: 2rem;
+  padding: 1.5rem;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
   
   @media (min-width: 1200px) {
-    padding: 2rem 3rem;
+    padding: 1.25rem 1.5rem;
   }
   
   &:hover {
@@ -474,8 +558,8 @@ const whatsappCotizacionUrl = computed(() => {
 
 .final-cta {
   text-align: center;
-  padding: 4rem 2rem;
-  margin: 4rem 1rem 0;
+  padding: 2.5rem 2rem;
+  margin: 3rem 1rem 0;
   background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(128, 0, 255, 0.1) 100%);
   border-radius: 24px;
   border: 1px solid rgba(255, 0, 128, 0.3);
@@ -484,8 +568,8 @@ const whatsappCotizacionUrl = computed(() => {
   backdrop-filter: blur(20px);
   
   @media (min-width: 1024px) {
-    margin: 4rem 1.5rem 0;
-    padding: 4rem 3rem;
+    margin: 2rem 1.5rem 0;
+    padding: 2rem 3rem;
   }
   
   &::before {

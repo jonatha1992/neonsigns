@@ -42,7 +42,7 @@
               class="btn btn-primary btn-lg"
             >
               <MessageCircle :size="20" />
-              Cotizar por WhatsApp
+              Consultar
             </a>
             
             <RouterLink to="/galeria" class="btn btn-neon btn-lg">
@@ -58,7 +58,9 @@
               <img src="/logo_neon.png" alt="NEONSigns LD Logo" class="neon-logo-large" />
             </div>
             <div class="neon-sign main-sign">
-              <span class="neon-text blue">OPEN</span>
+              <span class="neon-text blue glitch-open">
+                <span class="glitch-layer" data-text="OPEN">OPEN</span>
+              </span>
             </div>
             <div class="neon-sign secondary-sign">
               <span class="neon-text green">24/7</span>
@@ -234,12 +236,19 @@ const whatsappUrl = computed(() =>
 }
 
 .btn-lg {
-  padding: 1.5rem 3rem;
-  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .btn-lg {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.05rem;
+  }
 }
 
 .hero-visual {
@@ -278,6 +287,175 @@ const whatsappUrl = computed(() =>
   z-index: 3;
   animation: float 3s ease-in-out infinite;
   padding: 2rem 5rem;
+}
+
+/* Glitch Effect for OPEN */
+.glitch-open {
+  position: relative;
+  display: inline-block;
+  animation: intense-flicker-open 6s infinite;
+}
+
+.glitch-layer {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-layer::before,
+.glitch-layer::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.glitch-layer::before {
+  color: #ff00ff;
+  animation: glitch-open-1 6s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  text-shadow: 
+    -3px 0 #ff00ff,
+    0 0 10px #ff00ff,
+    0 0 20px #ff00ff,
+    0 0 30px #ff00ff;
+}
+
+.glitch-layer::after {
+  color: #ffff00;
+  animation: glitch-open-2 6s infinite;
+  clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+  text-shadow: 
+    3px 0 #ffff00,
+    0 0 10px #ffff00,
+    0 0 20px #ffff00,
+    0 0 30px #ffff00;
+}
+
+@keyframes glitch-open-1 {
+  0%, 88%, 100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  89% {
+    opacity: 0.9;
+    transform: translate(-6px, -4px);
+  }
+  90% {
+    opacity: 0;
+    transform: translate(4px, 3px);
+  }
+  91% {
+    opacity: 1;
+    transform: translate(-5px, 3px);
+  }
+  92% {
+    opacity: 0;
+    transform: translate(3px, -3px);
+  }
+  93% {
+    opacity: 0.8;
+    transform: translate(-4px, 2px);
+  }
+  94% {
+    opacity: 0;
+    transform: translate(2px, -2px);
+  }
+  95% {
+    opacity: 0.7;
+    transform: translate(-3px, 3px);
+  }
+}
+
+@keyframes glitch-open-2 {
+  0%, 88%, 100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  89% {
+    opacity: 0.8;
+    transform: translate(5px, 4px);
+  }
+  90% {
+    opacity: 0;
+    transform: translate(-4px, -3px);
+  }
+  91% {
+    opacity: 0.9;
+    transform: translate(6px, -3px);
+  }
+  92% {
+    opacity: 0;
+    transform: translate(-3px, 4px);
+  }
+  93% {
+    opacity: 0.7;
+    transform: translate(5px, -2px);
+  }
+  94% {
+    opacity: 0;
+    transform: translate(-2px, 3px);
+  }
+  95% {
+    opacity: 0.6;
+    transform: translate(4px, -3px);
+  }
+}
+
+@keyframes intense-flicker-open {
+  0%, 87%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  /* Inicio del cortocircuito - parpadeo lento */
+  88% {
+    opacity: 0.4;
+    filter: brightness(1.3);
+  }
+  89% {
+    opacity: 0.1;
+    filter: brightness(2);
+  }
+  90% {
+    opacity: 0.6;
+    filter: brightness(0.7);
+  }
+  91% {
+    opacity: 0.2;
+    filter: brightness(2.5);
+  }
+  92% {
+    opacity: 0.05;
+    filter: brightness(3);
+  }
+  /* Parpadeo más intenso */
+  93% {
+    opacity: 0.5;
+    filter: brightness(1.5);
+  }
+  94% {
+    opacity: 0.1;
+    filter: brightness(2.8);
+  }
+  /* Recuperación gradual */
+  95% {
+    opacity: 0.7;
+    filter: brightness(1.8);
+  }
+  96% {
+    opacity: 0.9;
+    filter: brightness(1.3);
+  }
+  97% {
+    opacity: 1;
+    filter: brightness(1.1);
+  }
+  98% {
+    opacity: 1;
+    filter: brightness(1);
+  }
 }
 
 @media (max-width: 1024px) {

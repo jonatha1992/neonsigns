@@ -48,7 +48,7 @@
             </div>
             <div class="contact-item">
               <Mail :size="16" />
-              <span>info@neonsigns.com</span>
+              <span>Ldesidel@hotmail.com</span>
             </div>
             <div class="contact-item">
               <MapPin :size="16" />
@@ -56,15 +56,25 @@
             </div>
           </div>
 
-          <!-- WhatsApp CTA -->
-          <a 
-            :href="whatsappUrl" 
-            target="_blank" 
-            class="whatsapp-cta"
-          >
-            <MessageCircle :size="20" />
-            <span>¡Chateemos por WhatsApp!</span>
-          </a>
+          <!-- Social CTAs -->
+          <div class="social-ctas">
+            <a
+              :href="whatsappUrl"
+              target="_blank"
+              class="whatsapp-cta"
+            >
+              <MessageCircle :size="20" />
+              <span>WhatsApp</span>
+            </a>
+            <a
+              :href="instagramUrl"
+              target="_blank"
+              class="instagram-cta"
+            >
+              <Instagram :size="20" />
+              <span>Instagram</span>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -96,8 +106,14 @@ import { Phone, Mail, MapPin, MessageCircle, Instagram, Facebook, Twitter } from
 // WhatsApp configuration
 const whatsappNumber = '+5491140916764'
 const whatsappMessage = 'Hola! Quiero más información sobre sus carteles de neón (Zona Sur) 🌟'
-const whatsappUrl = computed(() => 
+const whatsappUrl = computed(() =>
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
+)
+
+// Instagram configuration
+const instagramUsername = 'neonsignsld'
+const instagramUrl = computed(() =>
+  `https://ig.me/m/${instagramUsername}`
 )
 </script>
 
@@ -218,22 +234,43 @@ const whatsappUrl = computed(() =>
   color: #00ffff;
 }
 
-.whatsapp-cta {
+.social-ctas {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.whatsapp-cta,
+.instagram-cta {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  background: linear-gradient(45deg, #25d366, #128c7e);
-  color: white;
-  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
   border-radius: 12px;
   text-decoration: none;
   font-weight: 600;
+  font-size: 0.875rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.whatsapp-cta {
+  background: linear-gradient(45deg, #25d366, #128c7e);
+  color: white;
 }
 
 .whatsapp-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+}
+
+.instagram-cta {
+  background: linear-gradient(45deg, #E1306C, #C13584, #833AB4);
+  color: white;
+}
+
+.instagram-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(225, 48, 108, 0.4);
 }
 
 .footer-bottom {

@@ -23,12 +23,6 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/admin/gallery" class="nav-link" active-class="active">
-              <i class="fas fa-images"></i>
-              <span v-if="!sidebarCollapsed">Galería</span>
-            </router-link>
-          </li>
-          <li class="nav-item">
             <a href="#" @click="showSettings = true" class="nav-link">
               <i class="fas fa-cog"></i>
               <span v-if="!sidebarCollapsed">Configuración</span>
@@ -204,7 +198,6 @@ const pageTitle = computed(() => {
   const routeName = route.name as string
   const titles: Record<string, string> = {
     'admin-dashboard': 'Dashboard',
-    'admin-gallery': 'Gestión de Galería',
     AdminSettings: 'Configuración'
   }
   return titles[routeName] || 'Panel de Administración'

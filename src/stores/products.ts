@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Product, ProductCategory, FilterOptions } from '@/types'
+import { ProductsService } from '@/services/products.service'
 
 interface ProductsState {
     products: Product[]
@@ -62,17 +63,129 @@ export const useProductsStore = defineStore('products', {
         async fetchProducts() {
             this.loading = true
             try {
-                // Aquí deberías implementar la obtención real de productos desde Firestore
-                // Por ejemplo: usar FirestoreService.getAllItems() y mapear a Product si es necesario
-                this.products = []
-                this.featuredProducts = []
-                // Lanzar error o warning si no está implementado
-                // throw new Error('fetchProducts debe implementarse con backend')
+                // Intentar cargar desde Firestore
+                this.products = await ProductsService.getAllProducts()
+
+                // Si no hay productos en Firestore, usar mock como fallback
+                if (this.products.length === 0) {
+                    console.warn('[ProductsStore] No products found in Firestore, using mock data')
+                    this.products = this.getMockProducts()
+                }
+
+                this.featuredProducts = this.products.filter(p => p.featured).slice(0, 4)
+
+                const source = this.products.length > 0 && this.products[0] && !this.products[0].id.startsWith('mock-') ? 'Firebase' : 'Mock'
+                console.log(`[ProductsStore] Loaded ${this.products.length} products from ${source}`)
+                console.log(`[ProductsStore] Featured products: ${this.featuredProducts.length}`)
             } catch (error) {
-                console.error('Error fetching products:', error)
+                console.error('[ProductsStore] Error fetching products from Firestore:', error)
+                // En caso de error, usar datos mock como fallback
+                console.warn('[ProductsStore] Falling back to mock data')
+                this.products = this.getMockProducts()
+                this.featuredProducts = this.products.filter(p => p.featured).slice(0, 4)
             } finally {
                 this.loading = false
             }
+        },
+
+        async fetchFeaturedProducts() {
+            try {
+                this.featuredProducts = await ProductsService.getFeaturedProducts(4)
+
+                if (this.featuredProducts.length === 0) {
+                    // Fallback a productos mock
+                    console.warn('[ProductsStore] No featured products in Firebase, using mock')
+                    this.featuredProducts = this.getMockProducts().filter(p => p.featured).slice(0, 4)
+                } else {
+                    console.log(`[ProductsStore] Loaded ${this.featuredProducts.length} featured products from Firebase`)
+                }
+            } catch (error) {
+                console.error('[ProductsStore] Error fetching featured products:', error)
+                this.featuredProducts = this.getMockProducts().filter(p => p.featured).slice(0, 4)
+            }
+        },
+
+        async fetchProductById(id: string): Promise<Product | null> {
+            try {
+                // Primero buscar en el store local
+                const localProduct = this.products.find(p => p.id === id)
+                if (localProduct) {
+                    return localProduct
+                }
+
+                // Si no está en local, buscar en Firestore
+                const product = await ProductsService.getProductById(id)
+
+                if (product) {
+                    // Agregar al store local si no existe
+                    if (!this.products.find(p => p.id === product.id)) {
+                        this.products.push(product)
+                    }
+                    return product
+                }
+
+                // Fallback: buscar en mock
+                const mockProduct = this.getMockProducts().find(p => p.id === id)
+                return mockProduct || null
+            } catch (error) {
+                console.error(`[ProductsStore] Error fetching product ${id}:`, error)
+                // Fallback a mock
+                return this.getMockProducts().find(p => p.id === id) || null
+            }
+        },
+
+        getMockProducts(): Product[] {
+            // Datos mock como fallback
+            return [
+                {
+                    id: 'mock-1',
+                    name: 'Letrero Neon Personalizado',
+                    description: 'Letrero de neón LED personalizable para negocios y eventos especiales.',
+                    price: 15000,
+                    images: ['/images/placeholder-neon.jpg'],
+                    category: 'custom',
+                    colors: [{ name: 'Multicolor', hex: '#ff0080', glowColor: '#ff0080' }],
+                    sizes: [{ name: 'Mediano', dimensions: '50x30cm', price: 0 }],
+                    customizable: true,
+                    featured: true,
+                    inStock: true,
+                    rating: 4.8,
+                    reviews: 45,
+                    tags: ['personalizado', 'neón', 'led']
+                },
+                {
+                    id: 'mock-2',
+                    name: 'Cartel Comercial LED',
+                    description: 'Cartel luminoso para negocios con alta visibilidad nocturna.',
+                    price: 12000,
+                    images: ['/images/placeholder-business.jpg'],
+                    category: 'business',
+                    colors: [{ name: 'Azul Neón', hex: '#00ffff', glowColor: '#00ffff' }],
+                    sizes: [{ name: 'Grande', dimensions: '80x40cm', price: 0 }],
+                    customizable: true,
+                    featured: true,
+                    inStock: true,
+                    rating: 4.6,
+                    reviews: 32,
+                    tags: ['negocio', 'comercial', 'led']
+                },
+                {
+                    id: 'mock-3',
+                    name: 'Decoración Hogar Neón',
+                    description: 'Elementos decorativos de neón para ambientar espacios del hogar.',
+                    price: 8000,
+                    images: ['/images/placeholder-home.jpg'],
+                    category: 'home',
+                    colors: [{ name: 'Rosa Neón', hex: '#ff0080', glowColor: '#ff0080' }],
+                    sizes: [{ name: 'Pequeño', dimensions: '30x20cm', price: 0 }],
+                    customizable: true,
+                    featured: false,
+                    inStock: true,
+                    rating: 4.7,
+                    reviews: 28,
+                    tags: ['hogar', 'decorativo', 'ambiente']
+                }
+            ]
         },
 
         setFilters(filters: FilterOptions) {

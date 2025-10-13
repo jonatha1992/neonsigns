@@ -61,7 +61,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/admin/dashboard',
         name: 'admin-dashboard',
-        component: () => import('@/views/admin/AdminDashboard.vue'),
+        component: () => import('@/views/admin/ProductsManager.vue'),
         // beforeEnter: adminGuard,
         meta: {
             title: 'Panel de Administración - Neon Signs Store',
@@ -69,35 +69,7 @@ const routes: RouteRecordRaw[] = [
             requiresAdmin: true
         }
     },
-    {
-        path: '/admin/gallery',
-        name: 'admin-gallery',
-        component: () => import('@/views/admin/GalleryManager.vue'),
-        // beforeEnter: adminGuard,
-        meta: {
-            title: 'Gestión de Galería - Admin',
-            requiresAuth: true,
-            requiresAdmin: true
-        }
-    },
-    // Data Manager (for development/admin)
-    {
-        path: '/data-manager',
-        name: 'DataManager',
-        component: () => import('@/views/DataManager.vue'),
-        meta: {
-            title: 'Administrador de Datos'
-        }
-    },
-    // Tailwind Demo (for development)
-    {
-        path: '/tailwind-demo',
-        name: 'TailwindDemo',
-        component: () => import('@/views/TailwindDemo.vue'),
-        meta: {
-            title: 'Tailwind CSS Demo - Neon Effects'
-        }
-    },
+
     // 404 - Not Found (Must be last)
     {
         path: '/:pathMatch(.*)*',

@@ -9,30 +9,40 @@
             class="logo"
             @click.prevent="handleLogoClick"
           >
-            <span class="neon-text pink">NEON</span>
+            <span class="neon-text pink glitch-effect">
+              <span class="glitch-layer" data-text="NEON">NEON</span>
+            </span>
             <span class="text-white">Signs</span>
             <span class="text-white">LD</span>
           </RouterLink>
 
           <!-- Desktop Navigation -->
           <div class="nav-links desktop-only">
-            <RouterLink to="/" class="nav-link">Inicio</RouterLink>
-            <RouterLink to="/galeria" class="nav-link">Galería</RouterLink>
-            <RouterLink to="/contacto" class="nav-link">Contacto</RouterLink>
+            <RouterLink to="/" class="nav-link">
+              <Home :size="18" />
+              <span>Inicio</span>
+            </RouterLink>
+            <RouterLink to="/galeria" class="nav-link">
+              <Images :size="18" />
+              <span>Galería</span>
+            </RouterLink>
+            
+            <!-- Admin Navigation Links (prominent when admin access is available) -->
+            <template v-if="isAdmin">
+              <RouterLink to="/admin/dashboard" class="nav-link admin-nav-link">
+                <LayoutDashboard :size="18" />
+                <span>Panel</span>
+              </RouterLink>
+            </template>
+            
+            <RouterLink to="/contacto" class="nav-link">
+              <Mail :size="18" />
+              <span>Contacto</span>
+            </RouterLink>
           </div>
 
           <!-- Actions -->
           <div class="navbar-actions">
-            <!-- WhatsApp Button -->
-            <a
-              :href="whatsappUrl"
-              target="_blank"
-              class="btn btn-neon whatsapp-btn desktop-only"
-            >
-              <MessageCircle :size="20" />
-              <span>WhatsApp</span>
-            </a>
-
             <!-- Auth Section -->
             <div v-if="user" class="user-menu" ref="userMenuRef">
               <button @click="toggleUserMenu" class="btn btn-neon logout-btn">
@@ -69,16 +79,6 @@
                       <span>Panel Admin</span>
                     </RouterLink>
 
-                    <RouterLink
-                      v-if="isAdmin"
-                      to="/admin/gallery"
-                      class="dropdown-item"
-                      @click="closeUserMenu"
-                    >
-                      <Images :size="16" />
-                      <span>Gestión Galería</span>
-                    </RouterLink>
-
                     <button @click="handleLogout" class="dropdown-item logout-item">
                       <LogOut :size="16" />
                       <span>Cerrar Sesión</span>
@@ -108,9 +108,32 @@
 
         <!-- Mobile Navigation -->
         <div v-show="isMobileMenuOpen" class="mobile-nav">
-          <RouterLink to="/" class="mobile-nav-link" @click="closeMobileMenu">Inicio</RouterLink>
-          <RouterLink to="/galeria" class="mobile-nav-link" @click="closeMobileMenu">Galería</RouterLink>
-          <RouterLink to="/contacto" class="mobile-nav-link" @click="closeMobileMenu">Contacto</RouterLink>
+          <RouterLink to="/" class="mobile-nav-link" @click="closeMobileMenu">
+            <Home :size="18" />
+            <span>Inicio</span>
+          </RouterLink>
+          <RouterLink to="/galeria" class="mobile-nav-link" @click="closeMobileMenu">
+            <Images :size="18" />
+            <span>Galería</span>
+          </RouterLink>
+          
+          <!-- Admin Navigation in Mobile Hamburger (prominent placement) -->
+          <template v-if="isAdmin">
+            <div class="mobile-nav-separator"></div>
+            <div class="mobile-admin-section">
+              <span class="mobile-section-title">Administrador</span>
+              <RouterLink to="/admin/dashboard" class="mobile-nav-link admin-mobile-link" @click="closeMobileMenu">
+                <LayoutDashboard :size="18" />
+                <span>Panel de Control</span>
+              </RouterLink>
+            </div>
+            <div class="mobile-nav-separator"></div>
+          </template>
+          
+          <RouterLink to="/contacto" class="mobile-nav-link" @click="closeMobileMenu">
+            <Mail :size="18" />
+            <span>Contacto</span>
+          </RouterLink>
 
           <!-- Mobile Auth Actions -->
           <div class="mobile-auth">
@@ -133,15 +156,6 @@
                 <LayoutDashboard :size="18" />
                 <span>Panel Admin</span>
               </RouterLink>
-              <RouterLink
-                v-if="isAdmin"
-                to="/admin/gallery"
-                class="mobile-nav-link admin-link"
-                @click="closeMobileMenu"
-              >
-                <Images :size="18" />
-                <span>Gestión Galería</span>
-              </RouterLink>
               <button @click="handleLogout" class="mobile-nav-link logout-link">
                 <LogOut :size="18" />
                 <span>LOGOUT</span>
@@ -162,8 +176,8 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import {
-  MessageCircle, Menu, X, User, ChevronDown, LogIn, LogOut,
-  LayoutDashboard, Images
+  Menu, X, User, ChevronDown, LogIn, LogOut,
+  LayoutDashboard, Images, Home, Mail
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/useAuth'
 
@@ -175,9 +189,38 @@ const { user, signOut } = useAuth()
 const showUserMenu = ref(false)
 const userMenuRef = ref<HTMLElement>()
 
+// Check if admin requirement is disabled
+const requireAdmin = computed(() => {
+  const envValue = (import.meta as any)?.env?.VITE_REQUIRE_ADMIN ?? 'true'
+  console.log('🔧 VITE_REQUIRE_ADMIN env value:', envValue)
+  console.log('🔧 requireAdmin result:', envValue.toString().toLowerCase() !== 'false')
+  return envValue.toString().toLowerCase() !== 'false'
+})
+
 // Admin check
 const isAdmin = computed(() => {
+  console.log('🔧 isAdmin check - requireAdmin.value:', requireAdmin.value)
+  console.log('🔧 isAdmin check - user.value:', user.value)
+  
+  // If admin requirement is disabled, any user (or even no user) is considered admin
+  if (!requireAdmin.value) {
+    console.log('🎉 Admin requirement disabled - granting admin access')
+    return true
+  }
+  
   if (!user.value?.email) return false
+  
+  // Check against configured admin emails
+  const envAdmins = (import.meta as any)?.env?.VITE_ADMIN_EMAILS as string | undefined
+  if (envAdmins && envAdmins.trim().length > 0) {
+    const allowed = envAdmins
+      .split(',')
+      .map(e => e.trim().toLowerCase())
+      .filter(Boolean)
+    return allowed.includes(user.value.email.toLowerCase())
+  }
+  
+  // Fallback to legacy admin email
   return user.value.email === 'tecnofusion.it@gmail.com'
 })
 
@@ -190,13 +233,6 @@ const userDisplayName = computed(() => {
 // Admin access logic - require 5 clicks within 3 seconds
 const clickCount = ref(0)
 let clickTimer: NodeJS.Timeout | null = null
-
-// WhatsApp configuration
-const whatsappNumber = '+5491140916764'
-const whatsappMessage = 'Hola! Me interesa información sobre sus carteles de neón (Zona Sur) 🌟'
-const whatsappUrl = computed(() =>
-  `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
-)
 
 const handleLogoClick = (event: Event) => {
   event.preventDefault()
@@ -274,6 +310,11 @@ const handleClickOutside = (event: MouseEvent) => {
 // Lifecycle
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  
+  // Debug environment variables
+  console.log('🔧 All import.meta.env:', import.meta.env)
+  console.log('🔧 VITE_REQUIRE_ADMIN:', import.meta.env.VITE_REQUIRE_ADMIN)
+  console.log('🔧 VITE_ADMIN_EMAILS:', import.meta.env.VITE_ADMIN_EMAILS)
 })
 
 onUnmounted(() => {
@@ -338,6 +379,108 @@ onUnmounted(() => {
   animation: neon-flicker 0.5s;
 }
 
+/* Glitch Effect */
+.glitch-effect {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-layer {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-layer::before,
+.glitch-layer::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.glitch-layer::before {
+  color: #00ffff;
+  animation: glitch-1 3s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  transform: translate(-2px, -2px);
+}
+
+.glitch-layer::after {
+  color: #ff00ff;
+  animation: glitch-2 3s infinite;
+  clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+  transform: translate(2px, 2px);
+}
+
+.logo:hover .glitch-layer::before,
+.logo:hover .glitch-layer::after {
+  animation-duration: 0.5s;
+}
+
+@keyframes glitch-1 {
+  0%, 90%, 100% {
+    opacity: 0;
+    transform: translate(-2px, -2px);
+  }
+  91%, 94% {
+    opacity: 0.8;
+    transform: translate(-4px, -1px);
+  }
+  92%, 93% {
+    opacity: 0;
+    transform: translate(2px, 1px);
+  }
+  95%, 96% {
+    opacity: 0.7;
+    transform: translate(-3px, 2px);
+  }
+}
+
+@keyframes glitch-2 {
+  0%, 90%, 100% {
+    opacity: 0;
+    transform: translate(2px, 2px);
+  }
+  91%, 93% {
+    opacity: 0.8;
+    transform: translate(3px, -2px);
+  }
+  92%, 94% {
+    opacity: 0;
+    transform: translate(-2px, 1px);
+  }
+  95%, 97% {
+    opacity: 0.7;
+    transform: translate(4px, -1px);
+  }
+}
+
+/* Intensificar cortocircuito cada 5 segundos */
+.glitch-effect {
+  animation: intense-glitch 5s infinite;
+}
+
+@keyframes intense-glitch {
+  0%, 96%, 100% {
+    opacity: 1;
+  }
+  97%, 98% {
+    opacity: 0.8;
+    filter: brightness(1.5) saturate(2);
+  }
+  97.5% {
+    opacity: 0.3;
+    transform: translate(-1px, 0);
+  }
+  98.5% {
+    opacity: 1;
+    transform: translate(1px, 0);
+  }
+}
+
 .nav-links {
   display: flex;
   gap: 1rem;
@@ -348,25 +491,17 @@ onUnmounted(() => {
   color: #cccccc;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0.125rem 0.25rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-link:hover,
 .nav-link.router-link-active {
   color: #ff0080;
   background: rgba(255, 0, 128, 0.1);
-}
-
-.whatsapp-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.125rem 0.25rem;
-}
-
-.whatsapp-btn:hover {
-  transform: translateY(-2px);
 }
 
 .mobile-menu-btn {
@@ -390,9 +525,12 @@ onUnmounted(() => {
   text-decoration: none;
   color: #cccccc;
   font-weight: 500;
-  padding: 0.25rem;
+  padding: 0.75rem;
   border-radius: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .mobile-nav-link:hover,
@@ -626,6 +764,59 @@ onUnmounted(() => {
 .dropdown-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+/* Admin Navigation Styles */
+.admin-nav-link {
+  color: #8000ff !important;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.admin-nav-link:hover {
+  color: #9933ff !important;
+  background: rgba(128, 0, 255, 0.1) !important;
+  transform: translateY(-1px);
+}
+
+.mobile-nav-separator {
+  height: 1px;
+  background: rgba(255, 0, 128, 0.2);
+  margin: 0.5rem 0;
+}
+
+.mobile-admin-section {
+  background: rgba(128, 0, 255, 0.05);
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.mobile-section-title {
+  display: block;
+  color: #8000ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+  padding: 0 0.25rem;
+}
+
+.admin-mobile-link {
+  color: #8000ff !important;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem !important;
+  margin: 0.125rem 0;
+}
+
+.admin-mobile-link:hover {
+  color: #9933ff !important;
+  background: rgba(128, 0, 255, 0.1) !important;
 }
 
 /* Animations */

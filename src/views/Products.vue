@@ -65,14 +65,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { Package, Palette } from 'lucide-vue-next'
-import { hybridGallery } from '@/services/hybrid-gallery.service'
-import { useGalleryStore } from '@/stores/gallery'
 import { useProductsStore } from '@/stores/products'
 import ProductCard from '@/components/product/ProductCard.vue'
 import type { Product } from '@/types'
-import type { GalleryItem } from '@/types/gallery.types'
 
-const galleryStore = useGalleryStore()
 const productsStore = useProductsStore()
 
 const allProducts = ref<Product[]>([])
@@ -100,28 +96,18 @@ const whatsappCustomUrl = computed(() => {
 
 
 
-const mapGalleryItemsToProducts = (items: GalleryItem[]): Product[] =>
-  items.map(item => hybridGallery.convertGalleryItemToProduct(item))
-
 const loadData = async () => {
   loading.value = true
   errorMessage.value = null
 
   try {
-    await galleryStore.fetchPublicItems()
+    await productsStore.fetchProducts()
 
-    if (galleryStore.items.length > 0) {
-      allProducts.value = mapGalleryItemsToProducts(galleryStore.items)
-      dataSource.value = 'firebase'
+    if (productsStore.products.length > 0) {
+      allProducts.value = [...productsStore.products]
+      dataSource.value = 'mock'
     } else {
-      await productsStore.fetchProducts()
-
-      if (productsStore.products.length > 0) {
-        allProducts.value = [...productsStore.products]
-        dataSource.value = 'mock'
-      } else {
-        errorMessage.value = 'No encontramos trabajos para mostrar todavía.'
-      }
+      errorMessage.value = 'No encontramos trabajos para mostrar todavía.'
     }
 
     systemStats.value = {
