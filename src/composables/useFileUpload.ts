@@ -6,12 +6,19 @@ interface UploadProgress {
   loaded: number;
   total: number;
   percentage: number;
+  bytesTransferred?: number;
+  totalBytes?: number;
 }
 
 interface UploadResult {
   url: string;
   path: string;
-  name: string;
+  name?: string;
+  metadata?: {
+    contentType: string;
+    size: number;
+    name: string;
+  };
 }
 
 /**
@@ -21,6 +28,8 @@ interface UploadResult {
 export function useFileUpload() {
   const uploading = ref(false);
   const progress = ref<UploadProgress>({
+    loaded: 0,
+    total: 0,
     percentage: 0,
     bytesTransferred: 0,
     totalBytes: 0
@@ -114,6 +123,8 @@ export function useFileUpload() {
   const reset = (): void => {
     uploading.value = false;
     progress.value = {
+      loaded: 0,
+      total: 0,
       percentage: 0,
       bytesTransferred: 0,
       totalBytes: 0

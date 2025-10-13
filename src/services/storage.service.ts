@@ -13,12 +13,19 @@ interface UploadProgress {
   loaded: number;
   total: number;
   percentage: number;
+  bytesTransferred?: number;
+  totalBytes?: number;
 }
 
 interface UploadResult {
   url: string;
   path: string;
-  name: string;
+  name?: string;
+  metadata?: {
+    contentType: string;
+    size: number;
+    name: string;
+  };
 }
 
 /**
@@ -100,6 +107,8 @@ export class StorageService {
           (snapshot: UploadTaskSnapshot) => {
             // Calculate and report progress
             const progress: UploadProgress = {
+              loaded: snapshot.bytesTransferred,
+              total: snapshot.totalBytes,
               percentage: (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
               bytesTransferred: snapshot.bytesTransferred,
               totalBytes: snapshot.totalBytes

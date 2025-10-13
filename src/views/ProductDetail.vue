@@ -104,17 +104,18 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { 
-  ChevronRight, MessageCircle, 
-  Shield, Truck, Wrench, Palette 
+import {
+  ChevronRight, MessageCircle,
+  Shield, Truck, Wrench, Palette
 } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
+import type { Product } from '@/types'
 
 const route = useRoute()
 const productsStore = useProductsStore()
 
 const loading = ref(true)
-const product = ref(null)
+const product = ref<Product | null>(null)
 const dataSource = ref<'firebase' | 'mock' | null>(null)
 
 const categoryName = computed(() => {

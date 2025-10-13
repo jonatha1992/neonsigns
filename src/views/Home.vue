@@ -151,7 +151,7 @@ const loadData = async () => {
     
     // Detectar si los datos vienen de Firebase o mock
     // Si el primer producto tiene un ID que no empieza con 'mock-', viene de Firebase
-    if (featuredProducts.value.length > 0 && !featuredProducts.value[0].id.startsWith('mock-')) {
+    if (featuredProducts.value.length > 0 && !featuredProducts.value[0]?.id.startsWith('mock-')) {
       dataSource.value = 'firebase'
       console.log(`🏠 Home: Cargados ${featuredProducts.value.length} productos destacados desde Firebase`)
     } else {

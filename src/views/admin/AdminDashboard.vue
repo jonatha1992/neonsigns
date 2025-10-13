@@ -68,7 +68,7 @@
                 class="odd:bg-gray-900/60 hover:bg-neon-cyan/8 transition-colors"
               >
                 <td class="py-2 px-4 border-t border-neon-cyan/5 align-middle">
-                  <span class="block font-semibold mb-0.5">{{ item.title }}</span>
+                  <span class="block font-semibold mb-0.5">{{ item.name }}</span>
                   <router-link
                     :to="`/trabajo/${item.id}`"
                     class="text-xs text-neon-cyan/80 hover:border-neon-cyan/60 border-b border-transparent"
@@ -83,16 +83,16 @@
                   <span
                     class="inline-flex items-center px-2 py-1 rounded text-xs"
                     :class="{
-                      'bg-green-500/12 text-green-400/90': item.isActive && !item.isFeatured,
-                      'bg-red-500/12 text-red-400/85': !item.isActive,
-                      'bg-pink-500/12 text-pink-400/90': item.isFeatured
+                      'bg-green-500/12 text-green-400/90': item.inStock && !item.featured,
+                      'bg-red-500/12 text-red-400/85': !item.inStock,
+                      'bg-pink-500/12 text-pink-400/90': item.featured
                     }"
                   >
                     {{ itemStatus(item) }}
                   </span>
                 </td>
                 <td class="py-2 px-4 border-t border-neon-cyan/5 align-middle">
-                  {{ formatUpdatedAt(item.updatedAt || item.createdAt) }}
+                  {{ formatUpdatedAt((item as any).updatedAt || (item as any).createdAt) }}
                 </td>
               </tr>
             </tbody>

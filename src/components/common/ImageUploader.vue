@@ -551,6 +551,8 @@ const uploadToFirebase = async (file: File, folder: string): Promise<string> => 
       (snapshot) => {
         const progressValue = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         progress.value = {
+          loaded: snapshot.bytesTransferred,
+          total: snapshot.totalBytes,
           percentage: progressValue,
           bytesTransferred: snapshot.bytesTransferred,
           totalBytes: snapshot.totalBytes
