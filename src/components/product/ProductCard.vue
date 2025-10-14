@@ -1,11 +1,12 @@
 <template>
   <div class="product-card">
     <div class="product-image" @click="openModal">
-      <img 
-        v-if="product.images && product.images[0]" 
-        :src="product.images[0]" 
+      <img
+        v-if="product.images && product.images[0]"
+        :src="product.images[0]"
         :alt="product.name"
         class="product-img"
+        loading="lazy"
       />
       <div v-else class="image-placeholder">
         <Zap :size="48" class="placeholder-icon" />
@@ -222,13 +223,19 @@ const whatsappProductUrl = computed(() => {
 
 .product-image {
   position: relative;
-  height: 140px;
+  height: 200px;
   background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(0, 255, 255, 0.1) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   cursor: pointer;
+
+  /* Aspect ratio para mantener proporciones */
+  @media (min-width: 768px) {
+    aspect-ratio: 16 / 10;
+    height: auto;
+  }
 }
 
 .product-image:hover .image-overlay {
@@ -244,6 +251,7 @@ const whatsappProductUrl = computed(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   filter: brightness(0.9) saturate(0.9);
 }
@@ -254,7 +262,7 @@ const whatsappProductUrl = computed(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba($dark-bg, 0.8);
+  background: rgba(26, 26, 26, 0.8);
   display: flex;
   flex-direction: column;
   align-items: center;

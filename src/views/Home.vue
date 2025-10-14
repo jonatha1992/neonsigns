@@ -196,24 +196,32 @@ onMounted(() => {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
-  
-  /* En desktop, máximo 4 columnas */
+
+  /* Desktop: 4 columnas con ancho fijo óptimo */
   @media (min-width: 1200px) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(260px, 1fr));
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
   }
-  
-  /* En tablet, máximo 2 columnas */
-  @media (min-width: 768px) and (max-width: 1199px) {
+
+  /* Tablet grande: 3 columnas */
+  @media (min-width: 992px) and (max-width: 1199px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Tablet: 2 columnas */
+  @media (min-width: 768px) and (max-width: 991px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  
-  /* En móvil, 1 columna */
+
+  /* Móvil: 1 columna con padding reducido */
   @media (max-width: 767px) {
     grid-template-columns: 1fr;
     gap: 1rem;
+    padding: 0 0.5rem;
   }
 }
 
