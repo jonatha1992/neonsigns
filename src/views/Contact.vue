@@ -153,8 +153,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { MessageCircle, Mail, Phone, MapPin, Clock, Instagram } from 'lucide-vue-next'
+import { useSEO } from '@/composables/useSEO'
+
+// SEO Setup
+const { updateSEO } = useSEO()
 
 // WhatsApp configuration
 const whatsappNumber = '+5491140916764'
@@ -179,7 +183,32 @@ const whatsappEmailUrl = computed(() => {
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
+// Instagram URL
 const instagramUrl = 'https://www.instagram.com/cuadros_neonled/'
+
+// Configure SEO on mount
+onMounted(() => {
+  updateSEO({
+    title: 'Contacto - Cotizar Cartel de Neón Personalizado | Zona Sur',
+    description: 'Contáctanos para cotizar tu cartel de neón personalizado en Zona Sur. WhatsApp: +54 9 11 4091-6764. Respuesta inmediata y presupuestos sin compromiso.',
+    keywords: 'contacto carteles neón, cotizar letreros luminosos, presupuesto neon signs zona sur, whatsapp neón personalizado',
+    ogTitle: 'Contacto - Cotiza tu Cartel de Neón | Cuadros NEON LeD',
+    ogDescription: 'Solicita tu cotización personalizada. Respuesta inmediata por WhatsApp e Instagram.',
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "Contacto - Cuadros NEON LeD",
+      "description": "Página de contacto para cotizaciones de carteles de neón",
+      "url": window.location.href,
+      "mainEntity": {
+        "@type": "LocalBusiness",
+        "name": "Cuadros NEON LeD",
+        "telephone": "+54-9-11-4091-6764",
+        "email": "tecnofusion.it@gmail.com"
+      }
+    }
+  })
+})
 </script>
 
 <style scoped>

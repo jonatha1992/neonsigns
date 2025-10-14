@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://your-domain.firebaseapp.com/sitemap.xml
+
+# Additional directives for better SEO
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot  
+Allow: /
+
+# Block admin pages from search engines
+Disallow: /admin/
+Disallow: /admin/*
+
+# Allow specific important pages
+Allow: /
+Allow: /galeria
+Allow: /trabajo/*
+Allow: /contacto
+
+# Crawl delay (optional - helps with server load)
+Crawl-delay: 1

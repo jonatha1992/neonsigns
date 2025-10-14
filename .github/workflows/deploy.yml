@@ -38,6 +38,6 @@ jobs:
     - name: Deploy to Firebase Hosting
       run: |
         npm install -g firebase-tools
-        firebase deploy --token "$FIREBASE_TOKEN" --project neon-signs-app --non-interactive --force
+        firebase deploy --only hosting:cuadros-neon --token "$FIREBASE_TOKEN" --project neon-signs-app --non-interactive --force
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

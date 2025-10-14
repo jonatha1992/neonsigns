@@ -240,7 +240,7 @@ import {
   uploadBytesResumable, 
   getDownloadURL 
 } from 'firebase/storage'
-import { db, storage } from '@/config/firebase'
+import { getDb, getStorageInstance } from '@/config/firebase'
 
 const productsStore = useProductsStore()
 
@@ -450,7 +450,8 @@ const uploadImageToStorage = async (): Promise<string> => {
     // Subir a Firebase Storage
     uploadProgress.value = 30
     showToast('Subiendo a servidor...', 'success')
-    const imageRef = storageRef(storage, `gallery/${fileName}`)
+    const storageInstance = await getStorageInstance()
+    const imageRef = storageRef(storageInstance, `gallery/${fileName}`)
     const uploadTask = uploadBytesResumable(imageRef, webpBlob, {
       contentType: 'image/webp'
     })
@@ -525,12 +526,14 @@ const saveProduct = async () => {
 
     if (isEditMode.value && currentProductId.value) {
       // Update existing product
-      const docRef = doc(db, 'gallery_items', currentProductId.value)
+      const dbInstance = getDb()
+      const docRef = doc(dbInstance, 'gallery_items', currentProductId.value)
       await updateDoc(docRef, productData)
       showToast('Producto actualizado exitosamente', 'success')
     } else {
       // Create new product
-      await addDoc(collection(db, 'gallery_items'), {
+      const dbInstance = getDb()
+      await addDoc(collection(dbInstance, 'gallery_items'), {
         ...productData,
         createdAt: Timestamp.now(),
         orderIndex: products.value.length
@@ -559,7 +562,8 @@ const deleteProduct = async () => {
 
   deleting.value = true
   try {
-    const docRef = doc(db, 'gallery_items', productToDelete.value.id)
+    const dbInstance = getDb()
+    const docRef = doc(dbInstance, 'gallery_items', productToDelete.value.id)
     await deleteDoc(docRef)
     
     showToast('Producto eliminado exitosamente', 'success')

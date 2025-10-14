@@ -105,6 +105,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { MessageCircle, Palette, Zap, Shield, Instagram } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
+import { useSEO } from '@/composables/useSEO'
 import HeroSection from '@/components/common/HeroSection.vue'
 import ProductCard from '@/components/product/ProductCard.vue'
 import NeonSpinner from '@/components/common/NeonSpinner.vue'
@@ -112,6 +113,9 @@ import type { Product } from '@/types'
 
 // Usar el store de productos
 const productsStore = useProductsStore()
+
+// SEO Setup
+const { updateSEO, generateBusinessStructuredData } = useSEO()
 
 // Estado reactivo
 const featuredProducts = ref<Product[]>([])
@@ -164,6 +168,14 @@ const loadData = async () => {
 }
 
 onMounted(() => {
+  // Configure SEO for homepage
+  updateSEO({
+    title: 'Cuadros NEON LeD - Carteles de Neón Personalizados | Zona Sur',
+    description: 'Tienda profesional de carteles de neón personalizados en Zona Sur. Diseños únicos con efectos luminosos para tu negocio o hogar. WhatsApp: +54 9 11 4091-6764',
+    keywords: 'carteles neón zona sur, letreros luminosos personalizados, señalética neon, diseño personalizado, carteles LED argentina, neon signs',
+    structuredData: generateBusinessStructuredData()
+  })
+  
   loadData()
 })
 </script>
