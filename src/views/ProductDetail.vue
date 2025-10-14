@@ -15,11 +15,7 @@
 
     <!-- Loading State -->
     <div v-if="loading" class="loading-container">
-      <div class="neon-spinner">
-        <div class="ring ring-1"></div>
-        <div class="ring ring-2"></div>
-        <div class="ring ring-3"></div>
-      </div>
+      <NeonSpinner size="large" color="cyan" />
     </div>
 
     <!-- Product Not Found -->
@@ -61,6 +57,14 @@
 
         <div class="product-description-section">
           <p class="product-description">{{ product.description }}</p>
+        </div>
+
+        <!-- Product Pricing -->
+        <div class="product-pricing">
+          <span class="current-price">${{ formatPrice(product.price) }}</span>
+          <span v-if="product.originalPrice && product.originalPrice > product.price" class="original-price">
+            ${{ formatPrice(product.originalPrice) }}
+          </span>
         </div>
 
         <!-- Product Actions -->
@@ -109,6 +113,7 @@ import {
   Shield, Truck, Wrench, Palette
 } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
+import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import type { Product } from '@/types'
 
 const route = useRoute()
@@ -138,6 +143,14 @@ const whatsappUrlQuote = computed(() => {
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
+// Función para formatear precios
+const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('es-AR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(price)
+}
+
 onMounted(async () => {
   loading.value = true
   const id = route.params.id as string
@@ -166,16 +179,16 @@ onMounted(async () => {
 <style scoped>
 .product-detail {
   min-height: 100vh;
-  padding: 2rem 0;
+  padding: 1.5rem 0;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+  gap: 0.375rem;
+  margin-bottom: 1.5rem;
   padding: 0 2rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #8892b0;
 
   .breadcrumb-link {
@@ -196,64 +209,7 @@ onMounted(async () => {
   height: 60vh;
 }
 
-.neon-spinner {
-  position: relative;
-  width: 80px;
-  height: 80px;
-
-  .ring {
-    position: absolute;
-    border: 3px solid transparent;
-    border-radius: 50%;
-    animation: neonSpin 2s linear infinite;
-
-    &.ring-1 {
-      width: 80px;
-      height: 80px;
-      border-top-color: #ff0080;
-      animation-delay: 0s;
-    }
-
-    &.ring-2 {
-      width: 60px;
-      height: 60px;
-      top: 10px;
-      left: 10px;
-      border-top-color: #00ffff;
-      animation-delay: -0.5s;
-    }
-
-    &.ring-3 {
-      width: 40px;
-      height: 40px;
-      top: 20px;
-      left: 20px;
-      border-top-color: #00ff00;
-      animation-delay: -1s;
-    }
-  }
-}
-
-@keyframes neonSpin {
-  0% {
-    transform: rotate(0deg);
-    border-top-color: #ff0080;
-  }
-  25% {
-    border-top-color: #00ffff;
-  }
-  50% {
-    transform: rotate(180deg);
-    border-top-color: #00ff00;
-  }
-  75% {
-    border-top-color: #ffff00;
-  }
-  100% {
-    transform: rotate(360deg);
-    border-top-color: #ff0080;
-  }
-}
+/* Spinner styles removed - now using NeonSpinner component */
 
 .not-found {
   display: flex;
@@ -278,14 +234,33 @@ onMounted(async () => {
 .product-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: 3rem;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .product-title {
+      font-size: 1.5rem !important;
+    }
+    
+    .current-price {
+      font-size: 1.75rem !important;
+    }
+    
+    .original-price {
+      font-size: 1.25rem !important;
+    }
+    
+    .product-description {
+      font-size: 0.9rem !important;
+    }
   }
 }
 
@@ -336,26 +311,26 @@ onMounted(async () => {
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 
   .product-header {
     .product-badge {
       display: inline-block;
       background: linear-gradient(135deg, #ff0080, #00ffff);
       color: #ffffff;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
+      padding: 0.375rem 0.75rem;
+      border-radius: 16px;
+      font-size: 0.7rem;
       font-weight: 600;
       text-transform: uppercase;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
     .product-title {
       color: #ffffff;
-      font-size: 2.5rem;
+      font-size: 2rem;
       font-weight: 700;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       line-height: 1.2;
     }
   }
@@ -363,11 +338,41 @@ onMounted(async () => {
   .product-description-section {
     .product-description {
       color: #ccd6f6;
-      font-size: 1.1rem;
-      line-height: 1.6;
+      font-size: 1rem;
+      line-height: 1.5;
       margin: 0;
     }
   }
+
+  .product-pricing {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: rgba(26, 26, 26, 0.8);
+    border: 1px solid rgba(136, 136, 136, 0.2);
+    border-radius: 8px;
+    margin: 1rem 0;
+    backdrop-filter: blur(10px);
+
+    .current-price {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #00ffff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: 0.025em;
+    }
+
+    .original-price {
+      font-size: 1.5rem;
+      color: #666666;
+      text-decoration: line-through;
+      font-weight: 400;
+      opacity: 0.7;
+    }
+  }
+
+
 
   .product-actions {
     .action-buttons {
@@ -381,11 +386,11 @@ onMounted(async () => {
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
+  gap: 0.375rem;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   text-align: center;
@@ -405,29 +410,32 @@ onMounted(async () => {
   }
 
   &.btn-lg {
-    padding: 1.25rem 2.5rem;
-    font-size: 1.1rem;
+    padding: 1rem 2rem;
+    font-size: 1rem;
   }
 }
 
 .product-features {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 2rem;
+  gap: 0.75rem;
+  padding: 1.5rem;
   background: rgba(26, 26, 26, 0.5);
   border: 1px solid rgba(0, 255, 0, 0.2);
-  border-radius: 12px;
+  border-radius: 10px;
 
   .feature {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
     color: #8892b0;
+    font-size: 0.9rem;
     
     svg {
       color: #00ff00;
       flex-shrink: 0;
+      width: 16px;
+      height: 16px;
     }
   }
 }

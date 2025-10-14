@@ -14,12 +14,7 @@
       
       <!-- Products Grid -->
       <div v-if="loading" class="loading-state">
-        <div class="neon-spinner">
-          <div class="spinner-ring ring-1"></div>
-          <div class="spinner-ring ring-2"></div>
-          <div class="spinner-ring ring-3"></div>
-          <div class="spinner-core">⚡</div>
-        </div>
+        <NeonSpinner size="large" color="pink" />
         <p class="loading-text neon-text pink">Cargando galería de trabajos...</p>
         <div class="loading-dots">
           <span></span>
@@ -67,6 +62,7 @@ import { computed, onMounted, ref } from 'vue'
 import { Package, Palette } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import ProductCard from '@/components/product/ProductCard.vue'
+import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import type { Product } from '@/types'
 
 const productsStore = useProductsStore()
@@ -129,24 +125,24 @@ onMounted(() => {
 
 <style scoped>
 .products-page {
-  padding: 2rem 0;
+  padding: 1.5rem 0;
   min-height: calc(100vh - 160px);
 }
 
 .page-header {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 .page-title {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 900;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   font-family: 'Orbitron', monospace;
 }
 
 .page-subtitle {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: #cccccc;
   max-width: 600px;
   margin: 0 auto;
@@ -280,61 +276,12 @@ onMounted(() => {
   padding: 4rem;
 }
 
-.loading-state .neon-spinner {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 2rem;
-}
-
-.loading-state .neon-spinner .spinner-ring {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 3px solid transparent;
-  border-radius: 50%;
-}
-
-.loading-state .neon-spinner .spinner-ring.ring-1 {
-  border-top-color: #ff0080;
-  border-right-color: rgba(255, 0, 128, 0.3);
-  animation: neonSpin 2s linear infinite;
-  box-shadow: 0 0 20px rgba(255, 0, 128, 0.5), inset 0 0 20px rgba(255, 0, 128, 0.2);
-}
-
-.loading-state .neon-spinner .spinner-ring.ring-2 {
-  border-right-color: #00ffff;
-  border-bottom-color: rgba(0, 255, 255, 0.3);
-  animation: neonSpin 1.5s linear infinite reverse;
-  transform: scale(0.75);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.2);
-}
-
-.loading-state .neon-spinner .spinner-ring.ring-3 {
-  border-bottom-color: #00ff00;
-  border-left-color: rgba(0, 255, 0, 0.3);
-  animation: neonSpin 1s linear infinite;
-  transform: scale(0.5);
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3), inset 0 0 10px rgba(0, 255, 0, 0.2);
-}
-
-.loading-state .neon-spinner .spinner-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2.5rem;
-  color: #ffff00;
-  filter: drop-shadow(0 0 15px #ffff00) drop-shadow(0 0 25px rgba(255, 255, 0, 0.5));
-  animation: pulse 1.5s ease-in-out infinite;
-}
+/* Spinner styles removed - now using NeonSpinner component */
 
 .loading-text {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   animation: textGlow 2s ease-in-out infinite;
 }
 
@@ -384,9 +331,39 @@ onMounted(() => {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
   margin-bottom: 3rem;
+}
+
+@media (min-width: 1200px) {
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1rem;
+  }
+  
+  .page-header {
+    margin-bottom: 2rem;
+  }
+  
+  .products-page {
+    padding: 1rem 0;
+  }
 }
 
 .load-more-section {
@@ -419,30 +396,6 @@ onMounted(() => {
 }
 
 /* Keyframe animations */
-@keyframes neonSpin {
-  0% { 
-    transform: rotate(0deg);
-    filter: hue-rotate(0deg) brightness(1);
-  }
-  50% {
-    filter: hue-rotate(180deg) brightness(1.2);
-  }
-  100% { 
-    transform: rotate(360deg);
-    filter: hue-rotate(360deg) brightness(1);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% { 
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% { 
-    opacity: 0.8;
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-}
 
 @keyframes textGlow {
   0%, 100% {

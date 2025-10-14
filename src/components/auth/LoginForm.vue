@@ -67,7 +67,7 @@
         class="submit-btn"
         :disabled="loading"
       >
-        <Loader2 v-if="loading" class="spinner" :size="20" />
+        <NeonSpinner v-if="loading" size="small" color="white" inline />
         <LogIn v-else :size="20" />
         <span>{{ loading ? 'Iniciando sesión...' : 'Iniciar sesión' }}</span>
       </button>
@@ -78,7 +78,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { Eye, EyeOff, Loader2, Mail, Lock, LogIn, AlertCircle, CheckCircle } from 'lucide-vue-next';
+import { Eye, EyeOff, Mail, Lock, LogIn, AlertCircle, CheckCircle } from 'lucide-vue-next';
+import NeonSpinner from '@/components/common/NeonSpinner.vue';
 import { useAuth } from '@/composables/useAuth';
 
 const router = useRouter();
@@ -283,18 +284,7 @@ const handleSubmit = async () => {
   transform: none;
 }
 
-.spinner {
-  animation: spin 1s linear infinite;
-}
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 /* Responsive */
 @media (max-width: 768px) {

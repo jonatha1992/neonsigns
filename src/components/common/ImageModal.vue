@@ -16,30 +16,7 @@
                 @load="onImageLoad"
               />
               <div v-if="!imageLoaded" class="image-loading">
-                <div class="neon-spinner">
-                  <div class="spinner-ring"></div>
-                  <div class="spinner-ring"></div>
-                  <div class="spinner-ring"></div>
-                  <div class="spinner-core">⚡</div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="modal-info">
-              <div class="modal-badge">{{ categoryName }}</div>
-              <h2 class="modal-title">{{ title }}</h2>
-              <p class="modal-description">{{ description }}</p>
-              
-              <div class="modal-actions">
-                <a 
-                  :href="whatsappUrl" 
-                  target="_blank" 
-                  class="btn btn-neon btn-full-width"
-                  @click="closeModal"
-                >
-                  <MessageCircle :size="18" />
-                  Cotizar Similar
-                </a>
+                <NeonSpinner size="medium" color="white" />
               </div>
             </div>
           </div>
@@ -50,16 +27,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { X, MessageCircle } from 'lucide-vue-next'
+import { ref, watch } from 'vue'
+import { X } from 'lucide-vue-next'
+import NeonSpinner from './NeonSpinner.vue'
 
 interface Props {
   isOpen: boolean
   image: string
   title: string
-  description: string
-  category: string
-  productId: string
 }
 
 const props = defineProps<Props>()
@@ -68,24 +43,6 @@ const emit = defineEmits<{
 }>()
 
 const imageLoaded = ref(false)
-
-const categoryName = computed(() => {
-  const categories = {
-    business: 'Negocios',
-    home: 'Hogar',
-    custom: 'Personalizado',
-    decorative: 'Decorativo',
-    signs: 'Señales',
-    letters: 'Letras'
-  }
-  return categories[props.category as keyof typeof categories] || 'Trabajo'
-})
-
-const whatsappNumber = '+5491140916764'
-const whatsappUrl = computed(() => {
-  const message = `Hola! Me interesa el trabajo "${props.title}" (Zona Sur). ¿Podrían darme más información y disponibilidad? 🌟`
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
-})
 
 const closeModal = () => {
   emit('close')
@@ -109,14 +66,12 @@ const handleKeydown = (e: KeyboardEvent) => {
   }
 }
 
-// Prevent body scroll when modal is open
+// Handle keyboard events
 watch(() => props.isOpen, (isOpen) => {
   if (isOpen) {
     document.addEventListener('keydown', handleKeydown)
-    document.body.style.overflow = 'hidden'
   } else {
     document.removeEventListener('keydown', handleKeydown)
-    document.body.style.overflow = ''
   }
 })
 </script>
@@ -134,29 +89,32 @@ watch(() => props.isOpen, (isOpen) => {
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  padding: 1.5rem;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 .modal-container {
   position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 95vw;
+  max-height: 95vh;
   width: 100%;
-  background: #1a1a1a;
-  border-radius: 16px;
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  box-shadow: 
-    0 25px 50px rgba(10, 10, 10, 0.8),
-    0 0 50px rgba(0, 255, 255, 0.2),
-    inset 0 1px 0 rgba(255, 0, 128, 0.1);
+  background: transparent;
+  border-radius: 12px;
   overflow: hidden;
   animation: modalScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: auto;
 }
 
 @media (min-width: 768px) {
   .modal-container {
-    max-width: 1000px;
-    width: auto;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .modal-container {
+    max-width: 1200px;
   }
 }
 
@@ -188,44 +146,41 @@ watch(() => props.isOpen, (isOpen) => {
 }
 
 .modal-content {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-  .modal-content {
-    grid-template-columns: 2fr 1fr;
-    min-height: 500px;
-  }
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-image-container {
   position: relative;
-  background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(0, 255, 255, 0.1) 100%);
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
-}
-
-@media (min-width: 768px) {
-  .modal-image-container {
-    min-height: 500px;
-  }
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .modal-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 95vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   object-position: center;
   transition: opacity 0.3s ease;
+  border-radius: 8px;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .modal-image {
-    object-fit: contain;
-    max-height: 500px;
+    max-height: 80vh;
+    width: 100%;
+    height: auto;
   }
 }
 
@@ -236,118 +191,9 @@ watch(() => props.isOpen, (isOpen) => {
   transform: translate(-50%, -50%);
 }
 
-.neon-spinner {
-  position: relative;
-  width: 60px;
-  height: 60px;
-}
+/* Spinner styles removed - now using NeonSpinner component */
 
-.neon-spinner .spinner-ring {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 2px solid transparent;
-  border-radius: 50%;
-}
-
-.neon-spinner .spinner-ring:nth-child(1) {
-  border-top-color: #ff0080;
-  animation: spin 1.5s linear infinite;
-  box-shadow: 0 0 10px rgba(255, 0, 128, 0.5);
-}
-
-.neon-spinner .spinner-ring:nth-child(2) {
-  border-right-color: #00ffff;
-  animation: spin 1s linear infinite reverse;
-  transform: scale(0.8);
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
-}
-
-.neon-spinner .spinner-ring:nth-child(3) {
-  border-bottom-color: #00ff00;
-  animation: spin 0.8s linear infinite;
-  transform: scale(0.6);
-  box-shadow: 0 0 6px rgba(0, 255, 0, 0.3);
-}
-
-.neon-spinner .spinner-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.5rem;
-  color: #ffff00;
-  filter: drop-shadow(0 0 8px #ffff00);
-  animation: pulse 1.2s ease-in-out infinite;
-}
-
-.modal-info {
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.modal-badge {
-  display: inline-block;
-  background: linear-gradient(45deg, rgba(0, 255, 255, 0.9), rgba(0, 255, 255, 0.7));
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  width: fit-content;
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
-}
-
-.modal-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #ffffff;
-  line-height: 1.2;
-  margin: 0;
-}
-
-@media (max-width: 640px) {
-  .modal-title {
-    font-size: 1.5rem;
-  }
-}
-
-.modal-description {
-  color: #b0b0b0;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: auto;
-}
-
-.modal-actions .btn {
-  justify-content: center;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 1.1rem;
-  padding: 1rem 2rem;
-}
-
-.modal-actions .btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(255, 0, 128, 0.4);
-}
-
-.modal-actions .btn-full-width {
-  width: 100%;
-}
+/* Estilos removidos ya que el modal ahora solo muestra la imagen */
 
 /* Transiciones del modal */
 .modal-enter-active,
@@ -376,19 +222,5 @@ watch(() => props.isOpen, (isOpen) => {
   }
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes pulse {
-  0%, 100% { 
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% { 
-    opacity: 0.8;
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-}
+/* Keyframes removed - now using NeonSpinner component */
 </style>

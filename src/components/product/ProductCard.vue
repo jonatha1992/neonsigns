@@ -19,6 +19,9 @@
       </div>
       <div class="product-badges">
         <span v-if="product.featured" class="badge featured">Destacado</span>
+        <span v-if="product.originalPrice && product.originalPrice > product.price" class="badge discount">
+          -{{ Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) }}%
+        </span>
         <span class="badge category">{{ categoryName }}</span>
       </div>
     </div>
@@ -27,17 +30,17 @@
       <div class="product-category">{{ categoryName }}</div>
       <h3 class="product-name">{{ product.name }}</h3>
       <p class="product-description">{{ product.description }}</p>
+      
+      <!-- Sección de precio -->
+      <div class="product-pricing">
+        <span class="current-price">${{ formatPrice(product.price) }}</span>
+        <span v-if="product.originalPrice && product.originalPrice > product.price" class="original-price">
+          ${{ formatPrice(product.originalPrice) }}
+        </span>
+      </div>
     </div>
     
     <div class="product-actions">
-      <RouterLink 
-        :to="`/trabajo/${product.id}`" 
-        class="btn btn-secondary btn-full"
-      >
-        <Eye :size="18" />
-        Ver Trabajo
-      </RouterLink>
-      
       <a 
         :href="whatsappProductUrl" 
         target="_blank" 
@@ -53,9 +56,6 @@
       :is-open="isModalOpen"
       :image="product.images?.[0] || ''"
       :title="product.name"
-      :description="product.description"
-      :category="product.category"
-      :product-id="product.id"
       @close="closeModal"
     />
   </div>
@@ -97,6 +97,14 @@ const categoryName = computed(() => {
   return categories[props.product.category] || 'Producto'
 })
 
+// Función para formatear precios
+const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('es-AR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(price)
+}
+
 // WhatsApp configuration
 const whatsappNumber = '+5491140916764'
 const whatsappProductUrl = computed(() => {
@@ -117,6 +125,36 @@ const whatsappProductUrl = computed(() => {
   flex-direction: column;
   animation: fadeInUp 0.8s ease-out;
   position: relative;
+}
+
+@media (max-width: 768px) {
+  .product-card {
+    border-radius: 8px;
+  }
+  
+  .product-image {
+    height: 120px;
+  }
+  
+  .product-info {
+    padding: 0.625rem;
+  }
+  
+  .product-actions {
+    padding: 0.625rem;
+  }
+  
+  .current-price {
+    font-size: 1rem;
+  }
+  
+  .product-name {
+    font-size: 0.9rem;
+  }
+  
+  .product-description {
+    font-size: 0.75rem;
+  }
 }
 
 .product-card::before {
@@ -171,9 +209,20 @@ const whatsappProductUrl = computed(() => {
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
+.product-card:hover .product-pricing {
+  border-color: rgba(0, 255, 255, 0.4);
+  background: rgba(26, 26, 26, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 255, 255, 0.2);
+}
+
+.product-card:hover .current-price {
+  color: #00d4ff;
+}
+
 .product-image {
   position: relative;
-  height: 200px;
+  height: 140px;
   background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(0, 255, 255, 0.1) 100%);
   display: flex;
   align-items: center;
@@ -249,11 +298,11 @@ const whatsappProductUrl = computed(() => {
 
 .product-badges {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0.75rem;
+  right: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.375rem;
 }
 
 .badge {
@@ -296,36 +345,36 @@ const whatsappProductUrl = computed(() => {
 }
 
 .product-info {
-  padding: 1rem;
+  padding: 0.75rem;
   flex: 1;
 }
 
 .product-category {
   color: #00ffff;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   transition: all 0.3s ease;
 }
 
 .product-name {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 0.5rem;
-  line-height: 1.3;
+  margin-bottom: 0.25rem;
+  line-height: 1.2;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .product-description {
   color: #cccccc;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  margin-bottom: 0.75rem;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -335,22 +384,33 @@ const whatsappProductUrl = computed(() => {
 .product-pricing {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+  margin-bottom: 0.375rem;
+  padding: 0.25rem 0.375rem;
+  background: rgba(26, 26, 26, 0.8);
+  border-radius: 3px;
+  border: 1px solid rgba(136, 136, 136, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .current-price {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: #ff0080;
-  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #00ffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.025em;
 }
 
 .original-price {
-  font-size: 1rem;
-  color: #888888;
+  font-size: 0.875rem;
+  color: #666666;
   text-decoration: line-through;
+  font-weight: 400;
+  opacity: 0.7;
 }
+
+
 
 .product-rating {
   display: flex;
@@ -379,11 +439,11 @@ const whatsappProductUrl = computed(() => {
 }
 
 .product-actions {
-  padding: 1rem;
+  padding: 0.625rem;
   border-top: 1px solid rgba(136, 136, 136, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
+  gap: 0.375rem;
 }
 
 .btn-full {
@@ -391,7 +451,9 @@ const whatsappProductUrl = computed(() => {
   justify-content: center;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;

@@ -267,8 +267,15 @@ const clearCart = () => {
 }
 
 .item-price {
-  font-weight: 600;
-  color: #ff0080;
+  font-weight: 700;
+  color: #00ffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.025em;
+  background: rgba(0, 255, 255, 0.1);
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  font-size: 0.85rem;
 }
 
 .remove-btn {
@@ -291,8 +298,19 @@ const clearCart = () => {
 .total {
   text-align: center;
   margin-bottom: 1.5rem;
-  font-size: 1.2rem;
-  color: #ffffff;
+  padding: 1rem;
+  background: rgba(26, 26, 26, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(136, 136, 136, 0.2);
+  backdrop-filter: blur(10px);
+  
+  strong {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #00ffff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: 0.025em;
+  }
 }
 
 .cart-actions {

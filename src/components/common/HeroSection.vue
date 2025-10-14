@@ -55,7 +55,7 @@
         <div class="hero-visual">
           <div class="neon-showcase">
             <div class="neon-sign logo-sign">
-              <img src="/logo_neon.png" alt="Cuadros NEON LD Logo" class="neon-logo-large" />
+              <img src="/logo_neon.png" alt="Cuadros NEON LeD Logo" class="neon-logo-large" />
             </div>
             <div class="neon-sign main-sign">
               <span class="neon-text blue glitch-open">

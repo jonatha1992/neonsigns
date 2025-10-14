@@ -13,32 +13,34 @@
               <span class="glitch-layer" data-text="Cuadros">Cuadros</span>
             </span>
             <span class="text-white">NEON</span>
-            <span class="text-white">LD</span>
+            <span class="text-white">LeD</span>
           </RouterLink>
 
           <!-- Desktop Navigation -->
           <div class="nav-links desktop-only">
-            <RouterLink to="/" class="nav-link">
+            <RouterLink to="/" class="nav-link" @click="clearActiveSection">
               <Home :size="18" />
               <span>Inicio</span>
             </RouterLink>
-            <RouterLink to="/galeria" class="nav-link">
+            <button class="nav-link" :class="{ active: activeSection === 'destacados' }" @click="scrollToFeatured">
+              <Star :size="18" />
+              <span>Destacados</span>
+            </button>
+            <RouterLink to="/galeria" class="nav-link" @click="clearActiveSection">
               <Images :size="18" />
               <span>Galería</span>
             </RouterLink>
-            
-            <!-- Admin Navigation Links (prominent when admin access is available) -->
-            <template v-if="isAdmin">
-              <RouterLink to="/admin/dashboard" class="nav-link admin-nav-link">
-                <LayoutDashboard :size="18" />
-                <span>Panel</span>
-              </RouterLink>
-            </template>
-            
-            <RouterLink to="/contacto" class="nav-link">
+            <RouterLink to="/contacto" class="nav-link" @click="clearActiveSection">
               <Mail :size="18" />
               <span>Contacto</span>
             </RouterLink>
+               <!-- Admin Navigation Links (prominent when admin access is available) -->
+            <template v-if="isAdmin">
+              <RouterLink to="/admin/dashboard" class="nav-link admin-nav-link" @click="clearActiveSection">
+                <LayoutDashboard :size="18" />
+                <span>Panel de Control</span>
+              </RouterLink>
+            </template>
           </div>
 
           <!-- Actions -->
@@ -69,16 +71,6 @@
                   <div class="dropdown-divider"></div>
 
                   <div class="dropdown-menu">
-                    <RouterLink
-                      v-if="isAdmin"
-                      to="/admin/dashboard"
-                      class="dropdown-item"
-                      @click="closeUserMenu"
-                    >
-                      <LayoutDashboard :size="16" />
-                      <span>Panel Admin</span>
-                    </RouterLink>
-
                     <button @click="handleLogout" class="dropdown-item logout-item">
                       <LogOut :size="16" />
                       <span>Cerrar Sesión</span>
@@ -108,11 +100,15 @@
 
         <!-- Mobile Navigation -->
         <div v-show="isMobileMenuOpen" class="mobile-nav">
-          <RouterLink to="/" class="mobile-nav-link" @click="closeMobileMenu">
+          <RouterLink to="/" class="mobile-nav-link" @click="handleMobileNavClick">
             <Home :size="18" />
             <span>Inicio</span>
           </RouterLink>
-          <RouterLink to="/galeria" class="mobile-nav-link" @click="closeMobileMenu">
+          <button class="mobile-nav-link" :class="{ active: activeSection === 'destacados' }" @click="handleFeaturedClick">
+            <Star :size="18" />
+            <span>Destacados</span>
+          </button>
+          <RouterLink to="/galeria" class="mobile-nav-link" @click="handleMobileNavClick">
             <Images :size="18" />
             <span>Galería</span>
           </RouterLink>
@@ -122,7 +118,7 @@
             <div class="mobile-nav-separator"></div>
             <div class="mobile-admin-section">
               <span class="mobile-section-title">Administrador</span>
-              <RouterLink to="/admin/dashboard" class="mobile-nav-link admin-mobile-link" @click="closeMobileMenu">
+              <RouterLink to="/admin/dashboard" class="mobile-nav-link admin-mobile-link" @click="handleMobileNavClick">
                 <LayoutDashboard :size="18" />
                 <span>Panel de Control</span>
               </RouterLink>
@@ -130,7 +126,7 @@
             <div class="mobile-nav-separator"></div>
           </template>
           
-          <RouterLink to="/contacto" class="mobile-nav-link" @click="closeMobileMenu">
+          <RouterLink to="/contacto" class="mobile-nav-link" @click="handleMobileNavClick">
             <Mail :size="18" />
             <span>Contacto</span>
           </RouterLink>
@@ -147,15 +143,7 @@
                   <p class="mobile-user-role">{{ isAdmin ? 'Administrador' : 'Usuario' }}</p>
                 </div>
               </div>
-              <RouterLink
-                v-if="isAdmin"
-                to="/admin/dashboard"
-                class="mobile-nav-link admin-link"
-                @click="closeMobileMenu"
-              >
-                <LayoutDashboard :size="18" />
-                <span>Panel Admin</span>
-              </RouterLink>
+
               <button @click="handleLogout" class="mobile-nav-link logout-link">
                 <LogOut :size="18" />
                 <span>LOGOUT</span>
@@ -173,56 +161,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   Menu, X, User, ChevronDown, LogIn, LogOut,
-  LayoutDashboard, Images, Home, Mail
+  LayoutDashboard, Images, Home, Mail, Star
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/useAuth'
 
 const isMobileMenuOpen = ref(false)
 const router = useRouter()
 
+// Active section tracking
+const activeSection = ref<string>('')
+
 // Auth state
-const { user, signOut } = useAuth()
+const { user, signOut, isAdmin } = useAuth()
 const showUserMenu = ref(false)
 const userMenuRef = ref<HTMLElement>()
-
-// Check if admin requirement is disabled
-const requireAdmin = computed(() => {
-  const envValue = (import.meta as any)?.env?.VITE_REQUIRE_ADMIN ?? 'true'
-  console.log('🔧 VITE_REQUIRE_ADMIN env value:', envValue)
-  console.log('🔧 requireAdmin result:', envValue.toString().toLowerCase() !== 'false')
-  return envValue.toString().toLowerCase() !== 'false'
-})
-
-// Admin check
-const isAdmin = computed(() => {
-  console.log('🔧 isAdmin check - requireAdmin.value:', requireAdmin.value)
-  console.log('🔧 isAdmin check - user.value:', user.value)
-  
-  // If admin requirement is disabled, any user (or even no user) is considered admin
-  if (!requireAdmin.value) {
-    console.log('🎉 Admin requirement disabled - granting admin access')
-    return true
-  }
-  
-  if (!user.value?.email) return false
-  
-  // Check against configured admin emails
-  const envAdmins = (import.meta as any)?.env?.VITE_ADMIN_EMAILS as string | undefined
-  if (envAdmins && envAdmins.trim().length > 0) {
-    const allowed = envAdmins
-      .split(',')
-      .map(e => e.trim().toLowerCase())
-      .filter(Boolean)
-    return allowed.includes(user.value.email.toLowerCase())
-  }
-  
-  // Fallback to legacy admin email
-  return user.value.email === 'tecnofusion.it@gmail.com'
-})
 
 // User display name
 const userDisplayName = computed(() => {
@@ -279,6 +235,10 @@ const toggleMobileMenu = () => {
 
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
+  // Clear active section when navigating from mobile menu
+  if (activeSection.value) {
+    activeSection.value = ''
+  }
 }
 
 const toggleUserMenu = () => {
@@ -300,6 +260,55 @@ const handleLogout = async () => {
   }
 }
 
+// Función para scroll a destacados
+const scrollToFeatured = () => {
+  activeSection.value = 'destacados'
+  
+  // Si estamos en la página de inicio, hacer scroll
+  if (router.currentRoute.value.path === '/') {
+    setTimeout(() => {
+      const featuredSection = document.getElementById('destacados')
+      if (featuredSection) {
+        featuredSection.scrollIntoView({ behavior: 'smooth' })
+      }
+    }, 100)
+  } else {
+    // Si no estamos en inicio, navegar y luego hacer scroll
+    router.push('/').then(() => {
+      setTimeout(() => {
+        const featuredSection = document.getElementById('destacados')
+        if (featuredSection) {
+          featuredSection.scrollIntoView({ behavior: 'smooth' })
+        }
+      }, 500)
+    })
+  }
+}
+
+// Función para manejar click en destacados desde móvil
+const handleFeaturedClick = () => {
+  closeMobileMenu()
+  scrollToFeatured()
+}
+
+// Función para limpiar estado activo
+const clearActiveSection = () => {
+  activeSection.value = ''
+}
+
+// Función para manejar navegación móvil
+const handleMobileNavClick = () => {
+  closeMobileMenu()
+  clearActiveSection()
+}
+
+// Watch route changes to reset active section
+watch(() => router.currentRoute.value.path, (newPath) => {
+  if (newPath !== '/') {
+    activeSection.value = ''
+  }
+})
+
 // Click outside to close user menu
 const handleClickOutside = (event: MouseEvent) => {
   if (userMenuRef.value && !userMenuRef.value.contains(event.target as Node)) {
@@ -307,14 +316,22 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 }
 
+// Watch for auth changes
+watch([user, isAdmin], ([newUser, newIsAdmin]) => {
+  console.log('🔄 [AppHeader] Auth state changed:')
+  console.log('   - User:', newUser?.email || 'None')
+  console.log('   - Is Admin:', newIsAdmin)
+}, { immediate: true })
+
 // Lifecycle
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
-  
-  // Debug environment variables
-  console.log('🔧 All import.meta.env:', import.meta.env)
-  console.log('🔧 VITE_REQUIRE_ADMIN:', import.meta.env.VITE_REQUIRE_ADMIN)
-  console.log('🔧 VITE_ADMIN_EMAILS:', import.meta.env.VITE_ADMIN_EMAILS)
+
+  // Debug authentication and admin status
+  console.log('🔧 [AppHeader] Mounted - Current user:', user.value?.email)
+  console.log('🔧 [AppHeader] Mounted - Is admin:', isAdmin.value)
+  console.log('🔧 [AppHeader] VITE_REQUIRE_ADMIN:', import.meta.env.VITE_REQUIRE_ADMIN)
+  console.log('🔧 [AppHeader] VITE_ADMIN_EMAILS:', import.meta.env.VITE_ADMIN_EMAILS)
 })
 
 onUnmounted(() => {
@@ -499,7 +516,8 @@ onUnmounted(() => {
 }
 
 .nav-link:hover,
-.nav-link.router-link-active {
+.nav-link.router-link-active,
+.nav-link.active {
   color: #ff0080;
   background: rgba(255, 0, 128, 0.1);
 }
@@ -515,34 +533,66 @@ onUnmounted(() => {
 .mobile-nav {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.75rem 0;
+  gap: 0;
+  padding: 0.5rem 0;
   border-top: 1px solid rgba(255, 0, 128, 0.2);
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
+  background: rgba(26, 26, 26, 0.5);
+  border-radius: 8px;
+  margin: 0.5rem 0;
 }
 
 .mobile-nav-link {
   text-decoration: none;
-  color: #cccccc;
+  color: #ffffff;
   font-weight: 500;
-  padding: 0.75rem;
-  border-radius: 8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.75rem 1rem;
+  border-radius: 0;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.95rem;
+  position: relative;
+}
+
+.mobile-nav-link svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
 }
 
 .mobile-nav-link:hover,
-.mobile-nav-link.router-link-active {
-  color: #ff0080;
-  background: rgba(255, 0, 128, 0.1);
+.mobile-nav-link.router-link-active,
+.mobile-nav-link.active {
+  color: #00ffff;
+  background: rgba(0, 255, 255, 0.1);
+  border-left: 3px solid #00ffff;
+  padding-left: 1.25rem;
+}
+
+.mobile-nav-link:last-child {
+  border-bottom: none;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .desktop-only {
     display: none;
+  }
+  
+  .mobile-nav {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+  }
+  
+  .navbar {
+    padding: 0.5rem 0;
+  }
+  
+  .logo {
+    font-size: 1.25rem;
   }
 }
 
@@ -679,25 +729,26 @@ onUnmounted(() => {
 
 /* Mobile Auth */
 .mobile-auth {
-  border-top: 1px solid rgba(255, 0, 128, 0.2);
-  margin-top: 0.5rem;
-  padding-top: 0.5rem;
+  border-top: 1px solid rgba(0, 255, 255, 0.2);
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .mobile-auth .mobile-user-info {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background: linear-gradient(135deg, rgba(255, 0, 128, 0.1), rgba(128, 0, 255, 0.1));
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mobile-auth .mobile-user-avatar {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #ff0080, #8000ff);
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #00ffff, #0088ff);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -714,21 +765,22 @@ onUnmounted(() => {
 .mobile-auth .mobile-user-details .mobile-user-email {
   font-weight: 500;
   color: #ffffff;
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .mobile-auth .mobile-user-details .mobile-user-role {
-  font-size: 0.75rem;
-  color: #cccccc;
+  font-size: 0.7rem;
+  color: #00ffff;
   margin: 0;
+  font-weight: 600;
 }
 
 .mobile-auth .admin-link {
-  color: #8000ff !important;
+  color: #00ffff !important;
   font-weight: 600;
 }
 
@@ -736,22 +788,37 @@ onUnmounted(() => {
 .mobile-auth .login-link {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.75rem;
   background: transparent;
   border: none;
   width: 100%;
   cursor: pointer;
   text-align: left;
-  font-size: inherit;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
 }
 
 .mobile-auth .logout-link {
-  color: #ef4444 !important;
+  color: #ff6b6b !important;
+}
+
+.mobile-auth .logout-link:hover {
+  background: rgba(255, 107, 107, 0.1);
+  border-left: 3px solid #ff6b6b;
+  padding-left: 1.25rem;
 }
 
 .mobile-auth .login-link {
-  color: #ff0080 !important;
+  color: #00ffff !important;
+}
+
+.mobile-auth .login-link:hover {
+  background: rgba(0, 255, 255, 0.1);
+  border-left: 3px solid #00ffff;
+  padding-left: 1.25rem;
 }
 
 /* Dropdown transition */
@@ -764,6 +831,24 @@ onUnmounted(() => {
 .dropdown-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+/* Mobile menu transition */
+.mobile-nav {
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 500px;
+  }
 }
 
 /* Admin Navigation Styles */
@@ -782,41 +867,47 @@ onUnmounted(() => {
 
 .mobile-nav-separator {
   height: 1px;
-  background: rgba(255, 0, 128, 0.2);
-  margin: 0.5rem 0;
+  background: rgba(0, 255, 255, 0.3);
+  margin: 0;
 }
 
 .mobile-admin-section {
-  background: rgba(128, 0, 255, 0.05);
-  border-radius: 8px;
-  padding: 0.5rem;
-  margin: 0.25rem 0;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid rgba(0, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 .mobile-section-title {
   display: block;
-  color: #8000ff;
-  font-size: 0.75rem;
-  font-weight: 700;
+  color: #00ffff;
+  font-size: 0.7rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 0.5rem;
-  padding: 0 0.25rem;
+  margin: 0;
+  padding: 0.5rem 1rem 0.25rem 1rem;
+  background: rgba(0, 255, 255, 0.1);
 }
 
 .admin-mobile-link {
-  color: #8000ff !important;
+  color: #00ffff !important;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem !important;
-  margin: 0.125rem 0;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem !important;
+  margin: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .admin-mobile-link:hover {
-  color: #9933ff !important;
-  background: rgba(128, 0, 255, 0.1) !important;
+  color: #00ffff !important;
+  background: rgba(0, 255, 255, 0.15) !important;
+  border-left: 3px solid #00ffff;
+  padding-left: 1.25rem !important;
 }
 
 /* Animations */

@@ -166,7 +166,9 @@
     <!-- Loading Overlay -->
     <div v-if="loading" class="fixed inset-0 bg-black/88 flex items-center justify-center z-[2000]">
       <div class="text-center p-8 rounded-xl bg-gray-900/95 border border-neon-cyan/25">
-        <i class="fas fa-spinner fa-spin text-2xl text-neon-cyan mb-2"></i>
+        <div class="mb-4">
+          <NeonSpinner size="large" color="cyan" />
+        </div>
         <p class="text-sm text-gray-300/90 m-0">Cargando datos del dashboard…</p>
       </div>
     </div>
@@ -177,6 +179,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useProductsStore } from '@/stores/products'
 import type { Product } from '@/types'
+import NeonSpinner from '@/components/common/NeonSpinner.vue'
 
 // Reactive state
 const loading = ref(true)

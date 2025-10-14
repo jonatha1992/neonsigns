@@ -12,11 +12,11 @@
         <div class="logo-glow"></div>
         <img
           src="/logo_neon.png"
-          alt="Cuadros NEON LD"
+          alt="Cuadros NEON LeD"
           class="neon-logo"
         />
         <h1 class="brand-title">
-          <span class="neon-text pink">Cuadros</span> <span class="text-white">NEON</span> <span class="text-white">LD</span>
+          <span class="neon-text pink">Cuadros</span> <span class="text-white">NEON</span> <span class="text-white">LeD</span>
         </h1>
         <p class="brand-subtitle">Panel de Administración</p>
       </div>
