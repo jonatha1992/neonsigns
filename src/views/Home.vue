@@ -4,25 +4,17 @@
     <HeroSection />
     
     <!-- Featured Products -->
-    <section class="featured-section">
+    <section id="destacados" class="featured-section">
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">
-            <span class="neon-text blue">Trabajos</span> Destacados
+            <span class="neon-text blue">TRABAJOS</span> Destacados
           </h2>
-          <p class="section-subtitle">
-            Explora algunos de nuestros trabajos más destacados y solicita el tuyo personalizado
-          </p>
         </div>
         
         <!-- Loading State -->
         <div v-if="productsStoreLoading" class="loading-state">
-          <div class="neon-spinner">
-            <div class="spinner-ring ring-1"></div>
-            <div class="spinner-ring ring-2"></div>
-            <div class="spinner-ring ring-3"></div>
-            <div class="spinner-core">⚡</div>
-          </div>
+          <NeonSpinner size="large" color="pink" />
           <p class="loading-text neon-text pink">Cargando trabajos destacados...</p>
         </div>
         
@@ -115,6 +107,7 @@ import { MessageCircle, Palette, Zap, Shield, Instagram } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import HeroSection from '@/components/common/HeroSection.vue'
 import ProductCard from '@/components/product/ProductCard.vue'
+import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import type { Product } from '@/types'
 
 // Usar el store de productos
@@ -151,7 +144,7 @@ const loadData = async () => {
     
     // Detectar si los datos vienen de Firebase o mock
     // Si el primer producto tiene un ID que no empieza con 'mock-', viene de Firebase
-    if (featuredProducts.value.length > 0 && !featuredProducts.value[0].id.startsWith('mock-')) {
+    if (featuredProducts.value.length > 0 && !featuredProducts.value[0]?.id.startsWith('mock-')) {
       dataSource.value = 'firebase'
       console.log(`🏠 Home: Cargados ${featuredProducts.value.length} productos destacados desde Firebase`)
     } else {
@@ -177,7 +170,8 @@ onMounted(() => {
 
 <style scoped>
 .featured-section {
-  padding: 3rem 0;
+  padding-top: 6rem; /* Extra space to clear fixed navbar */
+  padding-bottom: 3rem;
   background: rgba(5, 5, 5, 0.5);
 }
 
@@ -202,8 +196,8 @@ onMounted(() => {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 3rem;
   
   /* En desktop, máximo 4 columnas */
@@ -212,13 +206,14 @@ onMounted(() => {
   }
   
   /* En tablet, máximo 2 columnas */
-  @media (min-width: 1024px) and (max-width: 1199px) {
+  @media (min-width: 768px) and (max-width: 1199px) {
     grid-template-columns: repeat(2, 1fr);
   }
   
   /* En móvil, 1 columna */
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 
@@ -349,57 +344,6 @@ onMounted(() => {
   padding: 4rem;
 }
 
-.neon-spinner {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 2rem;
-}
-
-.neon-spinner .spinner-ring {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 3px solid transparent;
-  border-radius: 50%;
-}
-
-.neon-spinner .spinner-ring.ring-1 {
-  border-top-color: #ff0080;
-  border-right-color: rgba(255, 0, 128, 0.3);
-  animation: neonSpin 2s linear infinite;
-  box-shadow: 0 0 15px rgba(255, 0, 128, 0.4);
-}
-
-.neon-spinner .spinner-ring.ring-2 {
-  border-right-color: #00ffff;
-  border-bottom-color: rgba(0, 255, 255, 0.3);
-  animation: neonSpin 1.5s linear infinite reverse;
-  transform: scale(0.75);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
-}
-
-.neon-spinner .spinner-ring.ring-3 {
-  border-bottom-color: #00ff00;
-  border-left-color: rgba(0, 255, 0, 0.3);
-  animation: neonSpin 1s linear infinite;
-  transform: scale(0.5);
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-}
-
-.neon-spinner .spinner-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
-  color: #ffff00;
-  filter: drop-shadow(0 0 10px #ffff00);
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
 .loading-text {
   font-size: 1.1rem;
   font-weight: 600;
@@ -419,31 +363,6 @@ onMounted(() => {
 .fade-in-up.delay-300 { animation-delay: 300ms; }
 
 /* Keyframe animations */
-@keyframes neonSpin {
-  0% { 
-    transform: rotate(0deg);
-    filter: brightness(1);
-  }
-  50% {
-    filter: brightness(1.3);
-  }
-  100% { 
-    transform: rotate(360deg);
-    filter: brightness(1);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% { 
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% { 
-    opacity: 0.8;
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-}
-
 @keyframes textGlow {
   0%, 100% {
     text-shadow: 0 0 10px currentColor;

@@ -10,73 +10,34 @@
 
     <!-- Loading State -->
     <div v-if="loading" class="loading-state">
-      <div class="spinner"></div>
+      <NeonSpinner size="large" color="cyan" />
       <p>Cargando productos...</p>
     </div>
 
-    <!-- Products Table -->
-    <div v-else class="table-container">
-      <!-- Desktop Table View -->
-      <table class="products-table desktop-view">
-        <thead>
-          <tr>
-            <th>Imagen</th>
-            <th>Título</th>
-            <th>Descripción</th>
-            <th>Destacado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="product in products" :key="product.id">
-            <td>
-              <img 
-                :src="product.images[0]" 
-                :alt="product.name"
-                class="product-thumbnail"
-              />
-            </td>
-            <td>{{ product.name }}</td>
-            <td class="description-cell">{{ truncateText(product.description, 50) }}</td>
-            <td>
-              <span :class="['status-badge', product.featured ? 'featured' : '']">
-                {{ product.featured ? '⭐ Destacado' : 'No Destacado' }}
-              </span>
-            </td>
-            <td class="actions-cell">
-              <button 
-                @click="openEditModal(product)" 
-                class="btn-icon btn-edit"
-                title="Editar"
-              >
-                <Edit2 :size="18" />
-              </button>
-              <button 
-                @click="confirmDelete(product)" 
-                class="btn-icon btn-delete"
-                title="Eliminar"
-              >
-                <Trash2 :size="18" />
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- Mobile Card View -->
-      <div class="products-cards mobile-view">
+    <!-- Products Cards -->
+    <div v-else class="cards-container">
+      <div class="products-cards">
         <div v-for="product in products" :key="product.id" class="product-card">
-          <img 
-            :src="product.images[0]" 
+          <img
+            :src="product.images[0]"
             :alt="product.name"
             class="card-image"
           />
           <div class="card-content">
             <div class="card-header">
               <h3 class="card-title">{{ product.name }}</h3>
-              <span :class="['status-badge', product.featured ? 'featured' : '']">
-                {{ product.featured ? '⭐ Destacado' : 'No' }}
-              </span>
+              <div class="card-badges">
+                <span :class="['status-badge', product.featured ? 'featured' : '']">
+                  {{ product.featured ? '⭐' : '' }}
+                </span>
+                <span v-if="!product.inStock" class="status-badge inactive">
+                  Inactivo
+                </span>
+              </div>
+            </div>
+            <div class="card-meta">
+              <span class="category-badge">{{ getCategoryLabel(product.category) }}</span>
+              <span class="price-text">${{ product.price?.toLocaleString() || 0 }}</span>
             </div>
             <p class="card-description">{{ truncateText(product.description, 80) }}</p>
             <div class="card-actions">
@@ -127,12 +88,36 @@
 
           <div class="form-group">
             <label>Descripción *</label>
-            <textarea 
-              v-model="formData.description" 
-              required 
+            <textarea
+              v-model="formData.description"
+              required
               rows="2"
               placeholder="Descripción del producto"
             ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Categoría *</label>
+              <select v-model="formData.category" required>
+                <option value="personalizado">Personalizado</option>
+                <option value="negocios">Negocios</option>
+                <option value="hogar">Hogar</option>
+                <option value="eventos">Eventos</option>
+                <option value="decorativo">Decorativo</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Precio ($ARS)</label>
+              <input 
+                v-model.number="formData.price" 
+                type="number" 
+                min="0"
+                step="100"
+                placeholder="25000"
+              />
+            </div>
           </div>
 
           <div class="form-group">
@@ -171,11 +156,21 @@
           <div class="form-row">
             <div class="form-group">
               <label class="checkbox-label">
-                <input 
-                  v-model="formData.isFeatured" 
+                <input
+                  v-model="formData.isFeatured"
                   type="checkbox"
                 />
                 <span>Producto Destacado</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input
+                  v-model="formData.isActive"
+                  type="checkbox"
+                />
+                <span>Producto Activo</span>
               </label>
             </div>
           </div>
@@ -264,7 +259,10 @@ const formData = ref({
   title: '',
   description: '',
   imageUrl: '',
-  isFeatured: false
+  category: 'personalizado',
+  price: 0,
+  isFeatured: false,
+  isActive: true
 })
 
 // Image upload
@@ -307,18 +305,20 @@ const openCreateModal = () => {
 const openEditModal = (product: Product) => {
   isEditMode.value = true
   currentProductId.value = product.id
-  
   // Get original data from Firestore format
   formData.value = {
     title: product.name,
     description: product.description,
     imageUrl: product.images[0] || '',
-    isFeatured: product.featured
+    category: product.category || 'personalizado',
+    price: product.price || 0,
+    isFeatured: product.featured || false,
+    isActive: product.inStock !== false
   }
-  
+
   // Mostrar imagen actual como preview
   imagePreview.value = product.images[0] || ''
-  
+
   showModal.value = true
 }
 
@@ -332,7 +332,10 @@ const resetForm = () => {
     title: '',
     description: '',
     imageUrl: '',
-    isFeatured: false
+    category: 'personalizado',
+    price: 0,
+    isFeatured: false,
+    isActive: true
   }
   imagePreview.value = ''
   selectedFile.value = null
@@ -428,16 +431,24 @@ const uploadImageToStorage = async (): Promise<string> => {
   }
   
   try {
+    // Mostrar progreso inicial
+    uploadProgress.value = 5
+    showToast('Procesando imagen...', 'success')
+    
     // Convertir a WebP
-    showToast('Convirtiendo imagen a WebP...', 'success')
+    uploadProgress.value = 15
+    showToast('Optimizando imagen a WebP...', 'success')
     const webpBlob = await convertToWebP(selectedFile.value)
     
     // Generar nombre único
+    uploadProgress.value = 25
     const timestamp = Date.now()
     const randomStr = Math.random().toString(36).substring(7)
     const fileName = `product-${timestamp}-${randomStr}.webp`
     
     // Subir a Firebase Storage
+    uploadProgress.value = 30
+    showToast('Subiendo a servidor...', 'success')
     const imageRef = storageRef(storage, `gallery/${fileName}`)
     const uploadTask = uploadBytesResumable(imageRef, webpBlob, {
       contentType: 'image/webp'
@@ -472,13 +483,25 @@ const uploadImageToStorage = async (): Promise<string> => {
 const saveProduct = async () => {
   saving.value = true
   try {
+    // Validaciones
+    if (!formData.value.title.trim()) {
+      showToast('El título es requerido', 'error')
+      saving.value = false
+      return
+    }
+
+    if (!formData.value.description.trim()) {
+      showToast('La descripción es requerida', 'error')
+      saving.value = false
+      return
+    }
+
     let imageUrl = formData.value.imageUrl
-    
+
     // Si hay una nueva imagen seleccionada, subirla
     if (selectedFile.value) {
       imageUrl = await uploadImageToStorage()
     }
-    
     // Validar que haya una URL de imagen
     if (!imageUrl) {
       showToast('Debes seleccionar una imagen', 'error')
@@ -486,11 +509,15 @@ const saveProduct = async () => {
       return
     }
     
+    // Preparar datos completos para Firestore
     const productData = {
       title: formData.value.title,
       description: formData.value.description,
       imageUrl: imageUrl,
+      category: formData.value.category,
+      price: formData.value.price || 0,
       isFeatured: formData.value.isFeatured,
+      isActive: formData.value.isActive,
       updatedAt: Timestamp.now()
     }
 
@@ -549,6 +576,22 @@ const deleteProduct = async () => {
 const truncateText = (text: string, maxLength: number) => {
   if (text.length <= maxLength) return text
   return text.substring(0, maxLength) + '...'
+}
+
+const getCategoryLabel = (category: string) => {
+  const labels: Record<string, string> = {
+    'custom': 'Personalizado',
+    'business': 'Negocios',
+    'home': 'Hogar',
+    'events': 'Eventos',
+    'decorative': 'Decorativo',
+    'personalizado': 'Personalizado',
+    'negocios': 'Negocios',
+    'hogar': 'Hogar',
+    'eventos': 'Eventos',
+    'decorativo': 'Decorativo'
+  }
+  return labels[category] || category
 }
 
 const showToast = (message: string, type: 'success' | 'error') => {
@@ -618,123 +661,43 @@ onMounted(() => {
   justify-content: center;
   padding: 4rem;
   color: #ccc;
+  gap: 1.5rem;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(0, 255, 255, 0.3);
-  border-top-color: #00ffff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Table */
-.table-container {
-  background: #1a1a1a;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.desktop-view {
-  display: table;
-}
-
-.mobile-view {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .desktop-view {
-    display: none;
+@keyframes neonSpin {
+  0% { 
+    transform: rotate(0deg);
+    border-top-color: #00ffff;
+    border-right-color: #ff0080;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
   }
-  
-  .mobile-view {
-    display: block;
+  25% { 
+    border-top-color: #ff0080;
+    border-right-color: #ffff00;
+    box-shadow: 0 0 25px rgba(255, 0, 128, 0.5);
   }
-  
-  .table-container {
-    background: transparent;
-    border: none;
-    overflow-x: visible;
+  50% { 
+    transform: rotate(180deg);
+    border-top-color: #ffff00;
+    border-right-color: #00ff00;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.4);
+  }
+  75% { 
+    border-top-color: #00ff00;
+    border-right-color: #00ffff;
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+  }
+  100% { 
+    transform: rotate(360deg);
+    border-top-color: #00ffff;
+    border-right-color: #ff0080;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
   }
 }
 
-.products-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 800px;
-}
-
-.products-table thead {
-  background: rgba(0, 255, 255, 0.1);
-}
-
-.products-table th {
-  padding: 0.75rem;
-  text-align: left;
-  font-weight: 600;
-  color: #00ffff;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-  font-size: 0.9rem;
-  white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-  .products-table th {
-    padding: 0.5rem;
-    font-size: 0.8rem;
-  }
-}
-
-.products-table td {
-  padding: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 768px) {
-  .products-table td {
-    padding: 0.5rem;
-    font-size: 0.8rem;
-  }
-}
-
-.products-table tbody tr:hover {
-  background: rgba(0, 255, 255, 0.05);
-}
-
-.product-thumbnail {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 255, 255, 0.3);
-}
-
-@media (max-width: 768px) {
-  .product-thumbnail {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-.description-cell {
-  max-width: 300px;
-  color: #ccc;
-}
-
-.price-cell {
-  font-weight: 600;
-  color: #00ffff;
+/* Cards Container */
+.cards-container {
+  background: transparent;
 }
 
 .category-badge {
@@ -743,7 +706,9 @@ onMounted(() => {
   background: rgba(0, 255, 255, 0.2);
   color: #00ffff;
   border-radius: 12px;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .status-badge {
@@ -777,72 +742,6 @@ onMounted(() => {
   color: #ff6b6b;
 }
 
-.actions-cell {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-start;
-  white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-  .actions-cell {
-    gap: 0.5rem;
-    min-width: 100px;
-  }
-}
-
-.btn-icon {
-  padding: 0.5rem;
-  border: none;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  min-width: 36px;
-  min-height: 36px;
-}
-
-@media (max-width: 768px) {
-  .btn-icon {
-    padding: 0.5rem;
-    min-width: 40px;
-    min-height: 40px;
-    background: rgba(255, 255, 255, 0.15);
-  }
-  
-  .btn-icon svg {
-    width: 18px;
-    height: 18px;
-  }
-}
-
-.btn-icon:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.btn-edit {
-  background: rgba(0, 255, 255, 0.15);
-}
-
-.btn-edit:hover {
-  background: rgba(0, 255, 255, 0.3);
-  color: #00ffff;
-}
-
-.btn-delete {
-  background: rgba(255, 0, 0, 0.15);
-}
-
-.btn-delete:hover {
-  background: rgba(255, 0, 0, 0.3);
-  color: #ff6b6b;
-}
-
 /* Empty State */
 .empty-state {
   padding: 4rem;
@@ -850,12 +749,26 @@ onMounted(() => {
   color: #888;
 }
 
-/* Mobile Cards */
+/* Product Cards */
 .products-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
   padding: 1rem 0;
+}
+
+@media (min-width: 1200px) {
+  .products-cards {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .products-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .product-card {
@@ -869,16 +782,16 @@ onMounted(() => {
 
 .card-image {
   width: 100%;
-  height: 200px;
+  height: 160px;
   object-fit: cover;
   border-bottom: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 .card-content {
-  padding: 1rem;
+  padding: 0.875rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.625rem;
 }
 
 .card-header {
@@ -886,21 +799,55 @@ onMounted(() => {
   justify-content: space-between;
   align-items: flex-start;
   gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .card-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
   margin: 0;
   flex: 1;
+  line-height: 1.2;
+}
+
+.card-badges {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.price-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #00ffff;
+  white-space: nowrap;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.025em;
+  background: rgba(0, 255, 255, 0.1);
+  padding: 0.1875rem 0.375rem;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 .card-description {
   color: #ccc;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 0.8rem;
+  line-height: 1.4;
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-actions {
@@ -911,17 +858,17 @@ onMounted(() => {
 
 .btn-card {
   flex: 1;
-  padding: 0.75rem;
+  padding: 0.625rem 0.5rem;
   border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
 }
 
 .btn-card.btn-edit {
@@ -965,7 +912,7 @@ onMounted(() => {
   border-radius: 8px;
   border: 1px solid rgba(0, 255, 255, 0.3);
   width: 100%;
-  max-width: 500px;
+  max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -1021,11 +968,11 @@ onMounted(() => {
 
 /* Form */
 .product-form {
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 0.875rem;
 }
 
 .form-row {
@@ -1046,12 +993,13 @@ onMounted(() => {
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.625rem 0.75rem;
   background: rgba(0, 255, 255, 0.05);
   border: 1px solid rgba(0, 255, 255, 0.3);
   border-radius: 4px;
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
 }
 
 .form-group input:focus,
@@ -1113,11 +1061,16 @@ onMounted(() => {
 .upload-area {
   border: 2px dashed rgba(0, 255, 255, 0.3);
   border-radius: 8px;
-  padding: 2rem;
+  padding: 1.5rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
   background: rgba(0, 255, 255, 0.05);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .upload-area:hover {
@@ -1142,18 +1095,22 @@ onMounted(() => {
 
 .upload-progress {
   margin-top: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  height: 24px;
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 6px;
+  height: 28px;
   position: relative;
   overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .progress-bar {
   height: 100%;
-  background: linear-gradient(45deg, #00ffff, #0088ff);
-  transition: width 0.3s;
+  background: linear-gradient(90deg, #00ffff, #ff0080);
+  transition: width 0.3s ease;
   border-radius: 4px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  animation: neonFlow 2s ease-in-out infinite alternate;
 }
 
 .upload-progress span {
@@ -1162,9 +1119,19 @@ onMounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   color: #fff;
-  font-weight: 600;
-  font-size: 0.75rem;
+  font-weight: 700;
+  font-size: 0.8rem;
   z-index: 1;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes neonFlow {
+  from {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  }
+  to {
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.8), 0 0 35px rgba(255, 0, 128, 0.5);
+  }
 }
 
 .checkbox-label {
@@ -1290,17 +1257,35 @@ onMounted(() => {
   .products-manager {
     padding: 1rem;
   }
-  
   .form-row {
     grid-template-columns: 1fr;
   }
   
-  .table-container {
-    overflow-x: auto;
+  .modal-content {
+    max-width: 95vw;
+    margin: 0.5rem;
   }
   
-  .products-table {
-    min-width: 800px;
+  .product-form {
+    padding: 0.875rem;
+  }
+  
+  .modal-header {
+    padding: 0.875rem 1rem;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .form-actions {
+    padding: 0.875rem 1rem;
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

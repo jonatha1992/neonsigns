@@ -7,7 +7,7 @@
           <div class="logo">
             <span class="neon-text pink">Cuadros</span>
             <span class="text-white">NEON</span>
-            <span class="text-white">LD</span>
+            <span class="text-white">LeD</span>
             <img src="/logo_neon.png" alt="León Neón" class="logo-icon" />
           </div>
           <p class="footer-description">
@@ -81,7 +81,7 @@
       <!-- Bottom Bar -->
       <div class="footer-bottom">
         <div class="footer-bottom-content">
-          <p>&copy; 2024 Cuadros NEON LD. Desarrollado por Tecnofusion.IT.</p>
+          <p>&copy; 2025 Cuadros NEON LeD. Desarrollado por Tecnofusion.IT.</p>
           <div class="social-links">
             <a href="#" class="social-link" title="Instagram">
               <Instagram :size="20" />

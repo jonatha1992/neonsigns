@@ -179,7 +179,11 @@ const whatsappEmailUrl = computed(() => {
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
 })
 
+<<<<<<< HEAD
 const instagramUrl = 'https://www.instagram.com/neonsignsld/'
+=======
+const instagramUrl = 'https://www.instagram.com/cuadros_neonled/'
+>>>>>>> master
 </script>
 
 <style scoped>
