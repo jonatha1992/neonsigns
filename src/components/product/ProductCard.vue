@@ -1,12 +1,21 @@
 <template>
   <div class="product-card">
     <div class="product-image" @click="openModal">
+      <!-- Spinner mientras carga -->
+      <div v-if="imageLoading && product.images && product.images[0]" class="image-loading">
+        <div class="spinner"></div>
+        <p class="loading-text">Cargando...</p>
+      </div>
+      
       <img
         v-if="product.images && product.images[0]"
         :src="product.images[0]"
         :alt="product.name"
         class="product-img"
+        :class="{ 'loading': imageLoading }"
         loading="lazy"
+        @load="onImageLoad"
+        @error="onImageError"
       />
       <div v-else class="image-placeholder">
         <Zap :size="48" class="placeholder-icon" />
@@ -20,9 +29,7 @@
       </div>
       <div class="product-badges">
         <span v-if="product.featured" class="badge featured">Destacado</span>
-        <span v-if="product.originalPrice && product.originalPrice > product.price" class="badge discount">
-          -{{ Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) }}%
-        </span>
+
         <span class="badge category">{{ categoryName }}</span>
       </div>
     </div>
@@ -35,9 +42,7 @@
       <!-- Sección de precio -->
       <div class="product-pricing">
         <span class="current-price">${{ formatPrice(product.price) }}</span>
-        <span v-if="product.originalPrice && product.originalPrice > product.price" class="original-price">
-          ${{ formatPrice(product.originalPrice) }}
-        </span>
+
       </div>
     </div>
     
@@ -63,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Zap, Star, MessageCircle, Eye } from 'lucide-vue-next'
 import ImageModal from '@/components/common/ImageModal.vue'
 import type { Product } from '@/types'
@@ -75,6 +80,8 @@ interface Props {
 const props = defineProps<Props>()
 
 const isModalOpen = ref(false)
+const imageLoading = ref(true)
+const imageError = ref(false)
 
 const openModal = () => {
   if (props.product.images && props.product.images[0]) {
@@ -85,6 +92,25 @@ const openModal = () => {
 const closeModal = () => {
   isModalOpen.value = false
 }
+
+const onImageLoad = () => {
+  imageLoading.value = false
+  imageError.value = false
+}
+
+const onImageError = () => {
+  imageLoading.value = false
+  imageError.value = true
+}
+
+// Inicializar estado de carga
+onMounted(() => {
+  if (props.product.images && props.product.images[0]) {
+    imageLoading.value = true
+  } else {
+    imageLoading.value = false
+  }
+})
 
 const categoryName = computed(() => {
   const categories: Record<string, string> = {
@@ -252,8 +278,77 @@ const whatsappProductUrl = computed(() => {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   filter: brightness(0.9) saturate(0.9);
+}
+
+.product-img.loading {
+  opacity: 0;
+  transform: scale(1.1);
+}
+
+.product-img:not(.loading) {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Spinner de carga */
+.image-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(0, 0, 0, 0.8) 100%);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 255, 255, 0.1);
+  border-top: 3px solid #00ffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+@keyframes spin {
+  0% { 
+    transform: rotate(0deg);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+  }
+  100% { 
+    transform: rotate(360deg);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  }
+}
+
+.loading-text {
+  color: #00ffff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.8;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .image-overlay {
@@ -330,11 +425,7 @@ const whatsappProductUrl = computed(() => {
   animation: neonPulse 2s ease-in-out infinite;
 }
 
-.badge.discount {
-  background: linear-gradient(45deg, #00ff00, #33ff33);
-  color: #0a0a0a;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
-}
+
 
 .badge.category {
   background: linear-gradient(45deg, rgba(0, 255, 255, 0.9), rgba(0, 255, 255, 0.7));
@@ -410,13 +501,7 @@ const whatsappProductUrl = computed(() => {
   letter-spacing: 0.025em;
 }
 
-.original-price {
-  font-size: 0.875rem;
-  color: #666666;
-  text-decoration: line-through;
-  font-weight: 400;
-  opacity: 0.7;
-}
+
 
 
 

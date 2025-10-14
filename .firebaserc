@@ -1,15 +1,15 @@
 {
-  "projects": {
-    "default": "neon-signs-app"
-  },
-  "targets": {
-    "neon-signs-app": {
-      "hosting": {
-        "cuadros-neon": [
-          "cuadros-neon-led"
-        ]
-      }
-    }
-  },
-  "etags": {}
+    "projects": {
+        "default": "cuadros-neon"
+    },
+    "targets": {
+        "cuadros-neon": {
+            "hosting": {
+                "cuadros-neon": [
+                    "cuadros-neon"
+                ]
+            }
+        }
+    },
+    "etags": {}
 }

@@ -62,9 +62,7 @@
         <!-- Product Pricing -->
         <div class="product-pricing">
           <span class="current-price">${{ formatPrice(product.price) }}</span>
-          <span v-if="product.originalPrice && product.originalPrice > product.price" class="original-price">
-            ${{ formatPrice(product.originalPrice) }}
-          </span>
+
         </div>
 
         <!-- Product Actions -->
@@ -276,9 +274,7 @@ onMounted(async () => {
       font-size: 1.75rem !important;
     }
     
-    .original-price {
-      font-size: 1.25rem !important;
-    }
+
     
     .product-description {
       font-size: 0.9rem !important;
@@ -385,13 +381,7 @@ onMounted(async () => {
       letter-spacing: 0.025em;
     }
 
-    .original-price {
-      font-size: 1.5rem;
-      color: #666666;
-      text-decoration: line-through;
-      font-weight: 400;
-      opacity: 0.7;
-    }
+
   }
 
 

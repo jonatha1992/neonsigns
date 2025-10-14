@@ -17,16 +17,14 @@ import type { Product } from '@/types'
 
 // Interfaz para los datos en Firestore (gallery_items)
 interface GalleryItemData {
-    title: string
-    description: string
-    price: number
-    imageUrl: string
-    category: string
-    isActive: boolean
-    isFeatured: boolean
-    orderIndex: number
-    createdAt?: any
-    updatedAt?: any
+    nombre: string
+    descripcion: string
+    precio: number
+    imagenes: string[]
+    categoria: string
+    destacado: boolean
+    fecha_creacion?: any
+    fecha_actualizacion?: any
 }
 
 /**
@@ -49,23 +47,16 @@ export class ProductsService {
             'decorativo': 'decorative'
         }
 
-        const mappedCategory = categoryMap[data.category] || data.category
+        const mappedCategory = categoryMap[data.categoria] || data.categoria
 
         return {
             id,
-            name: data.title,
-            description: data.description,
-            price: data.price,
-            images: [data.imageUrl],
+            name: data.nombre,
+            description: data.descripcion,
+            price: data.precio,
+            images: data.imagenes || [],
             category: mappedCategory as any,
-            colors: [{ name: 'Multicolor', hex: '#ff0080', glowColor: '#ff0080' }],
-            sizes: [{ name: 'Estándar', dimensions: 'Personalizable', price: 0 }],
-            customizable: true,
-            featured: data.isFeatured || false,
-            inStock: data.isActive !== false,
-            rating: 4.8,
-            reviews: Math.floor(Math.random() * 50) + 10,
-            tags: [data.category, 'neón', 'led']
+            featured: data.destacado || false
         }
     }
 
@@ -99,7 +90,7 @@ export class ProductsService {
             const productsRef = collection(db, this.COLLECTION)
             const q = query(
                 productsRef,
-                where('isFeatured', '==', true),
+                where('destacado', '==', true),
                 limit(maxResults)
             )
 
@@ -127,7 +118,7 @@ export class ProductsService {
             const productsRef = collection(db, this.COLLECTION)
             const q = query(
                 productsRef,
-                where('category', '==', category)
+                where('categoria', '==', category)
             )
 
             const snapshot = await getDocs(q)

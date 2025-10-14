@@ -25,7 +25,7 @@ export function useSEO() {
         ogTitle: 'Cuadros NEON LeD - Carteles de Neón Personalizados',
         ogDescription: 'Diseños únicos de carteles de neón para tu negocio',
         ogImage: '/og-image.jpg',
-        ogUrl: window.location.origin
+        ogUrl: 'https://cuadros-neon-led.web.app'
     }
 
     // Update document head with SEO data

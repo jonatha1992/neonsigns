@@ -83,8 +83,7 @@
                   <span
                     class="inline-flex items-center px-2 py-1 rounded text-xs"
                     :class="{
-                      'bg-green-500/12 text-green-400/90': item.inStock && !item.featured,
-                      'bg-red-500/12 text-red-400/85': !item.inStock,
+                      'bg-green-500/12 text-green-400/90': !item.featured,
                       'bg-pink-500/12 text-pink-400/90': item.featured
                     }"
                   >
@@ -270,7 +269,7 @@ const loadDashboardData = async () => {
 
     stats.value = {
       totalItems: allProducts.length,
-      activeItems: allProducts.filter(p => p.inStock).length,
+      activeItems: allProducts.length,
       featuredItems: allProducts.filter(p => p.featured).length,
       itemsByCategory: categoryCount,
       itemsChange: 3,
@@ -300,7 +299,6 @@ const formatUpdatedAt = (timestamp: any) => {
 }
 
 const itemStatus = (item: Product) => {
-  if (!item.inStock) return 'Inactivo'
   if (item.featured) return 'Destacado'
   return 'Publicado'
 }

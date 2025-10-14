@@ -3,37 +3,15 @@ export interface Product {
     name: string
     description: string
     price: number
-    originalPrice?: number
     images: string[]
     category: ProductCategory
-    colors: NeonColor[]
-    sizes: ProductSize[]
-    customizable: boolean
     featured: boolean
-    inStock: boolean
-    rating: number
-    reviews: number
-    tags: string[]
 }
 
 export interface CartItem {
     product: Product
     quantity: number
-    selectedColor: NeonColor
-    selectedSize: ProductSize
     customText?: string
-}
-
-export interface NeonColor {
-    name: string
-    hex: string
-    glowColor: string
-}
-
-export interface ProductSize {
-    name: string
-    dimensions: string
-    price: number
 }
 
 export type ProductCategory =
@@ -47,8 +25,6 @@ export type ProductCategory =
 export interface FilterOptions {
     category?: ProductCategory
     priceRange?: [number, number]
-    colors?: string[]
-    inStock?: boolean
     featured?: boolean
 }
 

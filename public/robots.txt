@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://your-domain.firebaseapp.com/sitemap.xml
+Sitemap: https://cuadros-neon-led.web.app/sitemap.xml
 
 # Additional directives for better SEO
 User-agent: Googlebot

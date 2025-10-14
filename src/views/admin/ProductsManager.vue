@@ -28,10 +28,7 @@
               <h3 class="card-title">{{ product.name }}</h3>
               <div class="card-badges">
                 <span :class="['status-badge', product.featured ? 'featured' : '']">
-                  {{ product.featured ? '⭐' : '' }}
-                </span>
-                <span v-if="!product.inStock" class="status-badge inactive">
-                  Inactivo
+                  {{ product.featured ? '⭐ Destacado' : '' }}
                 </span>
               </div>
             </div>
@@ -163,16 +160,6 @@
                 <span>Producto Destacado</span>
               </label>
             </div>
-
-            <div class="form-group">
-              <label class="checkbox-label">
-                <input
-                  v-model="formData.isActive"
-                  type="checkbox"
-                />
-                <span>Producto Activo</span>
-              </label>
-            </div>
           </div>
 
           <div class="form-actions">
@@ -261,8 +248,7 @@ const formData = ref({
   imageUrl: '',
   category: 'personalizado',
   price: 0,
-  isFeatured: false,
-  isActive: true
+  isFeatured: false
 })
 
 // Image upload
@@ -313,8 +299,7 @@ const openEditModal = (product: Product) => {
     imageUrl: product.images[0] || '',
     category: product.category || 'personalizado',
     price: product.price || 0,
-    isFeatured: product.featured || false,
-    isActive: product.inStock !== false
+    isFeatured: product.featured || false
   }
 
   // Mostrar imagen actual como preview
@@ -335,8 +320,7 @@ const resetForm = () => {
     imageUrl: '',
     category: 'personalizado',
     price: 0,
-    isFeatured: false,
-    isActive: true
+    isFeatured: false
   }
   imagePreview.value = ''
   selectedFile.value = null
@@ -520,7 +504,6 @@ const saveProduct = async () => {
       category: formData.value.category,
       price: formData.value.price || 0,
       isFeatured: formData.value.isFeatured,
-      isActive: formData.value.isActive,
       updatedAt: Timestamp.now()
     }
 
