@@ -8,13 +8,8 @@
         </h1>
       </div>
       
-
-      
- 
-      
       <!-- Products Grid -->
       <div v-if="loading" class="loading-state">
-        <NeonSpinner size="large" color="pink" />
         <p class="loading-text neon-text pink">Cargando galería de trabajos...</p>
         <div class="loading-dots">
           <span></span>

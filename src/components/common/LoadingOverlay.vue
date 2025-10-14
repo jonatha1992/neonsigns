@@ -1,7 +1,7 @@
 <template>
   <div class="loading-overlay">
     <div class="loading-content">
-      <NeonSpinner size="large" color="pink" />
+  <!-- Eliminado NeonSpinner, solo quedan texto y puntos -->
       <p class="loading-text neon-text pink">Cargando trabajos...</p>
       <div class="loading-dots">
         <span></span>
