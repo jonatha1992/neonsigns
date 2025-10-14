@@ -5,7 +5,8 @@ service cloud.firestore {
     // Allow read access for all authenticated and unauthenticated users
     match /gallery_items/{document} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.email == 'ldesidel@hotmail.com';
+      // Permitir escritura a cualquier usuario temporalmente para migración (¡NO OLVIDES REVERTIR ESTO!)
+      allow write: if true;
     }
 
     // Future collections can be added here
