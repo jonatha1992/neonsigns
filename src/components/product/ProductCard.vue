@@ -537,6 +537,8 @@ const whatsappProductUrl = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
+  /* push actions to the bottom of the card regardless of description length */
+  margin-top: auto;
 }
 
 .btn-full {

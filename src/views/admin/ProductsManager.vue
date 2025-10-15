@@ -11,18 +11,27 @@
     <!-- Loading State -->
     <div v-if="loading" class="loading-state">
       <NeonSpinner size="large" color="cyan" />
-      <p>Cargando productos...</p>
+      <p class="loading-message">Cargando productos...</p>
     </div>
 
     <!-- Products Cards -->
     <div v-else class="cards-container">
       <div class="products-cards">
         <div v-for="product in products" :key="product.id" class="product-card">
-          <img
-            :src="product.images[0]"
-            :alt="product.name"
-            class="card-image"
-          />
+          <div class="product-image-wrapper">
+            <img
+              :src="product.images[0]"
+              :alt="product.name"
+              class="card-image"
+              @load="imageLoading[product.id] = false"
+              @error="imageLoading[product.id] = false"
+              v-show="!imageLoading[product.id]"
+            />
+            <div v-if="imageLoading[product.id]" class="image-loading">
+              <div class="admin-image-spinner"></div>
+              <p class="loading-text">Cargando imagen...</p>
+            </div>
+          </div>
           <div class="card-content">
             <div class="card-header">
               <h3 class="card-title">{{ product.name }}</h3>
@@ -150,16 +159,14 @@
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="checkbox-label">
-                <input
-                  v-model="formData.isFeatured"
-                  type="checkbox"
-                />
-                <span>Producto Destacado</span>
-              </label>
-            </div>
+          <div class="featured-checkbox-row">
+            <label class="checkbox-label">
+              <input
+                v-model="formData.isFeatured"
+                type="checkbox"
+              />
+              <span>Producto Destacado</span>
+            </label>
           </div>
 
           <div class="form-actions">
@@ -209,10 +216,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, reactive, watch } from 'vue'
+import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import { Plus, Edit2, Trash2, X, Upload } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
-import { ProductsService } from '@/services/products.service'
 import type { Product } from '@/types'
 import { 
   collection, 
@@ -228,6 +235,9 @@ import {
   getDownloadURL 
 } from 'firebase/storage'
 import { getDb, getStorageInstance } from '@/config/firebase'
+
+// Per-product image loading state
+const imageLoading = reactive<Record<string, boolean>>({})
 
 const productsStore = useProductsStore()
 
@@ -266,12 +276,17 @@ const toast = ref({
 
 const currentProductId = ref<string | null>(null)
 
+
 // Load products
 const loadProducts = async () => {
   loading.value = true
   try {
     await productsStore.fetchProducts()
     products.value = productsStore.products
+    // Initialize image loading state for each product
+    products.value.forEach(product => {
+      imageLoading[product.id] = true
+    })
   } catch (error) {
     console.error('Error loading products:', error)
     showToast('Error al cargar productos', 'error')
@@ -279,6 +294,15 @@ const loadProducts = async () => {
     loading.value = false
   }
 }
+
+// Watch for products change (e.g. after add/delete) and re-initialize imageLoading
+watch(products, (newProducts) => {
+  newProducts.forEach(product => {
+    if (!(product.id in imageLoading)) {
+      imageLoading[product.id] = true
+    }
+  })
+})
 
 // Modal functions
 const openCreateModal = () => {
@@ -292,12 +316,30 @@ const openEditModal = (product: Product) => {
   isEditMode.value = true
   currentProductId.value = product.id
 
-  // Get original data from Firestore format
+  // Map Firestore/DB category to select value (handle both Spanish and English)
+  let categoryValue = product.category || 'personalizado';
+  // Map English to Spanish if needed
+  const categoryMap: Record<string, string> = {
+    'custom': 'personalizado',
+    'business': 'negocios',
+    'home': 'hogar',
+    'events': 'eventos',
+    'decorative': 'decorativo',
+    'personalizado': 'personalizado',
+    'negocios': 'negocios',
+    'hogar': 'hogar',
+    'eventos': 'eventos',
+    'decorativo': 'decorativo'
+  };
+  if (categoryMap[categoryValue]) {
+    categoryValue = categoryMap[categoryValue];
+  }
+
   formData.value = {
     title: product.name,
     description: product.description,
     imageUrl: product.images[0] || '',
-    category: product.category || 'personalizado',
+    category: categoryValue,
     price: product.price || 0,
     isFeatured: product.featured || false
   }
@@ -596,6 +638,79 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.product-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  background: #181818;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.product-image-wrapper .card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(0, 0, 0, 0.8) 100%);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+  text-align: center;
+  pointer-events: none;
+}
+
+.admin-image-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 128, 0, 0.1);
+  border-top: 3px solid #ff8000;
+  border-radius: 50%;
+  animation: admin-spin 0.8s linear infinite;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 20px rgba(255, 128, 0, 0.3);
+}
+
+@keyframes admin-spin {
+  0% {
+    transform: rotate(0deg);
+    box-shadow: 0 0 20px rgba(255, 128, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 128, 0, 0.5);
+  }
+  100% {
+    transform: rotate(360deg);
+    box-shadow: 0 0 20px rgba(255, 128, 0, 0.3);
+  }
+}
+
+.loading-text {
+  color: #00ffff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.8;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .products-manager {
   padding: 1.5rem;
   max-width: 1400px;
@@ -651,6 +766,34 @@ onMounted(() => {
   padding: 4rem;
   color: #ccc;
   gap: 1.5rem;
+}
+
+.loading-message {
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #00ffff;
+  text-shadow:
+    0 0 6px rgba(0, 255, 255, 0.8),
+    0 0 18px rgba(0, 180, 255, 0.6),
+    0 0 32px rgba(255, 0, 128, 0.4);
+  animation: neonPulse 2.2s ease-in-out infinite;
+  font-weight: 600;
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 6px rgba(0, 255, 255, 0.9),
+      0 0 20px rgba(0, 180, 255, 0.7),
+      0 0 36px rgba(255, 0, 128, 0.5);
+  }
+  50% {
+    text-shadow:
+      0 0 8px rgba(255, 0, 128, 0.9),
+      0 0 26px rgba(255, 0, 180, 0.7),
+      0 0 42px rgba(0, 255, 255, 0.6);
+  }
 }
 
 @keyframes neonSpin {
@@ -746,6 +889,11 @@ onMounted(() => {
   padding: 1rem 0;
 }
 
+/* Force grid items to stretch so card heights are equal per row */
+.products-cards {
+  align-items: stretch;
+}
+
 @media (min-width: 1200px) {
   .products-cards {
     grid-template-columns: repeat(4, 1fr);
@@ -767,6 +915,7 @@ onMounted(() => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  height: 100%; /* ensure it fills the grid cell */
 }
 
 .card-image {
@@ -781,6 +930,18 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
+}
+
+/* Ensure the content area grows so actions can be pushed to the bottom */
+.product-card .card-content {
+  flex: 1 1 auto;
+}
+
+.card-actions {
+  margin-top: auto; /* push actions to bottom */
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-start;
 }
 
 .card-header {
@@ -842,7 +1003,8 @@ onMounted(() => {
 .card-actions {
   display: flex;
   gap: 0.75rem;
-  margin-top: 0.5rem;
+  /* ensure actions are pushed to the bottom of the card regardless of description length */
+  margin-top: auto;
 }
 
 .btn-card {
@@ -904,6 +1066,7 @@ onMounted(() => {
   max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
+  margin-top: 32px;
 }
 
 .modal-small {
@@ -957,7 +1120,7 @@ onMounted(() => {
 
 /* Form */
 .product-form {
-  padding: 1rem;
+  padding: 0.5rem 1rem 1rem 1rem;
 }
 
 .form-group {
@@ -968,6 +1131,7 @@ onMounted(() => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
+  align-items: end;
 }
 
 .form-group label {
@@ -983,20 +1147,49 @@ onMounted(() => {
 .form-group select {
   width: 100%;
   padding: 0.625rem 0.75rem;
-  background: rgba(0, 255, 255, 0.05);
-  border: 1px solid rgba(0, 255, 255, 0.3);
+  /* darker, opaque background to avoid bleed-through from overlays */
+  background: rgba(10, 10, 10, 0.85);
+  border: 1px solid rgba(0, 255, 255, 0.12);
   border-radius: 4px;
   color: #fff;
   font-size: 0.875rem;
   line-height: 1.4;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
+.form-group select {
+  /* ensure native dropdown uses the same foreground/background where possible */
+  background-image: linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.05) 50%), linear-gradient(135deg, rgba(255,255,255,0.05) 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.25rem;
+}
+
+/* Remove default IE/Edge arrow */
+.form-group select::-ms-expand {
+  display: none;
+}
+
 .form-group select:focus {
   outline: none;
   border-color: #00ffff;
-  background: rgba(0, 255, 255, 0.1);
+  background: rgba(0, 255, 255, 0.04);
+  color: #fff;
+}
+
+/* Options should have explicit dark background and white text for contrast */
+.form-group select option {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* On some browsers the highlighted option uses selection color; ensure readability */
+.form-group select option:checked,
+.form-group select option:focus {
+  background: #00aabf;
+  color: #000;
 }
 
 .form-group small {
@@ -1009,12 +1202,14 @@ onMounted(() => {
 /* Image Upload */
 .image-upload-container {
   position: relative;
+  max-width: 220px;
+  margin-bottom: 0.5rem;
 }
 
 .image-preview {
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 200px;
   border-radius: 8px;
   overflow: hidden;
   border: 2px solid rgba(0, 255, 255, 0.3);
@@ -1050,12 +1245,12 @@ onMounted(() => {
 .upload-area {
   border: 2px dashed rgba(0, 255, 255, 0.3);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 0.75rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
   background: rgba(0, 255, 255, 0.05);
-  min-height: 120px;
+  min-height: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1129,12 +1324,46 @@ onMounted(() => {
   gap: 0.5rem;
   cursor: pointer;
   color: #fff !important;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  min-height: 38px;
+  margin-left: 2px;
+  margin-top: 2px;
+}
+.checkbox-label input[type="checkbox"] {
+  margin-right: 8px;
+  margin-left: 0;
+  vertical-align: middle;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: auto;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  background: #111;
+  display: inline-block;
+  position: relative;
+}
+
+/* Visual check mark */
+.checkbox-label input[type="checkbox"]:checked {
+  background: linear-gradient(90deg, #00ffff, #0088ff);
+  border-color: rgba(0,255,255,0.6);
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 4px;
+  height: 8px;
+  border: solid #002b2b;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
 .form-actions {
@@ -1278,4 +1507,54 @@ onMounted(() => {
     justify-content: center;
   }
 }
+  .featured-checkbox-row {
+    grid-column: 1 / span 2;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #00ffff;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #00ffff;
+    margin: 0 8px 0 0;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid rgba(0,255,255,0.3);
+    background: #111;
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    transition: box-shadow 0.2s;
+  }
+
+  .checkbox-label input[type="checkbox"]:checked {
+    background: linear-gradient(90deg, #00ffff, #0088ff);
+    border-color: rgba(0,255,255,0.6);
+    box-shadow: 0 0 8px #00ffff99;
+  }
+
+  .checkbox-label input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 6px;
+    width: 4px;
+    height: 8px;
+    border: solid #002b2b;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
 </style>

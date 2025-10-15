@@ -387,6 +387,8 @@ onMounted(async () => {
 
 
   .product-actions {
+    /* push actions to the end of the info column */
+    margin-top: auto;
     .action-buttons {
       display: flex;
       gap: 1rem;

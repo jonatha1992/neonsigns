@@ -97,16 +97,15 @@ export const useProductsStore = defineStore('products', {
                     timeoutPromise
                 ]) as Product[]
 
+                // No fallback: si no hay destacados en Firebase, se muestra vacío
                 if (this.featuredProducts.length === 0) {
-                    // Fallback a productos mock
-                    console.warn('[ProductsStore] No featured products in Firebase, using mock')
-                    this.featuredProducts = this.getMockProducts().filter(p => p.featured).slice(0, 4)
+                    console.warn('[ProductsStore] No featured products in Firebase')
                 } else {
                     console.log(`[ProductsStore] Loaded ${this.featuredProducts.length} featured products from Firebase`)
                 }
             } catch (error) {
                 console.error('[ProductsStore] Error fetching featured products:', error)
-                this.featuredProducts = this.getMockProducts().filter(p => p.featured).slice(0, 4)
+                this.featuredProducts = []
             }
         },
 

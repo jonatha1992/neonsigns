@@ -55,6 +55,9 @@ async function updateImageUrls() {
     db = admin.firestore();
     storage = admin.storage();
     console.log('🔄 Actualizando URLs de imágenes en Firestore...\n');
+    const args = process.argv.slice(2)
+    const dryRun = args.includes('--dry-run') || process.env.DRY_RUN === 'true'
+    if (dryRun) console.log('⚠️ Ejecutando en modo DRY-RUN (no se escribirán cambios)')
 
     try {
         const galleryCollection = db.collection('gallery_items');
@@ -113,13 +116,19 @@ async function updateImageUrls() {
 
             // Actualizar documento solo si hay cambios
             if (JSON.stringify(currentImages) !== JSON.stringify(newImageUrls)) {
-                await galleryCollection.doc(docSnapshot.id).update({
-                    imagenes: newImageUrls,
-                    fecha_actualizacion: admin.firestore.FieldValue.serverTimestamp(),
-                });
+                if (dryRun) {
+                    console.log(`   💾 [DRY-RUN] Se actualizaría el documento ${docSnapshot.id} con:`)
+                    console.log(`      ${JSON.stringify(newImageUrls, null, 2)}`)
+                    updatedCount++
+                } else {
+                    await galleryCollection.doc(docSnapshot.id).update({
+                        imagenes: newImageUrls,
+                        fecha_actualizacion: admin.firestore.FieldValue.serverTimestamp(),
+                    });
 
-                console.log(`   💾 Actualizado con URLs de Storage`);
-                updatedCount++;
+                    console.log(`   💾 Actualizado con URLs de Storage`);
+                    updatedCount++;
+                }
             } else {
                 console.log(`   ⏭️  Sin cambios necesarios`);
             }

@@ -93,7 +93,7 @@ export class StorageService {
     try {
       const filename = this.generateFilename(file.name);
       const path = `${folder}/${filename}`;
-      const fileRef = storageRef(storage, path);
+      const fileRef = storageRef(storage!, path);
 
       // Create upload task
       const uploadTask: UploadTask = uploadBytesResumable(fileRef, file, {
@@ -179,7 +179,7 @@ export class StorageService {
         }
       }
 
-      const fileRef = storageRef(storage, path);
+      const fileRef = storageRef(storage!, path);
       await deleteObject(fileRef);
     } catch (error: any) {
       // Ignore error if file doesn't exist
@@ -297,6 +297,31 @@ export class StorageService {
       reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsDataURL(file);
     });
+  }
+
+  /**
+   * Given a storage path (eg. 'gallery/12345.webp') or a full download URL,
+   * return a usable download URL. If the input is already a download URL it is
+   * returned as-is. If it's a storage path it will call getDownloadURL.
+   */
+  static async getFileUrl(pathOrUrl: string): Promise<string> {
+    try {
+      if (!pathOrUrl) return ''
+
+      // If it's already a full URL from Firebase Storage or any http(s) URL
+      if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://') || this.isFirebaseStorageUrl(pathOrUrl)) {
+        return pathOrUrl
+      }
+
+      // Otherwise treat as a storage path and get a download URL
+      const fileRef = storageRef(storage!, pathOrUrl)
+      const downloadURL = await getDownloadURL(fileRef)
+      return downloadURL
+    } catch (error) {
+      console.error('[StorageService] getFileUrl error:', error)
+      // Return original value as a graceful fallback
+      return pathOrUrl
+    }
   }
 }
 

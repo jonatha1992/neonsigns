@@ -38,7 +38,7 @@
             <template v-if="isAdmin">
               <RouterLink to="/admin/dashboard" class="nav-link admin-nav-link" @click="clearActiveSection">
                 <LayoutDashboard :size="18" />
-                <span>Panel de Control</span>
+                <span>Gestion</span>
               </RouterLink>
             </template>
           </div>

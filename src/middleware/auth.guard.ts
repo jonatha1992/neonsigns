@@ -2,6 +2,18 @@ import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
 /**
+ * Safe parse for Vite boolean-ish env vars
+ */
+function parseViteBool(val: unknown, defaultValue = true): boolean {
+  if (val === undefined || val === null) return defaultValue;
+  try {
+    return String(val).toString().toLowerCase() !== 'false';
+  } catch {
+    return defaultValue;
+  }
+}
+
+/**
  * Auth Guard Middleware
  * Protects routes that require authentication
  */
@@ -10,11 +22,13 @@ export const authGuard = async (
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ): Promise<void> => {
-  const requireAuth = ((import.meta as any)?.env?.VITE_REQUIRE_AUTH ?? 'true').toString().toLowerCase() !== 'false'
+  const requireAuth = parseViteBool((import.meta as any)?.env?.VITE_REQUIRE_AUTH, true);
+  console.debug('[authGuard] VITE_REQUIRE_AUTH parsed:', requireAuth);
   if (!requireAuth) {
     // Bypass auth guard (development/testing)
-    next()
-    return
+    console.debug('[authGuard] Bypassing auth guard because VITE_REQUIRE_AUTH is false');
+    next();
+    return;
   }
   const authStore = useAuthStore();
 
@@ -46,11 +60,21 @@ export const adminGuard = async (
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ): Promise<void> => {
-  const requireAuth = ((import.meta as any)?.env?.VITE_REQUIRE_AUTH ?? 'true').toString().toLowerCase() !== 'false'
+  const requireAuth = parseViteBool((import.meta as any)?.env?.VITE_REQUIRE_AUTH, true);
+  console.debug('[adminGuard] VITE_REQUIRE_AUTH parsed:', requireAuth);
   if (!requireAuth) {
     // Bypass admin guard (development/testing)
-    next()
-    return
+    console.debug('[adminGuard] Bypassing admin guard because VITE_REQUIRE_AUTH is false');
+    next();
+    return;
+  }
+  // Respect VITE_REQUIRE_ADMIN to allow a dev bypass specifically for admin checks
+  const requireAdmin = parseViteBool((import.meta as any)?.env?.VITE_REQUIRE_ADMIN, true);
+  console.debug('[adminGuard] VITE_REQUIRE_ADMIN parsed:', requireAdmin);
+  if (!requireAdmin) {
+    console.debug('[adminGuard] Bypassing admin requirement because VITE_REQUIRE_ADMIN is false');
+    next();
+    return;
   }
   const authStore = useAuthStore();
 
@@ -88,11 +112,13 @@ export const guestGuard = async (
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ): Promise<void> => {
-  const requireAuth = ((import.meta as any)?.env?.VITE_REQUIRE_AUTH ?? 'true').toString().toLowerCase() !== 'false'
+  const requireAuth = parseViteBool((import.meta as any)?.env?.VITE_REQUIRE_AUTH, true);
+  console.debug('[guestGuard] VITE_REQUIRE_AUTH parsed:', requireAuth);
   if (!requireAuth) {
     // Allow access to guest routes without redirects when auth is disabled
-    next()
-    return
+    console.debug('[guestGuard] Skipping guest redirects because VITE_REQUIRE_AUTH is false');
+    next();
+    return;
   }
   const authStore = useAuthStore();
 
