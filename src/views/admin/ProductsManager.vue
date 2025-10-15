@@ -221,6 +221,7 @@ import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import { Plus, Edit2, Trash2, X, Upload } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import type { Product } from '@/types'
+import type { ProductCategory } from '@/types'
 import { 
   collection, 
   addDoc, 
@@ -315,13 +316,11 @@ const openCreateModal = () => {
 const openEditModal = (product: Product) => {
   isEditMode.value = true
   currentProductId.value = product.id
-<<<<<<< HEAD
   // Get original data from Firestore format
-=======
 
   // Map Firestore/DB category to select value (handle both Spanish and English)
-  let categoryValue = product.category || 'personalizado';
-  // Map English to Spanish if needed
+
+  // Map English to Spanish if needed, always fallback to 'personalizado'
   const categoryMap: Record<string, string> = {
     'custom': 'personalizado',
     'business': 'negocios',
@@ -334,16 +333,13 @@ const openEditModal = (product: Product) => {
     'eventos': 'eventos',
     'decorativo': 'decorativo'
   };
-  if (categoryMap[categoryValue]) {
-    categoryValue = categoryMap[categoryValue];
-  }
+  let categoryValue = categoryMap[product.category ?? ''] ?? 'personalizado';
 
->>>>>>> master
   formData.value = {
     title: product.name,
     description: product.description,
     imageUrl: product.images[0] || '',
-    category: categoryValue,
+    category: categoryValue as ProductCategory,
     price: product.price || 0,
     isFeatured: product.featured || false
   }
