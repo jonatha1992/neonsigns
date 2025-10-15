@@ -1,5 +1,6 @@
 {
     "hosting": {
+        "site": "cuadros-neon",
         "public": "dist",
         "ignore": [
             "firebase.json",
