@@ -15,6 +15,7 @@ import {
 import { db } from '@/config/firebase'
 import type { Product } from '@/types'
 import { StorageService } from './storage.service'
+import { normalizeCategory } from '@/utils/categories'
 
 // Interfaz para los datos en Firestore (gallery_items)
 interface GalleryItemData {
@@ -39,18 +40,8 @@ export class ProductsService {
      * Convierte datos de gallery_items al formato Product
      */
     private static async adaptGalleryItemToProduct(id: string, data: GalleryItemData): Promise<Product> {
-        // Mapear categorías de español a inglés
-        const categoryMap: Record<string, string> = {
-            'negocios': 'business',
-            'hogar': 'home',
-            'personalizado': 'custom',
-            'eventos': 'events',
-            'decorativo': 'decorative'
-        }
-
-        // Support both Spanish ('categoria') and English ('category') keys
         const rawCategory = (data as any).categoria ?? (data as any).category ?? ''
-        const mappedCategory = categoryMap[rawCategory] || rawCategory
+        const mappedCategory = normalizeCategory(rawCategory) ?? 'custom'
         // Be tolerant of different field names (migrations may have used english keys)
         const name = (data as any).nombre || (data as any).title || (data as any).name || ''
         const description = (data as any).descripcion || (data as any).description || ''
@@ -281,3 +272,7 @@ export class ProductsService {
         }
     }
 }
+
+
+
+

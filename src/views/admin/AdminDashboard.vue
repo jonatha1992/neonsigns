@@ -178,12 +178,20 @@
 import { ref, onMounted, computed } from 'vue'
 import { useProductsStore } from '@/stores/products'
 import type { Product } from '@/types'
+import { CATEGORY_LABELS, normalizeCategory, resolveCategoryLabel } from '@/utils/categories'
 import NeonSpinner from '@/components/common/NeonSpinner.vue'
 
 // Reactive state
 const loading = ref(true)
 const productsStore = useProductsStore()
 const items = ref<Product[]>([])
+
+const buildEmptyCategoryTotals = (): Record<string, number> => {
+  return Object.keys(CATEGORY_LABELS).reduce((acc, key) => {
+    acc[key] = 0
+    return acc
+  }, {} as Record<string, number>)
+}
 
 // Stats
 const stats = ref<{
@@ -197,25 +205,10 @@ const stats = ref<{
   totalItems: 0,
   activeItems: 0,
   featuredItems: 0,
-  itemsByCategory: {
-    business: 0,
-    custom: 0,
-    home: 0,
-    decorative: 0,
-    signs: 0
-  },
+  itemsByCategory: buildEmptyCategoryTotals(),
   itemsChange: 3, // Simulado
   visitsToday: 127 // Simulado
 })
-
-// Category labels
-const categoryLabels: Record<string, string> = {
-  business: 'Negocios',
-  custom: 'Personalizado',
-  home: 'Hogar',
-  decorative: 'Decorativo',
-  signs: 'Señales'
-}
 
 // Computed properties
 const latestItems = computed(() => {
@@ -249,25 +242,19 @@ const loadDashboardData = async () => {
   try {
     loading.value = true
 
-    // Cargar productos
     await productsStore.fetchProducts()
     items.value = productsStore.products
 
-    // Calcular estadísticas
     const allProducts = productsStore.products
-    const categoryCount: Record<string, number> = {
-      business: 0,
-      custom: 0,
-      home: 0,
-      decorative: 0,
-      signs: 0
-    }
+    const categoryCount = buildEmptyCategoryTotals()
 
     allProducts.forEach(product => {
-      categoryCount[product.category] = (categoryCount[product.category] || 0) + 1
+      const normalized = normalizeCategory(product.category) ?? 'custom'
+      categoryCount[normalized] = (categoryCount[normalized] || 0) + 1
     })
 
     stats.value = {
+
       totalItems: allProducts.length,
       activeItems: allProducts.length,
       featuredItems: allProducts.filter(p => p.featured).length,
@@ -284,7 +271,7 @@ const loadDashboardData = async () => {
 }
 
 const getCategoryLabel = (category: string): string => {
-  return categoryLabels[category] || category
+  return resolveCategoryLabel(category)
 }
 
 const getCategoryPercentage = (count: number): number => {
@@ -332,3 +319,7 @@ onMounted(() => {
   }
 }
 </style>
+
+
+
+

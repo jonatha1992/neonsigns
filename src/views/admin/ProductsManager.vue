@@ -538,11 +538,15 @@ const saveProduct = async () => {
     }
     
     // Preparar datos completos para Firestore
+    const optionValue = formData.value.category
+    const normalizedCategory = mapOptionValueToCategory(optionValue)
+
     const productData = {
       title: formData.value.title,
       description: formData.value.description,
       imageUrl: imageUrl,
-      category: formData.value.category,
+      category: normalizedCategory,
+      categoria: optionValue,
       price: formData.value.price || 0,
       isFeatured: formData.value.isFeatured,
       updatedAt: Timestamp.now()
@@ -608,21 +612,8 @@ const truncateText = (text: string, maxLength: number) => {
   return text.substring(0, maxLength) + '...'
 }
 
-const getCategoryLabel = (category: string) => {
-  const labels: Record<string, string> = {
-    'custom': 'Personalizado',
-    'business': 'Negocios',
-    'home': 'Hogar',
-    'events': 'Eventos',
-    'decorative': 'Decorativo',
-    'personalizado': 'Personalizado',
-    'negocios': 'Negocios',
-    'hogar': 'Hogar',
-    'eventos': 'Eventos',
-    'decorativo': 'Decorativo'
-  }
-  return labels[category] || category
-}
+import { getCategoryLabel } from '@/composables/useCategory'
+import { mapCategoryToOptionValue, mapOptionValueToCategory } from '@/utils/categories'
 
 const showToast = (message: string, type: 'success' | 'error') => {
   toast.value = { show: true, message, type }
@@ -1556,3 +1547,5 @@ onMounted(() => {
     transform: rotate(45deg);
   }
 </style>
+
+

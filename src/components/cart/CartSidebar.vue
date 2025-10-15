@@ -82,6 +82,7 @@
 import { computed } from 'vue'
 import { X, ShoppingCart, Minus, Plus, Trash2, MessageCircle } from 'lucide-vue-next'
 import { useCartStore } from '@/stores/cart'
+import { buildWhatsAppUrl } from '@/utils/contact'
 
 const cartStore = useCartStore()
 
@@ -108,7 +109,7 @@ const whatsappOrderUrl = computed(() => {
   message += `*Total: $${totalPrice.value.toFixed(2)}*\n\n`
   message += '¿Podrían confirmarme disponibilidad y tiempo de entrega? ¡Gracias! 🌟'
   
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+  return buildWhatsAppUrl(message)
 })
 
 const closeCart = () => {
@@ -333,3 +334,4 @@ const clearCart = () => {
   }
 }
 </style>
+

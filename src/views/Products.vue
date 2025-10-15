@@ -60,6 +60,7 @@ import { useSEO } from '@/composables/useSEO'
 import ProductCard from '@/components/product/ProductCard.vue'
 import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import type { Product } from '@/types'
+import { buildWhatsAppUrl } from '@/utils/contact'
 
 const productsStore = useProductsStore()
 
@@ -77,16 +78,15 @@ const totalProducts = computed(() => allProducts.value.length)
 
 
 // WhatsApp URLs
-const whatsappNumber = '+5491140916764'
 
 const whatsappUrl = computed(() => {
   const message = 'Hola! Vi su galería de trabajos y me interesa solicitar una cotización para un cartel de neón (Zona Sur). ¿Podrían ayudarme? 🌟'
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+  return buildWhatsAppUrl(message)
 })
 
 const whatsappCustomUrl = computed(() => {
     const message = 'Hola! Me interesan sus trabajos personalizados (Zona Sur). ¿Podrían ayudarme a crear algo único? 🌟'
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+  return buildWhatsAppUrl(message)
 })
 
 
@@ -467,3 +467,6 @@ onMounted(() => {
 .delay-175 { animation-delay: 175ms; }
 .delay-200 { animation-delay: 200ms; }
 </style>
+
+
+

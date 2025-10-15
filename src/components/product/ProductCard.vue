@@ -72,6 +72,9 @@ import { ref, computed, onMounted } from 'vue'
 import { Zap, Star, MessageCircle, Eye } from 'lucide-vue-next'
 import ImageModal from '@/components/common/ImageModal.vue'
 import type { Product } from '@/types'
+import { getCategoryLabel } from '@/composables/useCategory'
+import { buildWhatsAppUrl } from '@/utils/contact'
+import { formatArs } from '@/utils/format'
 
 interface Props {
   product: Product
@@ -112,31 +115,14 @@ onMounted(() => {
   }
 })
 
-const categoryName = computed(() => {
-  const categories: Record<string, string> = {
-    business: 'Negocios',
-    home: 'Hogar',
-    custom: 'Personalizado',
-    decorative: 'Decorativo',
-    signs: 'Señales',
-    letters: 'Letras'
-  }
-  return categories[props.product.category] || 'Producto'
-})
+const categoryName = computed(() => getCategoryLabel(props.product.category))
 
-// Función para formatear precios
-const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('es-AR', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(price)
-}
+const formatPrice = (price: number): string => formatArs(price)
 
 // WhatsApp configuration
-const whatsappNumber = '+5491140916764'
 const whatsappProductUrl = computed(() => {
-  const message = `Hola! Me interesa el trabajo "${props.product.name}" (Zona Sur). ¿Podrían darme más información y disponibilidad? 🌟`
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+  const message = `Hola! Me interesa el trabajo "${props.product.name}" (Zona Sur). Podrian darme mas informacion y disponibilidad?`
+  return buildWhatsAppUrl(message)
 })
 </script>
 
@@ -583,3 +569,19 @@ const whatsappProductUrl = computed(() => {
   box-shadow: 0 5px 15px rgba(204, 204, 204, 0.2);
 }
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
