@@ -38,7 +38,7 @@
             <template v-if="isAdmin">
               <RouterLink to="/admin/dashboard" class="nav-link admin-nav-link" @click="clearActiveSection">
                 <LayoutDashboard :size="18" />
-                <span>Panel de Control</span>
+                <span>Gestion</span>
               </RouterLink>
             </template>
           </div>
@@ -713,7 +713,31 @@ onUnmounted(() => {
   color: #ef4444;
 }
 
-.login-btn,
+
+/* Compact LOGIN button */
+.login-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.08rem;
+  padding: 0.12rem 0.45rem !important;
+  font-size: 0.85rem !important;
+  border-radius: 5px !important;
+  min-height: 26px;
+  min-width: 0;
+}
+
+.login-btn span {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  font-size: 0.85rem !important;
+  padding: 0 1px;
+}
+
+.login-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
 .logout-btn {
   display: flex;
   align-items: center;

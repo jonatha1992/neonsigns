@@ -1,30 +1,17 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Public read access for products collection
-    match /products/{productId} {
+    // Allow read access for all authenticated and unauthenticated users
+    match /gallery_items/{document} {
       allow read: if true;
-      // Writes require authenticated users
-      allow write: if request.auth != null;
+      // Permitir escritura a cualquier usuario temporalmente para migración (¡NO OLVIDES REVERTIR ESTO!)
+      allow write: if true;
     }
 
-    // Public read access for gallery collections (legacy)
-    match /gallery/{itemId} {
-      allow read: if true;
-      // Writes require authenticated users (adjust rules to your auth model)
-      allow write: if request.auth != null;
-    }
-
-    match /gallery_items/{itemId} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-
-    // Default: deny other operations to protect data
+    // Future collections can be added here
     match /{document=**} {
-      allow read: if false;
-      allow write: if false;
+      allow read, write: if request.auth != null && request.auth.token.email == 'ldesidel@hotmail.com';
     }
   }
 }

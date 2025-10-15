@@ -1,7 +1,15 @@
 {
-  "projects": {
-    "default": "neon-signs-app"
-  },
-  "targets": {},
-  "etags": {}
+    "projects": {
+        "default": "cuadros-neon"
+    },
+    "targets": {
+        "cuadros-neon": {
+            "hosting": {
+                "cuadros-neon": [
+                    "cuadros-neon"
+                ]
+            }
+        }
+    },
+    "etags": {}
 }

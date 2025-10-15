@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia'
-import type { CartItem, Product, NeonColor, ProductSize } from '@/types'
+import type { CartItem, Product } from '@/types'
+
+// Local minimal types for optional color/size used in cart (not present in global types)
+interface SimpleOption {
+    name: string
+    price?: number
+}
 
 interface CartState {
     items: CartItem[]
@@ -19,7 +25,8 @@ export const useCartStore = defineStore('cart', {
 
         totalPrice: (state) => {
             return state.items.reduce((total, item) => {
-                const itemPrice = item.product.price + item.selectedSize.price
+                const sizePrice = (item as any).selectedSize?.price || 0
+                const itemPrice = item.product.price + sizePrice
                 return total + (itemPrice * item.quantity)
             }, 0)
         },
@@ -37,15 +44,15 @@ export const useCartStore = defineStore('cart', {
     actions: {
         addItem(
             product: Product,
-            selectedColor: NeonColor,
-            selectedSize: ProductSize,
+            selectedColor: SimpleOption | undefined,
+            selectedSize: SimpleOption | undefined,
             quantity: number = 1,
             customText?: string
         ) {
             const existingItemIndex = this.items.findIndex(item =>
                 item.product.id === product.id &&
-                item.selectedColor.name === selectedColor.name &&
-                item.selectedSize.name === selectedSize.name &&
+                ((item as any).selectedColor?.name || '') === (selectedColor as any).name &&
+                ((item as any).selectedSize?.name || '') === (selectedSize as any).name &&
                 item.customText === customText
             )
 
@@ -57,8 +64,9 @@ export const useCartStore = defineStore('cart', {
             } else {
                 this.items.push({
                     product,
-                    selectedColor,
-                    selectedSize,
+                    // store optional selections as any to remain flexible
+                    ...(selectedColor ? { selectedColor: selectedColor as any } : {}),
+                    ...(selectedSize ? { selectedSize: selectedSize as any } : {}),
                     quantity,
                     customText
                 })

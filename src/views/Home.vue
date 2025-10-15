@@ -105,6 +105,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { MessageCircle, Palette, Zap, Shield, Instagram } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
+import { useSEO } from '@/composables/useSEO'
 import HeroSection from '@/components/common/HeroSection.vue'
 import ProductCard from '@/components/product/ProductCard.vue'
 import NeonSpinner from '@/components/common/NeonSpinner.vue'
@@ -112,6 +113,9 @@ import type { Product } from '@/types'
 
 // Usar el store de productos
 const productsStore = useProductsStore()
+
+// SEO Setup
+const { updateSEO, generateBusinessStructuredData } = useSEO()
 
 // Estado reactivo
 const featuredProducts = ref<Product[]>([])
@@ -164,6 +168,14 @@ const loadData = async () => {
 }
 
 onMounted(() => {
+  // Configure SEO for homepage
+  updateSEO({
+    title: 'Cuadros NEON LeD - Carteles de Neón Personalizados | Zona Sur',
+    description: 'Tienda profesional de carteles de neón personalizados en Zona Sur. Diseños únicos con efectos luminosos para tu negocio o hogar. WhatsApp: +54 9 11 4091-6764',
+    keywords: 'carteles neón zona sur, letreros luminosos personalizados, señalética neon, diseño personalizado, carteles LED argentina, neon signs',
+    structuredData: generateBusinessStructuredData()
+  })
+  
   loadData()
 })
 </script>
@@ -196,24 +208,32 @@ onMounted(() => {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
-  
-  /* En desktop, máximo 4 columnas */
+
+  /* Desktop: 4 columnas con ancho fijo óptimo */
   @media (min-width: 1200px) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(260px, 1fr));
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
   }
-  
-  /* En tablet, máximo 2 columnas */
-  @media (min-width: 768px) and (max-width: 1199px) {
+
+  /* Tablet grande: 3 columnas */
+  @media (min-width: 992px) and (max-width: 1199px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Tablet: 2 columnas */
+  @media (min-width: 768px) and (max-width: 991px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  
-  /* En móvil, 1 columna */
+
+  /* Móvil: 1 columna con padding reducido */
   @media (max-width: 767px) {
     grid-template-columns: 1fr;
     gap: 1rem;
+    padding: 0 0.5rem;
   }
 }
 

@@ -11,26 +11,14 @@ export async function testPricing() {
     console.log(`Found ${productCards.length} product cards`)
 
     let cardsWithPrice = 0
-    let cardsWithDiscount = 0
 
     productCards.forEach((card, index) => {
         const priceElement = card.querySelector('.current-price')
-        const originalPriceElement = card.querySelector('.original-price')
-        const discountBadge = card.querySelector('.badge.discount')
 
         if (priceElement) {
             cardsWithPrice++
             const priceText = priceElement.textContent
             console.log(`  Card ${index + 1}: ${priceText}`)
-
-            if (originalPriceElement) {
-                cardsWithDiscount++
-                console.log(`    ↳ Original price: ${originalPriceElement.textContent}`)
-            }
-
-            if (discountBadge) {
-                console.log(`    ↳ Discount: ${discountBadge.textContent}`)
-            }
         } else {
             console.log(`  ❌ Card ${index + 1}: No price found`)
         }
@@ -58,13 +46,11 @@ export async function testPricing() {
 
     console.log(`\n📊 Summary:`)
     console.log(`  - Cards with prices: ${cardsWithPrice}/${productCards.length}`)
-    console.log(`  - Cards with discounts: ${cardsWithDiscount}`)
     console.log(`  - Success rate: ${((cardsWithPrice / productCards.length) * 100).toFixed(1)}%`)
 
     return {
         totalCards: productCards.length,
         cardsWithPrice,
-        cardsWithDiscount,
         successRate: (cardsWithPrice / productCards.length) * 100
     }
 }
@@ -79,15 +65,9 @@ export async function testProductDetail() {
     }
 
     const priceElement = document.querySelector('.product-pricing .current-price')
-    const originalPriceElement = document.querySelector('.product-pricing .original-price')
 
     if (priceElement) {
         console.log(`✅ Price found: ${priceElement.textContent}`)
-
-        if (originalPriceElement) {
-            console.log(`✅ Original price found: ${originalPriceElement.textContent}`)
-        }
-
         return true
     } else {
         console.log('❌ No price found in product detail')

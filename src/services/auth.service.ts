@@ -21,9 +21,10 @@ export class AuthService {
    */
   static async signIn(email: string, password: string): Promise<User> {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth!, email, password);
       return userCredential.user;
     } catch (error) {
+      console.error('Firebase signIn error:', error);
       const authError = error as AuthError;
       throw new Error(this.getErrorMessage(authError.code));
     }
@@ -34,7 +35,7 @@ export class AuthService {
    */
   static async signOut(): Promise<void> {
     try {
-      await signOut(auth);
+      await signOut(auth!);
     } catch (error) {
       const authError = error as AuthError;
       throw new Error(this.getErrorMessage(authError.code));
@@ -46,7 +47,7 @@ export class AuthService {
    */
   static async sendPasswordResetEmail(email: string): Promise<void> {
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth!, email);
     } catch (error) {
       const authError = error as AuthError;
       throw new Error(this.getErrorMessage(authError.code));
@@ -58,7 +59,7 @@ export class AuthService {
    * Requires recent authentication
    */
   static async updatePassword(newPassword: string): Promise<void> {
-    const user = auth.currentUser;
+    const user = auth?.currentUser;
     if (!user) {
       throw new Error('No user is currently signed in');
     }
@@ -76,7 +77,7 @@ export class AuthService {
    * Required before sensitive operations like password change
    */
   static async reauthenticate(currentPassword: string): Promise<void> {
-    const user = auth.currentUser;
+    const user = auth?.currentUser;
     if (!user || !user.email) {
       throw new Error('No user is currently signed in');
     }
@@ -94,7 +95,7 @@ export class AuthService {
    * Get current user
    */
   static getCurrentUser(): User | null {
-    return auth.currentUser;
+    return auth?.currentUser || null;
   }
 
   /**
@@ -103,39 +104,54 @@ export class AuthService {
    */
   static isAdmin(user: User | null): boolean {
     if (!user || !user.email) {
+      console.debug('[AuthService.isAdmin] No user or email present', { user });
       return false;
     }
     // If admin requirement is disabled, any authenticated user is considered admin
     const requireAdmin = ((import.meta as any)?.env?.VITE_REQUIRE_ADMIN ?? 'true').toString().toLowerCase() !== 'false';
+    console.debug('[AuthService.isAdmin] requireAdmin raw:', (import.meta as any)?.env?.VITE_REQUIRE_ADMIN, 'parsed:', requireAdmin);
     if (!requireAdmin) {
+      console.debug('[AuthService.isAdmin] Admin requirement disabled by env');
       return true;
     }
     // Allow configuring admin emails via env (comma-separated)
     const envAdmins = (import.meta as any)?.env?.VITE_ADMIN_EMAILS as string | undefined;
+    console.debug('[AuthService.isAdmin] VITE_ADMIN_EMAILS:', envAdmins);
     if (envAdmins && envAdmins.trim().length > 0) {
       const allowed = envAdmins
         .split(',')
         .map(e => e.trim().toLowerCase())
         .filter(Boolean);
+      console.debug('[AuthService.isAdmin] allowed admin emails:', allowed, 'checking user:', user.email.toLowerCase());
       return allowed.includes(user.email.toLowerCase());
     }
 
     // Fallback to legacy single admin email
-    return user.email.toLowerCase() === 'ldesidel@hotmail.com';
+    const isLegacy = user.email.toLowerCase() === 'ldesidel@hotmail.com';
+    console.debug('[AuthService.isAdmin] fallback legacy admin check:', isLegacy);
+    return isLegacy;
   }
 
   /**
    * Subscribe to authentication state changes
    */
   static onAuthStateChanged(callback: (user: User | null) => void): () => void {
-    return onAuthStateChanged(auth, callback);
+    return onAuthStateChanged(auth!, callback);
   }
 
   /**
    * Convert Firebase auth error codes to user-friendly messages
    */
   private static getErrorMessage(errorCode: string): string {
+    if (errorCode && typeof errorCode === 'string') {
+      const lc = errorCode.toLowerCase();
+      if (lc.includes('api-key')) {
+        return 'Clave de API inválida. Verifique VITE_FIREBASE_API_KEY en su archivo de entorno y que coincida con el proyecto en Firebase Console';
+      }
+    }
     const errorMessages: Record<string, string> = {
+      'auth/api-key-not-valid': 'Clave de API inválida. Verifique VITE_FIREBASE_API_KEY en su archivo de entorno y que coincida con el proyecto en Firebase Console',
+      'auth/invalid-api-key': 'Clave de API inválida. Verifique la configuración de Firebase',
       'auth/invalid-login-credentials': 'Credenciales inválidas',
       'auth/invalid-email': 'El correo electrónico no es válido',
       'auth/user-disabled': 'Esta cuenta ha sido deshabilitada',
@@ -159,7 +175,7 @@ export class AuthService {
    */
   static waitForAuthInit(): Promise<User | null> {
     return new Promise((resolve) => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const unsubscribe = onAuthStateChanged(auth!, (user) => {
         unsubscribe();
         resolve(user);
       });

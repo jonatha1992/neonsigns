@@ -8,13 +8,8 @@
         </h1>
       </div>
       
-
-      
- 
-      
       <!-- Products Grid -->
       <div v-if="loading" class="loading-state">
-        <NeonSpinner size="large" color="pink" />
         <p class="loading-text neon-text pink">Cargando galería de trabajos...</p>
         <div class="loading-dots">
           <span></span>
@@ -61,11 +56,15 @@
 import { computed, onMounted, ref } from 'vue'
 import { Package, Palette } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
+import { useSEO } from '@/composables/useSEO'
 import ProductCard from '@/components/product/ProductCard.vue'
 import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import type { Product } from '@/types'
 
 const productsStore = useProductsStore()
+
+// SEO Setup
+const { updateSEO } = useSEO()
 
 const allProducts = ref<Product[]>([])
 const dataSource = ref<'firebase' | 'mock'>('mock')
@@ -119,6 +118,26 @@ const loadData = async () => {
 }
 
 onMounted(() => {
+  // Configure SEO for gallery page
+  updateSEO({
+    title: 'Galería de Trabajos - Carteles de Neón Personalizados | Zona Sur',
+    description: 'Explora nuestra galería de carteles de neón personalizados realizados en Zona Sur. Diseños únicos para negocios y hogares. WhatsApp: +54 9 11 4091-6764',
+    keywords: 'galería carteles neón, trabajos realizados, letreros luminosos zona sur, portfolio neon signs, diseños personalizados argentina',
+    ogTitle: 'Galería de Trabajos - Carteles de Neón | Cuadros NEON LeD',
+    ogDescription: 'Descubre nuestros trabajos realizados en carteles de neón personalizados. Inspirate para tu próximo proyecto.',
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "ImageGallery",
+      "name": "Galería de Carteles de Neón",
+      "description": "Galería de trabajos realizados en carteles de neón personalizados",
+      "url": window.location.href,
+      "author": {
+        "@type": "Organization",
+        "name": "Cuadros NEON LeD"
+      }
+    }
+  })
+  
   loadData()
 })
 </script>

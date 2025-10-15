@@ -181,7 +181,7 @@
 import { ref, computed, nextTick, watch } from 'vue'
 import { useFileUpload } from '@/composables/useFileUpload'
 import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
-import { storage } from '@/config/firebase'
+import { getStorageInstance } from '@/config/firebase'
 
 // Props
 interface Props {
@@ -539,10 +539,11 @@ const createThumbnail = async (
 
 // Función para subir a Firebase Storage
 const uploadToFirebase = async (file: File, folder: string): Promise<string> => {
+  const storageInstance = await getStorageInstance()
   return new Promise((resolve, reject) => {
     const timestamp = Date.now()
     const fileName = `${timestamp}_${file.name}`
-    const fileRef = storageRef(storage, `${folder}/${fileName}`)
+    const fileRef = storageRef(storageInstance, `${folder}/${fileName}`)
     
     const uploadTask = uploadBytesResumable(fileRef, file)
 

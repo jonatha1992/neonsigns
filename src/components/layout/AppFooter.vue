@@ -81,7 +81,7 @@
       <!-- Bottom Bar -->
       <div class="footer-bottom">
         <div class="footer-bottom-content">
-          <p>&copy; 2025 Cuadros NEON LeD. Desarrollado por Tecnofusion.IT.</p>
+          <p>&copy; 2025 Cuadros NEON LeD. Desarrollado por <a href="https://jonatha1992.github.io/tecnofusion/" target="_blank" rel="noopener noreferrer" class="developer-link">Tecnofusion.IT</a>.</p>
           <div class="social-links">
             <a href="#" class="social-link" title="Instagram">
               <Instagram :size="20" />
@@ -295,6 +295,34 @@ const instagramUrl = computed(() =>
 .footer-bottom-content p {
   color: #888888;
   font-size: 0.9rem;
+}
+
+.developer-link {
+  color: #00ffff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.developer-link:hover {
+  color: #ff0080;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.developer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #00ffff, #ff0080);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.developer-link:hover::after {
+  width: 100%;
 }
 
 .social-links {

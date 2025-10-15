@@ -32,16 +32,6 @@ export const useProductsStore = defineStore('products', {
                 filtered = filtered.filter(p => p.price >= min && p.price <= max)
             }
 
-            if (state.filters.colors?.length) {
-                filtered = filtered.filter(p =>
-                    p.colors.some(color => state.filters.colors!.includes(color.name))
-                )
-            }
-
-            if (state.filters.inStock) {
-                filtered = filtered.filter(p => p.inStock)
-            }
-
             if (state.filters.featured) {
                 filtered = filtered.filter(p => p.featured)
             }
@@ -107,16 +97,15 @@ export const useProductsStore = defineStore('products', {
                     timeoutPromise
                 ]) as Product[]
 
+                // No fallback: si no hay destacados en Firebase, se muestra vacío
                 if (this.featuredProducts.length === 0) {
-                    // Fallback a productos mock
-                    console.warn('[ProductsStore] No featured products in Firebase, using mock')
-                    this.featuredProducts = this.getMockProducts().filter(p => p.featured).slice(0, 4)
+                    console.warn('[ProductsStore] No featured products in Firebase')
                 } else {
                     console.log(`[ProductsStore] Loaded ${this.featuredProducts.length} featured products from Firebase`)
                 }
             } catch (error) {
                 console.error('[ProductsStore] Error fetching featured products:', error)
-                this.featuredProducts = this.getMockProducts().filter(p => p.featured).slice(0, 4)
+                this.featuredProducts = []
             }
         },
 
@@ -157,99 +146,54 @@ export const useProductsStore = defineStore('products', {
                     name: 'Letrero Neon Personalizado',
                     description: 'Letrero de neón LED personalizable para negocios y eventos especiales.',
                     price: 25000,
-                    originalPrice: 30000,
-                    images: ['/images/placeholder-neon.jpg'],
+                    images: ['/images/nombre.jpeg'],
                     category: 'custom',
-                    colors: [{ name: 'Multicolor', hex: '#ff0080', glowColor: '#ff0080' }],
-                    sizes: [{ name: 'Mediano', dimensions: '50x30cm', price: 0 }],
-                    customizable: true,
-                    featured: true,
-                    inStock: true,
-                    rating: 4.8,
-                    reviews: 45,
-                    tags: ['personalizado', 'neón', 'led']
+                    featured: true
                 },
                 {
                     id: 'mock-2',
                     name: 'Cartel Comercial LED',
                     description: 'Cartel luminoso para negocios con alta visibilidad nocturna.',
                     price: 35000,
-                    images: ['/images/placeholder-business.jpg'],
+                    images: ['/images/pizza.jpeg'],
                     category: 'business',
-                    colors: [{ name: 'Azul Neón', hex: '#00ffff', glowColor: '#00ffff' }],
-                    sizes: [{ name: 'Grande', dimensions: '80x40cm', price: 0 }],
-                    customizable: true,
-                    featured: true,
-                    inStock: true,
-                    rating: 4.6,
-                    reviews: 32,
-                    tags: ['negocio', 'comercial', 'led']
+                    featured: true
                 },
                 {
                     id: 'mock-3',
                     name: 'Decoración Hogar Neón',
                     description: 'Elementos decorativos de neón para ambientar espacios del hogar.',
                     price: 18000,
-                    originalPrice: 22000,
-                    images: ['/images/placeholder-home.jpg'],
+                    images: ['/images/harppit bithday.jpeg'],
                     category: 'home',
-                    colors: [{ name: 'Rosa Neón', hex: '#ff0080', glowColor: '#ff0080' }],
-                    sizes: [{ name: 'Pequeño', dimensions: '30x20cm', price: 0 }],
-                    customizable: true,
-                    featured: true,
-                    inStock: true,
-                    rating: 4.7,
-                    reviews: 28,
-                    tags: ['hogar', 'decorativo', 'ambiente']
+                    featured: true
                 },
                 {
                     id: 'mock-4',
-                    name: 'Letras Neon LED - OPEN',
-                    description: 'Cartel luminoso OPEN para negocios. Perfecto para restaurantes y comercios.',
+                    name: 'Cerrajería LED',
+                    description: 'Cartel luminoso para cerrajerías y servicios. Perfecto para alta visibilidad.',
                     price: 12000,
-                    images: ['/images/placeholder-open.jpg'],
+                    images: ['/images/cerrajeria.jpeg'],
                     category: 'business',
-                    colors: [{ name: 'Verde Neón', hex: '#00ff00', glowColor: '#00ff00' }],
-                    sizes: [{ name: 'Estándar', dimensions: '40x15cm', price: 0 }],
-                    customizable: false,
-                    featured: false,
-                    inStock: true,
-                    rating: 4.5,
-                    reviews: 67,
-                    tags: ['open', 'negocio', 'comercial']
+                    featured: false
                 },
                 {
                     id: 'mock-5',
-                    name: 'Nombre Personalizado LED',
-                    description: 'Tu nombre o palabra favorita en neón LED. Ideal para habitaciones y espacios personales.',
+                    name: 'Cartel para Lavadero',
+                    description: 'Señalética luminosa para lavaderos y servicios de limpieza.',
                     price: 8500,
-                    originalPrice: 10000,
-                    images: ['/images/placeholder-name.jpg'],
-                    category: 'custom',
-                    colors: [{ name: 'Fucsia', hex: '#ff0080', glowColor: '#ff0080' }],
-                    sizes: [{ name: 'Pequeño', dimensions: '30x10cm', price: 0 }],
-                    customizable: true,
-                    featured: false,
-                    inStock: true,
-                    rating: 4.9,
-                    reviews: 89,
-                    tags: ['nombre', 'personalizado', 'hogar']
+                    images: ['/images/lavadero.jpeg'],
+                    category: 'business',
+                    featured: false
                 },
                 {
                     id: 'mock-6',
                     name: 'Logo Empresarial LED',
                     description: 'Logo de tu empresa en neón LED de alta calidad. Impacto visual garantizado.',
                     price: 45000,
-                    images: ['/images/placeholder-logo.jpg'],
+                    images: ['/images/tecno alfa.jpeg'],
                     category: 'business',
-                    colors: [{ name: 'Blanco Frío', hex: '#ffffff', glowColor: '#ffffff' }],
-                    sizes: [{ name: 'Extra Grande', dimensions: '100x60cm', price: 0 }],
-                    customizable: true,
-                    featured: true,
-                    inStock: true,
-                    rating: 4.8,
-                    reviews: 23,
-                    tags: ['logo', 'empresa', 'corporativo']
+                    featured: true
                 }
             ]
         },
