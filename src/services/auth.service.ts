@@ -10,6 +10,7 @@ import {
   type AuthError
 } from 'firebase/auth';
 import { auth } from '@/config/firebase';
+import logger from '@/utils/logger'
 
 /**
  * Authentication Service
@@ -24,7 +25,7 @@ export class AuthService {
       const userCredential = await signInWithEmailAndPassword(auth!, email, password);
       return userCredential.user;
     } catch (error) {
-      console.error('Firebase signIn error:', error);
+      logger.error('Firebase signIn error:', error);
       const authError = error as AuthError;
       throw new Error(this.getErrorMessage(authError.code));
     }
@@ -104,31 +105,31 @@ export class AuthService {
    */
   static isAdmin(user: User | null): boolean {
     if (!user || !user.email) {
-      console.debug('[AuthService.isAdmin] No user or email present', { user });
+      logger.debug('[AuthService.isAdmin] No user or email present', { user });
       return false;
     }
     // If admin requirement is disabled, any authenticated user is considered admin
     const requireAdmin = ((import.meta as any)?.env?.VITE_REQUIRE_ADMIN ?? 'true').toString().toLowerCase() !== 'false';
-    console.debug('[AuthService.isAdmin] requireAdmin raw:', (import.meta as any)?.env?.VITE_REQUIRE_ADMIN, 'parsed:', requireAdmin);
+    logger.debug('[AuthService.isAdmin] requireAdmin raw:', (import.meta as any)?.env?.VITE_REQUIRE_ADMIN, 'parsed:', requireAdmin);
     if (!requireAdmin) {
-      console.debug('[AuthService.isAdmin] Admin requirement disabled by env');
+      logger.debug('[AuthService.isAdmin] Admin requirement disabled by env');
       return true;
     }
     // Allow configuring admin emails via env (comma-separated)
     const envAdmins = (import.meta as any)?.env?.VITE_ADMIN_EMAILS as string | undefined;
-    console.debug('[AuthService.isAdmin] VITE_ADMIN_EMAILS:', envAdmins);
+    logger.debug('[AuthService.isAdmin] VITE_ADMIN_EMAILS:', envAdmins);
     if (envAdmins && envAdmins.trim().length > 0) {
       const allowed = envAdmins
         .split(',')
         .map(e => e.trim().toLowerCase())
         .filter(Boolean);
-      console.debug('[AuthService.isAdmin] allowed admin emails:', allowed, 'checking user:', user.email.toLowerCase());
+      logger.debug('[AuthService.isAdmin] allowed admin emails:', allowed, 'checking user:', user.email.toLowerCase());
       return allowed.includes(user.email.toLowerCase());
     }
 
     // Fallback to legacy single admin email
     const isLegacy = user.email.toLowerCase() === 'ldesidel@hotmail.com';
-    console.debug('[AuthService.isAdmin] fallback legacy admin check:', isLegacy);
+    logger.debug('[AuthService.isAdmin] fallback legacy admin check:', isLegacy);
     return isLegacy;
   }
 

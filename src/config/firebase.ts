@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getStorage, type FirebaseStorage } from 'firebase/storage';
+import logger from '@/utils/logger';
 
 // Firebase configuration - lazy initialization to ensure env vars are loaded
 let app: FirebaseApp | null = null;
@@ -41,8 +42,8 @@ function validateFirebaseConfig(config: ReturnType<typeof getFirebaseConfig>): b
   const missingKeys = requiredKeys.filter(key => !config[key as keyof typeof config]);
 
   if (missingKeys.length > 0) {
-    console.error('[Firebase] Missing configuration keys:', missingKeys);
-    console.error('[Firebase] Please ensure all required environment variables are set in .env.local');
+    logger.error('[Firebase] Missing configuration keys:', missingKeys);
+    logger.error('[Firebase] Please ensure all required environment variables are set in .env.local');
     return false;
   }
 
@@ -117,9 +118,9 @@ async function initializeFirebaseApp(): Promise<void> {
       db = getFirestore(app);
       storage = getStorage(app);
 
-      console.log('[Firebase] Initialized successfully');
+      logger.log('[Firebase] Initialized successfully');
     } catch (error) {
-      console.error('[Firebase] Error during initialization:', error);
+      logger.error('[Firebase] Error during initialization:', error);
       // Reset initialization promise to allow retry
       initializationPromise = null;
       throw error;
@@ -178,7 +179,7 @@ export { app, auth, db, storage };
 // This ensures Firebase is ready by the time components need it
 if (typeof window !== 'undefined') {
   initializeFirebaseApp().catch(err => {
-    console.warn('[Firebase] Eager initialization failed:', err);
+    logger.warn('[Firebase] Eager initialization failed:', err);
   });
 }
 

@@ -167,6 +167,7 @@ import {
   LayoutDashboard, Images, Home, Mail, Star
 } from 'lucide-vue-next'
 import { useAuth } from '@/composables/useAuth'
+import logger from '@/utils/logger'
 
 const isMobileMenuOpen = ref(false)
 const router = useRouter()
@@ -202,16 +203,16 @@ const handleLogoClick = (event: Event) => {
   
   // Show feedback for multiple clicks
   if (clickCount.value >= 2 && clickCount.value < 5) {
-    console.log(`Admin access: ${clickCount.value}/5 clicks`)
+    logger.log(`Admin access: ${clickCount.value}/5 clicks`)
   }
   
   // Check for admin access (5 clicks within 2 seconds)
-  if (clickCount.value >= 5) {
+    if (clickCount.value >= 5) {
     if (clickTimer) {
       clearTimeout(clickTimer)
     }
     clickCount.value = 0
-    console.log('🎉 Acceso admin activado!')
+    logger.log('🎉 Acceso admin activado!')
     
     // Navigate to admin login
     router.push('/admin/login')
@@ -255,7 +256,7 @@ const handleLogout = async () => {
     closeMobileMenu()
     router.push('/')
   } catch (error) {
-    console.error('Logout error:', error)
+    logger.error('Logout error:', error)
   }
 }
 
@@ -317,9 +318,9 @@ const handleClickOutside = (event: MouseEvent) => {
 
 // Watch for auth changes
 watch([user, isAdmin], ([newUser, newIsAdmin]) => {
-  console.log('🔄 [AppHeader] Auth state changed:')
-  console.log('   - User:', newUser?.email || 'None')
-  console.log('   - Is Admin:', newIsAdmin)
+  logger.log('🔄 [AppHeader] Auth state changed:')
+  logger.log('   - User:', newUser?.email || 'None')
+  logger.log('   - Is Admin:', newIsAdmin)
 }, { immediate: true })
 
 // Lifecycle
@@ -327,10 +328,10 @@ onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 
   // Debug authentication and admin status
-  console.log('🔧 [AppHeader] Mounted - Current user:', user.value?.email)
-  console.log('🔧 [AppHeader] Mounted - Is admin:', isAdmin.value)
-  console.log('🔧 [AppHeader] VITE_REQUIRE_ADMIN:', import.meta.env.VITE_REQUIRE_ADMIN)
-  console.log('🔧 [AppHeader] VITE_ADMIN_EMAILS:', import.meta.env.VITE_ADMIN_EMAILS)
+  logger.log('🔧 [AppHeader] Mounted - Current user:', user.value?.email)
+  logger.log('🔧 [AppHeader] Mounted - Is admin:', isAdmin.value)
+  logger.log('🔧 [AppHeader] VITE_REQUIRE_ADMIN:', (import.meta as any).env.VITE_REQUIRE_ADMIN)
+  logger.log('🔧 [AppHeader] VITE_ADMIN_EMAILS:', (import.meta as any).env.VITE_ADMIN_EMAILS)
 })
 
 onUnmounted(() => {

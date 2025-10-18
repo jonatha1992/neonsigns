@@ -69,10 +69,6 @@
             Enviar Email
           </a>
           
-          <div class="contact-info">
-            <Mail :size="20" />
-            <span>Ldesidel@hotmail.com</span>
-          </div>
         </div>
         
         <!-- Location Section -->
@@ -204,7 +200,21 @@ onMounted(() => {
         "@type": "LocalBusiness",
         "name": "Cuadros NEON LeD",
         "telephone": "+54-9-11-4091-6764",
-        "email": "tecnofusion.it@gmail.com"
+        "email": "tecnofusion.it@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Ezeiza, Zona Sur",
+          "addressLocality": "Ezeiza",
+          "addressRegion": "Buenos Aires",
+          "postalCode": "1804",
+          "addressCountry": "AR"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": -34.8222,
+          "longitude": -58.5308
+        },
+        "openingHours": "Mo-Fr 09:00-18:00, Sa 09:00-14:00"
       }
     }
   })
@@ -411,6 +421,18 @@ onMounted(() => {
   gap: 0.5rem;
 }
 
+/* Make social buttons stack on very small screens and ensure icons align */
+@media (max-width: 480px) {
+  .quote-buttons {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .btn-quote {
+    width: 100%;
+  }
+}
+
 .btn-quote {
   flex: 1;
   padding: 0.75rem 1rem;
@@ -423,6 +445,18 @@ onMounted(() => {
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+
+  /* Ensure icons inside buttons keep a fixed size and inherit color */
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    vertical-align: middle;
+    color: inherit;
+  }
   
   @media (min-width: 1200px) {
     padding: 0.65rem 0.85rem;
