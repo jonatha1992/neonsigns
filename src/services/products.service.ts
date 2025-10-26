@@ -15,6 +15,10 @@ import {
 import { db } from '@/config/firebase'
 import type { Product } from '@/types'
 import { StorageService } from './storage.service'
+<<<<<<< HEAD
+=======
+import { normalizeCategory } from '@/utils/categories'
+>>>>>>> dev
 
 // Interfaz para los datos en Firestore (gallery_items)
 interface GalleryItemData {
@@ -39,6 +43,7 @@ export class ProductsService {
      * Convierte datos de gallery_items al formato Product
      */
     private static async adaptGalleryItemToProduct(id: string, data: GalleryItemData): Promise<Product> {
+<<<<<<< HEAD
         // Mapear categorías de español a inglés
         const categoryMap: Record<string, string> = {
             'negocios': 'business',
@@ -66,6 +71,25 @@ export class ProductsService {
             images = []
         }
 
+=======
+        const rawCategory = (data as any).categoria ?? (data as any).category ?? ''
+        const mappedCategory = normalizeCategory(rawCategory) ?? 'custom'
+        // Be tolerant of different field names (migrations may have used english keys)
+        const name = (data as any).nombre || (data as any).title || (data as any).name || ''
+        const description = (data as any).descripcion || (data as any).description || ''
+        const price = (data as any).precio || (data as any).price || 0
+        let images: string[] = []
+        if (Array.isArray((data as any).imagenes) && (data as any).imagenes.length) {
+            images = (data as any).imagenes
+        } else if (Array.isArray((data as any).images) && (data as any).images.length) {
+            images = (data as any).images
+        } else if ((data as any).imageUrl) {
+            images = [(data as any).imageUrl]
+        } else {
+            images = []
+        }
+
+>>>>>>> dev
         // Resolve storage paths to downloadable URLs where necessary
         const resolvedImages: string[] = []
         for (const img of images) {
@@ -281,3 +305,7 @@ export class ProductsService {
         }
     }
 }
+
+
+
+

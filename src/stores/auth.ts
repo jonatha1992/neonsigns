@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import type { User } from 'firebase/auth';
 import AuthService from '@/services/auth.service';
+import logger from '@/utils/logger';
 
 /**
  * Authentication Store
@@ -31,7 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = currentUser;
     } catch (err) {
       error.value = 'Error initializing authentication';
-      console.error('Error initializing auth:', err);
+      logger.error('Error initializing auth:', err);
     } finally {
       loading.value = false;
     }
@@ -58,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
       return true;
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Error al iniciar sesión';
-      console.error('Sign in error:', err);
+      logger.error('Sign in error:', err);
       return false;
     } finally {
       loading.value = false;
@@ -77,7 +78,7 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = null;
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Error al cerrar sesión';
-      console.error('Sign out error:', err);
+      logger.error('Sign out error:', err);
     } finally {
       loading.value = false;
     }
@@ -95,7 +96,7 @@ export const useAuthStore = defineStore('auth', () => {
       return true;
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Error al enviar correo de recuperación';
-      console.error('Password reset error:', err);
+      logger.error('Password reset error:', err);
       return false;
     } finally {
       loading.value = false;
@@ -118,7 +119,7 @@ export const useAuthStore = defineStore('auth', () => {
       return true;
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Error al actualizar contraseña';
-      console.error('Password update error:', err);
+      logger.error('Password update error:', err);
       return false;
     } finally {
       loading.value = false;

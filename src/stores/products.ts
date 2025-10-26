@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Product, ProductCategory, FilterOptions } from '@/types'
 import { ProductsService } from '@/services/products.service'
+import logger from '@/utils/logger'
 
 interface ProductsState {
     products: Product[]
@@ -65,17 +66,17 @@ export const useProductsStore = defineStore('products', {
 
                 // Si no hay productos en Firestore, usar mock como fallback
                 if (this.products.length === 0) {
-                    console.warn('[ProductsStore] No products found in Firestore, using mock data')
+                    logger.warn('[ProductsStore] No products found in Firestore, using mock data')
                     this.products = this.getMockProducts()
                 }
 
                 this.featuredProducts = this.products.filter(p => p.featured).slice(0, 4)
 
                 const source = this.products.length > 0 && this.products[0] && !this.products[0].id.startsWith('mock-') ? 'Firebase' : 'Mock'
-                console.log(`[ProductsStore] Loaded ${this.products.length} products from ${source}`)
-                console.log(`[ProductsStore] Featured products: ${this.featuredProducts.length}`)
+                logger.log(`[ProductsStore] Loaded ${this.products.length} products from ${source}`)
+                logger.log(`[ProductsStore] Featured products: ${this.featuredProducts.length}`)
             } catch (error) {
-                console.error('[ProductsStore] Error fetching products from Firestore:', error)
+                logger.error('[ProductsStore] Error fetching products from Firestore:', error)
                 // En caso de error, usar datos mock como fallback
                 console.warn('[ProductsStore] Falling back to mock data')
                 this.products = this.getMockProducts()
@@ -86,26 +87,32 @@ export const useProductsStore = defineStore('products', {
         },
 
         async fetchFeaturedProducts() {
+            this.loading = true
             try {
-                // Timeout más corto para productos destacados
-                const timeoutPromise = new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error('Timeout')), 2000)
-                )
-
-                this.featuredProducts = await Promise.race([
-                    ProductsService.getFeaturedProducts(4),
-                    timeoutPromise
-                ]) as Product[]
+                // Cargar productos destacados directamente desde Firebase (sin timeout)
+                this.featuredProducts = await ProductsService.getFeaturedProducts(4)
 
                 // No fallback: si no hay destacados en Firebase, se muestra vacío
                 if (this.featuredProducts.length === 0) {
+<<<<<<< HEAD
                     console.warn('[ProductsStore] No featured products in Firebase')
+=======
+                    logger.warn('[ProductsStore] No featured products found in Firebase')
+>>>>>>> dev
                 } else {
-                    console.log(`[ProductsStore] Loaded ${this.featuredProducts.length} featured products from Firebase`)
+                    logger.log(`[ProductsStore] Loaded ${this.featuredProducts.length} featured products from Firebase`)
                 }
             } catch (error) {
+<<<<<<< HEAD
                 console.error('[ProductsStore] Error fetching featured products:', error)
                 this.featuredProducts = []
+=======
+                logger.error('[ProductsStore] Error fetching featured products:', error)
+                // No fallback - mostrar solo lo que hay en Firebase
+                this.featuredProducts = []
+            } finally {
+                this.loading = false
+>>>>>>> dev
             }
         },
 
@@ -132,7 +139,7 @@ export const useProductsStore = defineStore('products', {
                 const mockProduct = this.getMockProducts().find(p => p.id === id)
                 return mockProduct || null
             } catch (error) {
-                console.error(`[ProductsStore] Error fetching product ${id}:`, error)
+                logger.error(`[ProductsStore] Error fetching product ${id}:`, error)
                 // Fallback a mock
                 return this.getMockProducts().find(p => p.id === id) || null
             }

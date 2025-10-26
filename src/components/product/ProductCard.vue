@@ -39,10 +39,17 @@
       <h3 class="product-name">{{ product.name }}</h3>
       <p class="product-description">{{ product.description }}</p>
       
+<<<<<<< HEAD
       <!-- Sección de precio -->
       <div class="product-pricing">
         <span class="current-price">${{ formatPrice(product.price) }}</span>
 
+=======
+      <!-- Sección de precio (oculto temporalmente) -->
+      <div class="product-pricing" aria-hidden="true">
+        <!-- Precio oculto temporalmente -->
+        <span class="current-price visually-hidden">${{ formatPrice(product.price) }}</span>
+>>>>>>> dev
       </div>
     </div>
     
@@ -72,6 +79,9 @@ import { ref, computed, onMounted } from 'vue'
 import { Zap, Star, MessageCircle, Eye } from 'lucide-vue-next'
 import ImageModal from '@/components/common/ImageModal.vue'
 import type { Product } from '@/types'
+import { getCategoryLabel } from '@/composables/useCategory'
+import { buildWhatsAppUrl } from '@/utils/contact'
+import { formatArs } from '@/utils/format'
 
 interface Props {
   product: Product
@@ -96,6 +106,7 @@ const closeModal = () => {
 const onImageLoad = () => {
   imageLoading.value = false
   imageError.value = false
+<<<<<<< HEAD
 }
 
 const onImageError = () => {
@@ -130,13 +141,32 @@ const formatPrice = (price: number): string => {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   }).format(price)
+=======
+>>>>>>> dev
 }
 
+const onImageError = () => {
+  imageLoading.value = false
+  imageError.value = true
+}
+
+// Inicializar estado de carga
+onMounted(() => {
+  if (props.product.images && props.product.images[0]) {
+    imageLoading.value = true
+  } else {
+    imageLoading.value = false
+  }
+})
+
+const categoryName = computed(() => getCategoryLabel(props.product.category))
+
+const formatPrice = (price: number): string => formatArs(price)
+
 // WhatsApp configuration
-const whatsappNumber = '+5491140916764'
 const whatsappProductUrl = computed(() => {
-  const message = `Hola! Me interesa el trabajo "${props.product.name}" (Zona Sur). ¿Podrían darme más información y disponibilidad? 🌟`
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+  const message = `Hola! Me interesa el trabajo "${props.product.name}" (Zona Sur). Podrian darme mas informacion y disponibilidad?`
+  return buildWhatsAppUrl(message)
 })
 </script>
 
@@ -468,12 +498,12 @@ const whatsappProductUrl = computed(() => {
 
 .product-description {
   color: #cccccc;
-  font-size: 0.8rem;
-  line-height: 1.3;
+  font-size: 0.9rem;
+  line-height: 1.4;
   margin-bottom: 0.75rem;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3; /* mostrar hasta 3 líneas ahora */
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -481,16 +511,18 @@ const whatsappProductUrl = computed(() => {
 
 
 .product-pricing {
-  display: flex;
+  /* Precio oculto temporalmente: eliminar borde/estilo manteniendo el contenedor
+     para no romper la estructura del DOM si se vuelve a mostrar más adelante. */
+  display: block;
   align-items: center;
   gap: 0.375rem;
-  margin-top: 0.375rem;
-  margin-bottom: 0.375rem;
-  padding: 0.25rem 0.375rem;
-  background: rgba(26, 26, 26, 0.8);
-  border-radius: 3px;
-  border: 1px solid rgba(136, 136, 136, 0.2);
-  backdrop-filter: blur(10px);
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  backdrop-filter: none;
 }
 
 .current-price {
@@ -500,6 +532,23 @@ const whatsappProductUrl = computed(() => {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   letter-spacing: 0.025em;
 }
+
+<<<<<<< HEAD
+
+=======
+/* Utility to hide elements visually but keep them for screen readers if needed */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+>>>>>>> dev
 
 
 
@@ -583,3 +632,19 @@ const whatsappProductUrl = computed(() => {
   box-shadow: 0 5px 15px rgba(204, 204, 204, 0.2);
 }
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

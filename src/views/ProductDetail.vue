@@ -104,21 +104,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, onMounted } from "vue"
+import { useRoute } from "vue-router"
 import {
   ChevronRight, MessageCircle,
   Shield, Truck, Wrench, Palette
+<<<<<<< HEAD
 } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import { useSEO } from '@/composables/useSEO'
 import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import type { Product } from '@/types'
+=======
+} from "lucide-vue-next"
+import { useProductsStore } from "@/stores/products"
+import { useSEO } from "@/composables/useSEO"
+import NeonSpinner from "@/components/common/NeonSpinner.vue"
+import type { Product } from "@/types"
+import { getCategoryLabel } from "@/composables/useCategory"
+import { buildWhatsAppUrl } from "@/utils/contact"
+import { formatArs } from "@/utils/format"
+>>>>>>> dev
 
 const route = useRoute()
 const productsStore = useProductsStore()
 
+<<<<<<< HEAD
 // SEO Setup
+=======
+>>>>>>> dev
 const { updateSEO, generateProductStructuredData } = useSEO()
 
 const loading = ref(true)
@@ -126,47 +140,31 @@ const product = ref<Product | null>(null)
 const dataSource = ref<'firebase' | 'mock' | null>(null)
 
 const categoryName = computed(() => {
-  if (!product.value) return ''
-  const categoryNames: Record<string, string> = {
-    business: 'Comercial',
-    custom: 'Personalizado', 
-    home: 'Hogar',
-    decorative: 'Decorativo',
-    signs: 'Señales',
-    letters: 'Letras'
-  }
-  return categoryNames[product.value.category] || 'Otros'
+  if (!product.value) return 'Otros'
+  return getCategoryLabel(product.value.category)
 })
 
 const whatsappUrlQuote = computed(() => {
   if (!product.value) return ''
-  const whatsappNumber = '5491140916764'
-  const message = `Hola! Vi su trabajo "${product.value.name}" en la galería y me gustaría algo similar. ¿Podrían ayudarme con un diseño parecido? 🌟`
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+  const message = `Hola! Vi su trabajo "${product.value.name}" en la galeria y me gustaria algo similar. Podrian ayudarme con un diseno parecido?`
+  return buildWhatsAppUrl(message)
 })
 
-// Función para formatear precios
-const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('es-AR', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(price)
-}
+const formatPrice = (price: number): string => formatArs(price)
 
 onMounted(async () => {
   loading.value = true
   const id = route.params.id as string
   try {
-    // First fetch products if not loaded
     if (productsStore.products.length === 0) {
       await productsStore.fetchProducts()
     }
-    
-    // Find product by id
+
     const foundProduct = productsStore.getProductById(id)
     if (foundProduct) {
       product.value = foundProduct
       dataSource.value = 'mock'
+<<<<<<< HEAD
       
       // Configure SEO for product page
       updateSEO({
@@ -175,17 +173,34 @@ onMounted(async () => {
         keywords: `${foundProduct.name}, cartel neón personalizado, ${categoryName.value.toLowerCase()}, letreros luminosos zona sur`,
         ogTitle: `${foundProduct.name} - Cartel de Neón | Cuadros NEON LeD`,
         ogDescription: foundProduct.description || `Cartel de neón personalizado ${foundProduct.name}`,
+=======
+
+      updateSEO({
+        title: `${foundProduct.name} - Cartel de Neon Personalizado | Cuadros NEON LeD`,
+        description: `${foundProduct.description || `Cartel de neon personalizado ${foundProduct.name}`}. Diseno unico para tu negocio o hogar. WhatsApp: +54 9 11 4091-6764`,
+        keywords: `${foundProduct.name}, cartel neon personalizado, ${categoryName.value.toLowerCase()}, letreros luminosos zona sur`,
+        ogTitle: `${foundProduct.name} - Cartel de Neon | Cuadros NEON LeD`,
+        ogDescription: foundProduct.description || `Cartel de neon personalizado ${foundProduct.name}`,
+>>>>>>> dev
         ogImage: foundProduct.images[0] || '/og-image.jpg',
         structuredData: generateProductStructuredData(foundProduct)
       })
     } else {
       product.value = null
+<<<<<<< HEAD
       
       // Configure SEO for not found
       updateSEO({
         title: 'Trabajo no encontrado - Cuadros NEON LeD',
         description: 'El trabajo que buscas no está disponible. Explora nuestra galería completa de carteles de neón personalizados.',
         keywords: 'carteles neón, galería trabajos, letreros luminosos'
+=======
+
+      updateSEO({
+        title: 'Trabajo no encontrado - Cuadros NEON LeD',
+        description: 'El trabajo que buscas no esta disponible. Explora nuestra galeria completa de carteles de neon personalizados.',
+        keywords: 'carteles neon, galeria trabajos, letreros luminosos'
+>>>>>>> dev
       })
     }
   } catch (e) {
@@ -454,3 +469,11 @@ onMounted(async () => {
   }
 }
 </style>
+
+
+
+
+
+
+
+

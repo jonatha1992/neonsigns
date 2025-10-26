@@ -47,10 +47,6 @@
               <span>+54 9 11 4091-6764</span>
             </div>
             <div class="contact-item">
-              <Mail :size="16" />
-              <span>Ldesidel@hotmail.com</span>
-            </div>
-            <div class="contact-item">
               <MapPin :size="16" />
               <span>Zona Sur, Buenos Aires</span>
             </div>

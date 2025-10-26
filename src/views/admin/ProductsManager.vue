@@ -221,6 +221,7 @@ import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import { Plus, Edit2, Trash2, X, Upload } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import type { Product } from '@/types'
+import type { ProductCategory } from '@/types'
 import { 
   collection, 
   addDoc, 
@@ -315,10 +316,18 @@ const openCreateModal = () => {
 const openEditModal = (product: Product) => {
   isEditMode.value = true
   currentProductId.value = product.id
+<<<<<<< HEAD
 
   // Map Firestore/DB category to select value (handle both Spanish and English)
   let categoryValue = product.category || 'personalizado';
   // Map English to Spanish if needed
+=======
+  // Get original data from Firestore format
+
+  // Map Firestore/DB category to select value (handle both Spanish and English)
+
+  // Map English to Spanish if needed, always fallback to 'personalizado'
+>>>>>>> dev
   const categoryMap: Record<string, string> = {
     'custom': 'personalizado',
     'business': 'negocios',
@@ -331,15 +340,23 @@ const openEditModal = (product: Product) => {
     'eventos': 'eventos',
     'decorativo': 'decorativo'
   };
+<<<<<<< HEAD
   if (categoryMap[categoryValue]) {
     categoryValue = categoryMap[categoryValue];
   }
+=======
+  let categoryValue = categoryMap[product.category ?? ''] ?? 'personalizado';
+>>>>>>> dev
 
   formData.value = {
     title: product.name,
     description: product.description,
     imageUrl: product.images[0] || '',
+<<<<<<< HEAD
     category: categoryValue,
+=======
+    category: categoryValue as ProductCategory,
+>>>>>>> dev
     price: product.price || 0,
     isFeatured: product.featured || false
   }
@@ -530,7 +547,6 @@ const saveProduct = async () => {
     if (selectedFile.value) {
       imageUrl = await uploadImageToStorage()
     }
-
     // Validar que haya una URL de imagen
     if (!imageUrl) {
       showToast('Debes seleccionar una imagen', 'error')
@@ -539,11 +555,15 @@ const saveProduct = async () => {
     }
     
     // Preparar datos completos para Firestore
+    const optionValue = formData.value.category
+    const normalizedCategory = mapOptionValueToCategory(optionValue)
+
     const productData = {
       title: formData.value.title,
       description: formData.value.description,
       imageUrl: imageUrl,
-      category: formData.value.category,
+      category: normalizedCategory,
+      categoria: optionValue,
       price: formData.value.price || 0,
       isFeatured: formData.value.isFeatured,
       updatedAt: Timestamp.now()
@@ -609,21 +629,8 @@ const truncateText = (text: string, maxLength: number) => {
   return text.substring(0, maxLength) + '...'
 }
 
-const getCategoryLabel = (category: string) => {
-  const labels: Record<string, string> = {
-    'custom': 'Personalizado',
-    'business': 'Negocios',
-    'home': 'Hogar',
-    'events': 'Eventos',
-    'decorative': 'Decorativo',
-    'personalizado': 'Personalizado',
-    'negocios': 'Negocios',
-    'hogar': 'Hogar',
-    'eventos': 'Eventos',
-    'decorativo': 'Decorativo'
-  }
-  return labels[category] || category
-}
+import { getCategoryLabel } from '@/composables/useCategory'
+import { mapCategoryToOptionValue, mapOptionValueToCategory } from '@/utils/categories'
 
 const showToast = (message: string, type: 'success' | 'error') => {
   toast.value = { show: true, message, type }
@@ -1475,7 +1482,6 @@ onMounted(() => {
   .products-manager {
     padding: 1rem;
   }
-
   .form-row {
     grid-template-columns: 1fr;
   }
@@ -1558,3 +1564,5 @@ onMounted(() => {
     transform: rotate(45deg);
   }
 </style>
+
+

@@ -6,6 +6,8 @@
     "main": "index.js",
     "scripts": {
         "dev": "vite",
+        "generate-sitemap": "npx tsx scripts/generate-sitemap.ts",
+        "prebuild": "npm run generate-sitemap",
         "build": "vite build",
         "preview": "vite preview",
         "lint": "eslint . --ext .vue,.js,.ts --fix",
