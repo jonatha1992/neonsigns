@@ -92,27 +92,17 @@ export const useProductsStore = defineStore('products', {
                 // Cargar productos destacados directamente desde Firebase (sin timeout)
                 this.featuredProducts = await ProductsService.getFeaturedProducts(4)
 
-                // No fallback: si no hay destacados en Firebase, se muestra vacío
                 if (this.featuredProducts.length === 0) {
-<<<<<<< HEAD
-                    console.warn('[ProductsStore] No featured products in Firebase')
-=======
                     logger.warn('[ProductsStore] No featured products found in Firebase')
->>>>>>> dev
                 } else {
                     logger.log(`[ProductsStore] Loaded ${this.featuredProducts.length} featured products from Firebase`)
                 }
             } catch (error) {
-<<<<<<< HEAD
-                console.error('[ProductsStore] Error fetching featured products:', error)
-                this.featuredProducts = []
-=======
                 logger.error('[ProductsStore] Error fetching featured products:', error)
                 // No fallback - mostrar solo lo que hay en Firebase
                 this.featuredProducts = []
             } finally {
                 this.loading = false
->>>>>>> dev
             }
         },
 

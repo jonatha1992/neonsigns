@@ -1,26 +1,22 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(mv:*)",
-      "Bash(npm run lint)",
-      "Bash(npm run type-check:*)",
-      "Bash(npm run build:*)",
-      "Bash(cat:*)",
-      "Bash(dir /b publicimages)",
-<<<<<<< HEAD
-      "Bash(dir:*)"
-=======
-      "Bash(dir:*)",
-      "Bash(npm run dev:*)",
-      "mcp__chrome-devtools__navigate_page",
-      "mcp__chrome-devtools__take_snapshot",
-      "mcp__chrome-devtools__wait_for",
-      "Bash(firebase projects:list:*)",
-      "Bash(firebase use:*)",
-      "Bash(firebase deploy:*)"
->>>>>>> dev
-    ],
-    "deny": [],
-    "ask": []
-  }
+    "permissions": {
+        "allow": [
+            "Bash(mv:*)",
+            "Bash(npm run lint)",
+            "Bash(npm run type-check:*)",
+            "Bash(npm run build:*)",
+            "Bash(cat:*)",
+            "Bash(dir /b publicimages)",
+            "Bash(dir:*)",
+            "Bash(npm run dev:*)",
+            "mcp__chrome-devtools__navigate_page",
+            "mcp__chrome-devtools__take_snapshot",
+            "mcp__chrome-devtools__wait_for",
+            "Bash(firebase projects:list:*)",
+            "Bash(firebase use:*)",
+            "Bash(firebase deploy:*)"
+        ],
+        "deny": [],
+        "ask": []
+    }
 }

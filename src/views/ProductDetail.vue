@@ -109,13 +109,6 @@ import { useRoute } from "vue-router"
 import {
   ChevronRight, MessageCircle,
   Shield, Truck, Wrench, Palette
-<<<<<<< HEAD
-} from 'lucide-vue-next'
-import { useProductsStore } from '@/stores/products'
-import { useSEO } from '@/composables/useSEO'
-import NeonSpinner from '@/components/common/NeonSpinner.vue'
-import type { Product } from '@/types'
-=======
 } from "lucide-vue-next"
 import { useProductsStore } from "@/stores/products"
 import { useSEO } from "@/composables/useSEO"
@@ -124,15 +117,10 @@ import type { Product } from "@/types"
 import { getCategoryLabel } from "@/composables/useCategory"
 import { buildWhatsAppUrl } from "@/utils/contact"
 import { formatArs } from "@/utils/format"
->>>>>>> dev
 
 const route = useRoute()
 const productsStore = useProductsStore()
 
-<<<<<<< HEAD
-// SEO Setup
-=======
->>>>>>> dev
 const { updateSEO, generateProductStructuredData } = useSEO()
 
 const loading = ref(true)
@@ -164,16 +152,6 @@ onMounted(async () => {
     if (foundProduct) {
       product.value = foundProduct
       dataSource.value = 'mock'
-<<<<<<< HEAD
-      
-      // Configure SEO for product page
-      updateSEO({
-        title: `${foundProduct.name} - Cartel de Neón Personalizado | Cuadros NEON LeD`,
-        description: `${foundProduct.description || `Cartel de neón personalizado ${foundProduct.name}`}. Diseño único para tu negocio o hogar. WhatsApp: +54 9 11 4091-6764`,
-        keywords: `${foundProduct.name}, cartel neón personalizado, ${categoryName.value.toLowerCase()}, letreros luminosos zona sur`,
-        ogTitle: `${foundProduct.name} - Cartel de Neón | Cuadros NEON LeD`,
-        ogDescription: foundProduct.description || `Cartel de neón personalizado ${foundProduct.name}`,
-=======
 
       updateSEO({
         title: `${foundProduct.name} - Cartel de Neon Personalizado | Cuadros NEON LeD`,
@@ -181,26 +159,16 @@ onMounted(async () => {
         keywords: `${foundProduct.name}, cartel neon personalizado, ${categoryName.value.toLowerCase()}, letreros luminosos zona sur`,
         ogTitle: `${foundProduct.name} - Cartel de Neon | Cuadros NEON LeD`,
         ogDescription: foundProduct.description || `Cartel de neon personalizado ${foundProduct.name}`,
->>>>>>> dev
         ogImage: foundProduct.images[0] || '/og-image.jpg',
         structuredData: generateProductStructuredData(foundProduct)
       })
     } else {
       product.value = null
-<<<<<<< HEAD
-      
-      // Configure SEO for not found
-      updateSEO({
-        title: 'Trabajo no encontrado - Cuadros NEON LeD',
-        description: 'El trabajo que buscas no está disponible. Explora nuestra galería completa de carteles de neón personalizados.',
-        keywords: 'carteles neón, galería trabajos, letreros luminosos'
-=======
 
       updateSEO({
         title: 'Trabajo no encontrado - Cuadros NEON LeD',
         description: 'El trabajo que buscas no esta disponible. Explora nuestra galeria completa de carteles de neon personalizados.',
         keywords: 'carteles neon, galeria trabajos, letreros luminosos'
->>>>>>> dev
       })
     }
   } catch (e) {

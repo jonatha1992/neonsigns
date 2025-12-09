@@ -25,7 +25,7 @@ export async function generateSitemap() {
         })
 
         // Construir sitemap XML
-        const baseUrl = 'https://your-domain.firebaseapp.com'
+        const baseUrl = 'https://cuadros-neon-led.web.app'
         const today = new Date().toISOString().split('T')[0]
 
         let sitemap = `<?xml version="1.0" encoding="UTF-8"?>

@@ -316,18 +316,11 @@ const openCreateModal = () => {
 const openEditModal = (product: Product) => {
   isEditMode.value = true
   currentProductId.value = product.id
-<<<<<<< HEAD
-
-  // Map Firestore/DB category to select value (handle both Spanish and English)
-  let categoryValue = product.category || 'personalizado';
-  // Map English to Spanish if needed
-=======
   // Get original data from Firestore format
 
   // Map Firestore/DB category to select value (handle both Spanish and English)
 
   // Map English to Spanish if needed, always fallback to 'personalizado'
->>>>>>> dev
   const categoryMap: Record<string, string> = {
     'custom': 'personalizado',
     'business': 'negocios',
@@ -340,23 +333,13 @@ const openEditModal = (product: Product) => {
     'eventos': 'eventos',
     'decorativo': 'decorativo'
   };
-<<<<<<< HEAD
-  if (categoryMap[categoryValue]) {
-    categoryValue = categoryMap[categoryValue];
-  }
-=======
   let categoryValue = categoryMap[product.category ?? ''] ?? 'personalizado';
->>>>>>> dev
 
   formData.value = {
     title: product.name,
     description: product.description,
     imageUrl: product.images[0] || '',
-<<<<<<< HEAD
-    category: categoryValue,
-=======
     category: categoryValue as ProductCategory,
->>>>>>> dev
     price: product.price || 0,
     isFeatured: product.featured || false
   }

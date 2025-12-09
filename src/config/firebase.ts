@@ -42,13 +42,8 @@ function validateFirebaseConfig(config: ReturnType<typeof getFirebaseConfig>): b
   const missingKeys = requiredKeys.filter(key => !config[key as keyof typeof config]);
 
   if (missingKeys.length > 0) {
-<<<<<<< HEAD
-    console.error('[Firebase] Missing configuration keys:', missingKeys);
-    console.error('[Firebase] Please ensure all required environment variables are set in .env.local');
-=======
     logger.error('[Firebase] Missing configuration keys:', missingKeys);
     logger.error('[Firebase] Please ensure all required environment variables are set in .env.local');
->>>>>>> dev
     return false;
   }
 
@@ -123,15 +118,9 @@ async function initializeFirebaseApp(): Promise<void> {
       db = getFirestore(app);
       storage = getStorage(app);
 
-<<<<<<< HEAD
-      console.log('[Firebase] Initialized successfully');
-    } catch (error) {
-      console.error('[Firebase] Error during initialization:', error);
-=======
       logger.log('[Firebase] Initialized successfully');
     } catch (error) {
       logger.error('[Firebase] Error during initialization:', error);
->>>>>>> dev
       // Reset initialization promise to allow retry
       initializationPromise = null;
       throw error;
@@ -190,11 +179,7 @@ export { app, auth, db, storage };
 // This ensures Firebase is ready by the time components need it
 if (typeof window !== 'undefined') {
   initializeFirebaseApp().catch(err => {
-<<<<<<< HEAD
-    console.warn('[Firebase] Eager initialization failed:', err);
-=======
     logger.warn('[Firebase] Eager initialization failed:', err);
->>>>>>> dev
   });
 }
 

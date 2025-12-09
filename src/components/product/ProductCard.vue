@@ -39,17 +39,10 @@
       <h3 class="product-name">{{ product.name }}</h3>
       <p class="product-description">{{ product.description }}</p>
       
-<<<<<<< HEAD
-      <!-- Sección de precio -->
-      <div class="product-pricing">
-        <span class="current-price">${{ formatPrice(product.price) }}</span>
-
-=======
       <!-- Sección de precio (oculto temporalmente) -->
       <div class="product-pricing" aria-hidden="true">
         <!-- Precio oculto temporalmente -->
         <span class="current-price visually-hidden">${{ formatPrice(product.price) }}</span>
->>>>>>> dev
       </div>
     </div>
     
@@ -106,43 +99,6 @@ const closeModal = () => {
 const onImageLoad = () => {
   imageLoading.value = false
   imageError.value = false
-<<<<<<< HEAD
-}
-
-const onImageError = () => {
-  imageLoading.value = false
-  imageError.value = true
-}
-
-// Inicializar estado de carga
-onMounted(() => {
-  if (props.product.images && props.product.images[0]) {
-    imageLoading.value = true
-  } else {
-    imageLoading.value = false
-  }
-})
-
-const categoryName = computed(() => {
-  const categories: Record<string, string> = {
-    business: 'Negocios',
-    home: 'Hogar',
-    custom: 'Personalizado',
-    decorative: 'Decorativo',
-    signs: 'Señales',
-    letters: 'Letras'
-  }
-  return categories[props.product.category] || 'Producto'
-})
-
-// Función para formatear precios
-const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('es-AR', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(price)
-=======
->>>>>>> dev
 }
 
 const onImageError = () => {
@@ -533,9 +489,6 @@ const whatsappProductUrl = computed(() => {
   letter-spacing: 0.025em;
 }
 
-<<<<<<< HEAD
-
-=======
 /* Utility to hide elements visually but keep them for screen readers if needed */
 .visually-hidden {
   position: absolute !important;
@@ -548,7 +501,6 @@ const whatsappProductUrl = computed(() => {
   white-space: nowrap !important;
   border: 0 !important;
 }
->>>>>>> dev
 
 
 

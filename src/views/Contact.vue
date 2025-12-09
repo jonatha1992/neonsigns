@@ -200,9 +200,6 @@ onMounted(() => {
         "@type": "LocalBusiness",
         "name": "Cuadros NEON LeD",
         "telephone": "+54-9-11-4091-6764",
-<<<<<<< HEAD
-        "email": "tecnofusion.it@gmail.com"
-=======
         "email": "tecnofusion.it@gmail.com",
         "address": {
           "@type": "PostalAddress",
@@ -218,7 +215,6 @@ onMounted(() => {
           "longitude": -58.5308
         },
         "openingHours": "Mo-Fr 09:00-18:00, Sa 09:00-14:00"
->>>>>>> dev
       }
     }
   })

@@ -128,18 +128,17 @@ export function useSEO() {
             "alternateName": "Cruados Neon LeD Store",
             "description": "Tienda profesional de carteles de neón personalizados. Diseños únicos con efectos luminosos para tu negocio o hogar.",
             "url": window.location.origin,
-            "telephone": "+54-XXX-XXXXXXX", // Replace with actual phone
+            "telephone": "+54-9-11-4091-6764", // Replace with actual phone
             "email": "tecnofusion.it@gmail.com",
             "address": {
                 "@type": "PostalAddress",
                 "addressCountry": "AR",
-                "addressLocality": "Argentina" // Replace with actual city
+                "addressLocality": "Ezeiza" // Replace with actual city
             },
             "openingHours": "Mo-Fr 09:00-18:00", // Replace with actual hours
             "sameAs": [
                 // Add social media URLs here
-                "https://facebook.com/your-page",
-                "https://instagram.com/your-page"
+                "https://www.instagram.com/cuadros_neonled/"
             ],
             "hasOfferCatalog": {
                 "@type": "OfferCatalog",
