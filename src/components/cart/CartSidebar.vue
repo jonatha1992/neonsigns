@@ -22,8 +22,8 @@
             <div class="item-info">
               <h4>{{ item.product.name }}</h4>
               <p class="item-details">
-                Color: {{ item.selectedColor.name }} | 
-                Tamaño: {{ item.selectedSize.name }}
+                Color: {{ item.selectedColor?.name || 'Estándar' }} | 
+                Tamaño: {{ item.selectedSize?.name || 'Estándar' }}
               </p>
               <p v-if="item.customText" class="custom-text">
                 Texto: "{{ item.customText }}"
