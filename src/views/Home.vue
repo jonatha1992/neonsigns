@@ -40,7 +40,7 @@
     <section class="features-section">
       <div class="container">
         <div class="features-grid">
-          <div class="feature-card">
+          <div class="feature-card reveal-card delay-100">
             <div class="feature-icon">
               <Palette :size="48" />
             </div>
@@ -48,7 +48,7 @@
             <p>Creamos carteles únicos según tu visión. Desde logotipos hasta frases personalizadas.</p>
           </div>
           
-          <div class="feature-card">
+          <div class="feature-card reveal-card delay-200">
             <div class="feature-icon">
               <Zap :size="48" />
             </div>
@@ -56,7 +56,7 @@
             <p>Utilizamos la última tecnología en iluminación LED para máxima durabilidad y brillo.</p>
           </div>
           
-          <div class="feature-card">
+          <div class="feature-card reveal-card delay-300">
             <div class="feature-icon">
               <Shield :size="48" />
             </div>
@@ -70,7 +70,7 @@
     <!-- CTA Section -->
     <section class="cta-section">
       <div class="container">
-        <div class="cta-content">
+        <div class="cta-content reveal-card delay-200">
           <h2>¿Te gustó algún trabajo?</h2>
           <p>Cotiza tu proyecto personalizado por WhatsApp o Instagram</p>
           <div class="cta-buttons">
@@ -243,6 +243,8 @@ onMounted(() => {
 
 .features-section {
   padding: 3rem 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .features-grid {
@@ -250,6 +252,16 @@ onMounted(() => {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 3rem;
 }
+
+.reveal-card {
+  opacity: 0;
+  transform: translateY(26px);
+  animation: revealUp 0.7s ease-out forwards;
+}
+
+.reveal-card.delay-100 { animation-delay: 100ms; }
+.reveal-card.delay-200 { animation-delay: 200ms; }
+.reveal-card.delay-300 { animation-delay: 300ms; }
 
 .feature-card {
   text-align: center;
@@ -287,8 +299,35 @@ onMounted(() => {
 
 .cta-section {
   padding: 3rem 0;
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(128, 0, 255, 0.1) 100%);
   text-align: center;
+}
+
+.cta-section::before,
+.cta-section::after {
+  content: '';
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  animation: ctaDrift 9s ease-in-out infinite;
+}
+
+.cta-section::before {
+  top: -80px;
+  left: -60px;
+  background: rgba(255, 0, 128, 0.25);
+}
+
+.cta-section::after {
+  right: -80px;
+  bottom: -110px;
+  background: rgba(0, 255, 255, 0.22);
+  animation-delay: 1.2s;
 }
 
 .cta-content h2 {
@@ -297,6 +336,11 @@ onMounted(() => {
   margin-bottom: 1rem;
   font-family: 'Orbitron', monospace;
   color: #ffffff;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 1;
 }
 
 .cta-content p {
@@ -400,6 +444,26 @@ onMounted(() => {
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes revealUp {
+  0% {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ctaDrift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(24px, -18px) scale(1.08);
   }
 }
 </style>

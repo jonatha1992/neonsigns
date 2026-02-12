@@ -46,7 +46,7 @@ Necesitas crear estos archivos en `public/`:
 ### 4. **Google Search Console**
 1. Ve a https://search.google.com/search-console
 2. Agrega tu dominio
-3. Reemplaza `google123456789abcdef.html` con tu archivo real
+3. Sube tu archivo real de verificación (`google*.html`) en `public/`
 4. Sube sitemap: `https://tu-dominio.com/sitemap.xml`
 
 ### 5. **Google Analytics (Opcional)**
@@ -79,8 +79,8 @@ Usa estas herramientas para verificar:
 ### 3. **Sitemap Dinámico**
 Para generar sitemap con productos reales:
 ```typescript
-// En src/utils/sitemap-generator.ts
-// Descomenta y ejecuta: generateSitemapFile()
+// Ejecuta en terminal:
+// npm run generate-sitemap
 ```
 
 ## 📈 Monitoreo

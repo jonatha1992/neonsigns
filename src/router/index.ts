@@ -39,6 +39,10 @@ const routes: RouteRecordRaw[] = [
             title: 'Contacto - Neon Signs Store'
         }
     },
+    {
+        path: '/admin-simple',
+        redirect: '/admin/login'
+    },
     // Admin routes
     {
         path: '/admin/login',

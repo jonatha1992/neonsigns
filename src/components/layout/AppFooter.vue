@@ -23,7 +23,7 @@
             <li><RouterLink to="/">Inicio</RouterLink></li>
             <li><RouterLink to="/galeria">Galería</RouterLink></li>
             <li><RouterLink to="/contacto">Contacto</RouterLink></li>
-            <li><RouterLink to="/admin-simple" class="admin-link">Panel</RouterLink></li>
+            <li><RouterLink to="/admin/login" class="admin-link">Panel</RouterLink></li>
           </ul>
         </div>
 

@@ -39,9 +39,9 @@ Este proyecto ahora incluye un **sistema completo de administración (ABM)** par
 
 | Documento | Descripción |
 |-----------|-------------|
-| **[NEXT_STEPS.md](NEXT_STEPS.md)** | 🚀 **EMPEZAR AQUÍ** - Guía de configuración de Firebase (15-20 min) |
-| [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Plan completo de implementación con test suites |
-| [scripts/README.md](scripts/README.md) | Documentación de testing automatizado |
+| **[ENV-CONVENTION.md](ENV-CONVENTION.md)** | Convenciones y uso correcto de archivos `.env` |
+| [MIGRATION-GUIDE.md](MIGRATION-GUIDE.md) | Guía de migración de datos y entorno Firebase |
+| [DEPLOY-SUCCESS.md](DEPLOY-SUCCESS.md) | Checklist de deploy y enlaces de producción |
 
 ### 🎯 Estado de Implementación
 
@@ -57,12 +57,13 @@ Este proyecto ahora incluye un **sistema completo de administración (ABM)** par
 
 ### 🚀 Inicio Rápido - Admin Panel
 
-**Requisitos previos**: Firebase project configurado (ver [NEXT_STEPS.md](NEXT_STEPS.md))
+**Requisitos previos**: Firebase project configurado
 
 1. **Configurar Firebase**:
    ```bash
-   cp .env.local.example .env.local
+   cp .env.example .env.local
    # Editar .env.local con tus credenciales de Firebase
+   # Opcional IA: agregar VITE_GEMINI_API_KEY para autocompletar formulario con foto
    ```
 
 2. **Iniciar servidor**:
@@ -72,23 +73,20 @@ Este proyecto ahora incluye un **sistema completo de administración (ABM)** par
 
 3. **Acceder al panel de administración**:
    ```
-   http://localhost:5173/admin/login
+   http://localhost:3000/admin/login
    ```
 
 4. **Credenciales** (configuradas en Firebase Authentication):
    - Email: `tecnofusion.it@gmail.com`
    - Password: [Tu contraseña configurada en Firebase]
 
-### 🧪 Testing
+### 🧪 Verificación local
 
-**Ejecutar tests automatizados** (22+ tests):
-```javascript
-// En la consola del navegador
-const tests = await import('/scripts/test-firebase.ts')
-await tests.runAllTests()
+```bash
+npm run lint
+npm run type-check
+npm run build
 ```
-
-Ver [scripts/README.md](scripts/README.md) para más información sobre testing.
 
 ---
 
@@ -147,15 +145,12 @@ neon-signs-store/
 │   │   ├── Home.vue
 │   │   ├── Products.vue
 │   │   ├── ProductDetail.vue
-│   │   ├── Cart.vue
 │   │   └── Contact.vue
 │   ├── stores/
-│   │   ├── cart.ts
+│   │   ├── auth.ts
 │   │   └── products.ts
 │   ├── styles/
-│   │   ├── variables.scss
-│   │   ├── mixins.scss
-│   │   └── global.scss
+│   │   └── tailwind.css
 │   ├── utils/
 │   ├── router/
 │   ├── types/
@@ -174,12 +169,11 @@ neon-signs-store/
 - **TypeScript** - Superset tipado de JavaScript
 - **Vue Router** - Enrutamiento oficial para Vue.js
 - **Pinia** - Gestión de estado moderna para Vue
-- **VueUse** - Colección de utilidades de composición
 
 ### Herramientas de Desarrollo
 - **Vite** - Build tool ultrarrápido
 - **ESLint** - Linter para JavaScript/TypeScript
-- **Sass/SCSS** - Preprocesador CSS
+- **Tailwind CSS** - Utilidades CSS para UI
 - **Lucide Vue** - Iconos modernos para Vue
 
 ### Características de Diseño
@@ -194,6 +188,7 @@ neon-signs-store/
 ```bash
 # Desarrollo
 npm run dev          # Inicia servidor de desarrollo (localhost:3000)
+npm run generate-sitemap
 
 # Construcción
 npm run build        # Construye para producción

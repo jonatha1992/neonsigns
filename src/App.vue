@@ -5,7 +5,11 @@
     
     <!-- Main Content -->
     <main :class="showLayout ? 'main-content' : 'full-page'">
-      <RouterView />
+      <RouterView v-slot="{ Component }">
+        <Transition name="page-fade" mode="out-in">
+          <component :is="Component" :key="route.fullPath" />
+        </Transition>
+      </RouterView>
     </main>
     
     <!-- Footer -->
@@ -45,5 +49,16 @@ const showLayout = computed(() => !route.meta.hideLayout)
 .full-page {
   min-height: 100vh;
   padding: 0;
+}
+
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.page-fade-enter-from,
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
 }
 </style>

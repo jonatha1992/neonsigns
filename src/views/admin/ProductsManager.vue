@@ -45,7 +45,9 @@
               <span class="category-badge">{{ getCategoryLabel(product.category) }}</span>
               <span class="price-text">${{ product.price?.toLocaleString() || 0 }}</span>
             </div>
-            <p class="card-description">{{ truncateText(product.description, 80) }}</p>
+            <p class="card-description" :title="formatCardDescription(product.description)">
+              {{ formatCardDescription(product.description) }}
+            </p>
             <div class="card-actions">
               <button 
                 @click="openEditModal(product)" 
@@ -81,92 +83,122 @@
           </button>
         </div>
 
-        <form @submit.prevent="saveProduct" class="product-form">
-          <div class="form-group">
-            <label>Título *</label>
-            <input 
-              v-model="formData.title" 
-              type="text" 
-              required 
-              placeholder="Nombre del producto"
-            />
-          </div>
+        <form
+          @submit.prevent="saveProduct"
+          :class="['product-form', { 'form-complete': formCompleteAnimation }]"
+        >
+          <div :class="['form-layout', { 'ai-fill-highlight': aiAutofillHighlight }]">
+            <div class="form-media-column">
+              <div class="form-group media-group">
+                <label>Imagen del Producto *</label>
+                <div class="media-row">
+                  <div class="image-upload-container">
+                    <input
+                      ref="fileInput"
+                      type="file"
+                      accept="image/*"
+                      @change="handleImageUpload"
+                      hidden
+                    />
+                    <div v-if="imagePreview" class="image-preview" @click="triggerFileInput">
+                      <img :src="imagePreview" alt="Preview" />
+                      <button
+                        type="button"
+                        @click.stop="removeImage"
+                        class="btn-remove-image"
+                        title="Quitar imagen"
+                      >
+                        <X :size="16" />
+                      </button>
+                    </div>
+                    <div v-else class="upload-area" @click="triggerFileInput">
+                      <Upload :size="30" />
+                      <p>Click para subir imagen</p>
+                      <small>Se convertira a WebP automaticamente</small>
+                    </div>
+                  </div>
 
-          <div class="form-group">
-            <label>Descripción *</label>
-            <textarea
-              v-model="formData.description"
-              required
-              rows="2"
-              placeholder="Descripción del producto"
-            ></textarea>
-          </div>
+                  <div class="ai-autofill">
+                    <button
+                      type="button"
+                      :class="['btn-ai-autofill', { 'is-loading': aiAutofillLoading }]"
+                      :disabled="aiAutofillLoading || (!selectedFile && !imagePreview) || saving"
+                      @click="autofillFromImageWithAI"
+                    >
+                      <Sparkles :size="16" class="ai-icon" />
+                      <span>{{ aiAutofillLoading ? 'Analizando imagen...' : 'Completar formulario con IA (Gemini 2.5 Flash)' }}</span>
+                    </button>
+                    <small class="ai-hint">
+                      Sube una foto y la IA completa titulo, descripcion, categoria y precio sugerido.
+                    </small>
+                    <small v-if="aiSuggestedPrice" class="ai-hint ai-price">
+                      Precio sugerido por IA: ${{ aiSuggestedPrice.toLocaleString() }} ARS
+                    </small>
+                  </div>
+                </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Categoría *</label>
-              <select v-model="formData.category" required>
-                <option value="personalizado">Personalizado</option>
-                <option value="negocios">Negocios</option>
-                <option value="hogar">Hogar</option>
-                <option value="eventos">Eventos</option>
-                <option value="decorativo">Decorativo</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Precio ($ARS)</label>
-              <input 
-                v-model.number="formData.price" 
-                type="number" 
-                min="0"
-                step="100"
-                placeholder="25000"
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Imagen del Producto *</label>
-            <div class="image-upload-container">
-              <div v-if="imagePreview" class="image-preview">
-                <img :src="imagePreview" alt="Preview" />
-                <button 
-                  type="button" 
-                  @click="removeImage" 
-                  class="btn-remove-image"
-                  title="Quitar imagen"
-                >
-                  <X :size="16" />
-                </button>
+                <div v-if="uploadProgress > 0 && uploadProgress < 100" class="upload-progress">
+                  <div class="progress-bar" :style="{ width: uploadProgress + '%' }"></div>
+                  <span>{{ uploadProgress }}%</span>
+                </div>
               </div>
-              <div v-else class="upload-area" @click="triggerFileInput">
-                <input 
-                  ref="fileInput"
-                  type="file" 
-                  accept="image/*"
-                  @change="handleImageUpload"
-                  hidden
+            </div>
+
+            <div class="form-fields-column">
+              <div :class="['form-group', { 'field-updated': aiFieldHighlights.title }]">
+                <label>Título *</label>
+                <input
+                  v-model="formData.title"
+                  type="text"
+                  required
+                  placeholder="Nombre del producto"
                 />
-                <Upload :size="32" />
-                <p>Click para subir imagen</p>
-                <small>Se convertirá a WebP automáticamente</small>
               </div>
-              <div v-if="uploadProgress > 0 && uploadProgress < 100" class="upload-progress">
-                <div class="progress-bar" :style="{ width: uploadProgress + '%' }"></div>
-                <span>{{ uploadProgress }}%</span>
+
+              <div :class="['form-group', { 'field-updated': aiFieldHighlights.description }]">
+                <label>Descripción *</label>
+                <textarea
+                  v-model="formData.description"
+                  required
+                  rows="2"
+                  placeholder="Descripción del producto"
+                ></textarea>
+              </div>
+
+              <div class="form-row">
+                <div :class="['form-group', { 'field-updated': aiFieldHighlights.category }]">
+                  <label>Categoría *</label>
+                  <select v-model="formData.category" required>
+                    <option value="personalizado">Personalizado</option>
+                    <option value="negocios">Negocios</option>
+                    <option value="hogar">Hogar</option>
+                    <option value="eventos">Eventos</option>
+                    <option value="decorativo">Decorativo</option>
+                  </select>
+                </div>
+
+                <div :class="['form-group', { 'field-updated': aiFieldHighlights.price }]">
+                  <label>Precio ($ARS)</label>
+                  <input
+                    v-model.number="formData.price"
+                    type="number"
+                    min="0"
+                    step="100"
+                    placeholder="25000"
+                  />
+                </div>
+              </div>
+
+              <div class="featured-checkbox-row">
+                <label class="checkbox-label">
+                  <input
+                    v-model="formData.isFeatured"
+                    type="checkbox"
+                  />
+                  <span>Producto Destacado</span>
+                </label>
               </div>
             </div>
-          </div>
-
-          <div class="featured-checkbox-row">
-            <label class="checkbox-label">
-              <input
-                v-model="formData.isFeatured"
-                type="checkbox"
-              />
-              <span>Producto Destacado</span>
-            </label>
           </div>
 
           <div class="form-actions">
@@ -218,7 +250,7 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, watch } from 'vue'
 import NeonSpinner from '@/components/common/NeonSpinner.vue'
-import { Plus, Edit2, Trash2, X, Upload } from 'lucide-vue-next'
+import { Plus, Edit2, Trash2, X, Upload, Sparkles } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
 import type { Product } from '@/types'
 import type { ProductCategory } from '@/types'
@@ -233,9 +265,12 @@ import {
 import { 
   ref as storageRef, 
   uploadBytesResumable, 
-  getDownloadURL 
+  getDownloadURL,
+  getBlob
 } from 'firebase/storage'
 import { getDb, getStorageInstance } from '@/config/firebase'
+import { generateProductAutofillFromImage } from '@/services/ai-autofill.service'
+import { StorageService } from '@/services/storage.service'
 
 // Per-product image loading state
 const imageLoading = reactive<Record<string, boolean>>({})
@@ -267,6 +302,18 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const imagePreview = ref<string>('')
 const selectedFile = ref<File | null>(null)
 const uploadProgress = ref(0)
+const aiAutofillLoading = ref(false)
+const aiSuggestedPrice = ref<number | null>(null)
+const formCompleteAnimation = ref(false)
+const aiAutofillHighlight = ref(false)
+
+type AutofillFieldKey = 'title' | 'description' | 'category' | 'price'
+const aiFieldHighlights = reactive<Record<AutofillFieldKey, boolean>>({
+  title: false,
+  description: false,
+  category: false,
+  price: false
+})
 
 // Toast notification
 const toast = ref({
@@ -367,6 +414,9 @@ const resetForm = () => {
   imagePreview.value = ''
   selectedFile.value = null
   uploadProgress.value = 0
+  aiSuggestedPrice.value = null
+  aiAutofillHighlight.value = false
+  resetAiFieldHighlights()
 }
 
 // Image upload functions
@@ -447,8 +497,168 @@ const handleImageUpload = async (event: Event) => {
 const removeImage = () => {
   imagePreview.value = ''
   selectedFile.value = null
+  aiSuggestedPrice.value = null
   if (fileInput.value) {
     fileInput.value.value = ''
+  }
+}
+
+const toAutofillFile = (blob: Blob): File | null => {
+  if (!blob.size) return null
+  const mimeType = blob.type || 'image/jpeg'
+  const extension = mimeType.split('/')[1] || 'jpg'
+  return new File([blob], `product-autofill.${extension}`, { type: mimeType })
+}
+
+const fetchImageBlob = async (url: string): Promise<Blob | null> => {
+  try {
+    const response = await fetch(url, { cache: 'no-store' })
+    if (!response.ok) return null
+    const blob = await response.blob()
+    return blob.size ? blob : null
+  } catch {
+    return null
+  }
+}
+
+const getAutofillSourceFile = async (): Promise<File | null> => {
+  if (selectedFile.value) return selectedFile.value
+  const previewUrl = imagePreview.value?.trim()
+  if (!previewUrl) return null
+
+  const directBlob = await fetchImageBlob(previewUrl)
+  const directFile = directBlob ? toAutofillFile(directBlob) : null
+  if (directFile) return directFile
+
+  try {
+    const storageInstance = await getStorageInstance()
+    let blob: Blob | null = null
+
+    const firebasePath = StorageService.extractPathFromUrl(previewUrl)
+    if (firebasePath) {
+      blob = await getBlob(storageRef(storageInstance, firebasePath))
+    } else if (previewUrl.startsWith('http://') || previewUrl.startsWith('https://') || previewUrl.startsWith('gs://')) {
+      blob = await getBlob(storageRef(storageInstance, previewUrl))
+    }
+
+    const storageFile = blob ? toAutofillFile(blob) : null
+    if (storageFile) return storageFile
+
+    if (firebasePath) {
+      const refreshedUrl = await getDownloadURL(storageRef(storageInstance, firebasePath))
+      const refreshedBlob = await fetchImageBlob(refreshedUrl)
+      const refreshedFile = refreshedBlob ? toAutofillFile(refreshedBlob) : null
+      if (refreshedFile) return refreshedFile
+    }
+  } catch (error) {
+    console.error('Error preparing image for AI autofill:', error)
+  }
+
+  return null
+}
+
+const isFormFullyCompleted = () => {
+  const hasTitle = formData.value.title.trim().length > 0
+  const hasDescription = formData.value.description.trim().length > 0
+  const hasCategory = Boolean(formData.value.category)
+  const hasValidPrice = Number.isFinite(formData.value.price)
+  const hasImage = Boolean(imagePreview.value || formData.value.imageUrl || selectedFile.value)
+
+  return hasTitle && hasDescription && hasCategory && hasValidPrice && hasImage
+}
+
+const resetAiFieldHighlights = () => {
+  aiFieldHighlights.title = false
+  aiFieldHighlights.description = false
+  aiFieldHighlights.category = false
+  aiFieldHighlights.price = false
+}
+
+const triggerAiAutofillAnimation = (updatedFields: AutofillFieldKey[]) => {
+  aiAutofillHighlight.value = false
+  resetAiFieldHighlights()
+
+  requestAnimationFrame(() => {
+    aiAutofillHighlight.value = true
+    updatedFields.forEach((field) => {
+      aiFieldHighlights[field] = true
+    })
+  })
+
+  setTimeout(() => {
+    aiAutofillHighlight.value = false
+    resetAiFieldHighlights()
+  }, 1400)
+}
+
+const triggerFormCompleteAnimation = () => {
+  formCompleteAnimation.value = false
+  requestAnimationFrame(() => {
+    formCompleteAnimation.value = true
+  })
+
+  setTimeout(() => {
+    formCompleteAnimation.value = false
+  }, 1200)
+}
+
+const autofillFromImageWithAI = async () => {
+  if (!selectedFile.value && !imagePreview.value) {
+    showToast('Primero sube una imagen para usar autocompletado con IA', 'error')
+    return
+  }
+
+  aiAutofillLoading.value = true
+  try {
+    const sourceFile = await getAutofillSourceFile()
+    if (!sourceFile) {
+      showToast('No se pudo leer la imagen actual. Vuelve a subirla para usar IA.', 'error')
+      return
+    }
+
+    const suggestion = await generateProductAutofillFromImage(sourceFile)
+    const previousTitle = formData.value.title.trim()
+    const previousDescription = formData.value.description.trim()
+    const previousCategory = formData.value.category
+    const previousPrice = Number(formData.value.price) || 0
+
+    formData.value.title = suggestion.title || formData.value.title
+    formData.value.description = suggestion.description || formData.value.description
+    formData.value.category = suggestion.category
+
+    const updatedFields: AutofillFieldKey[] = []
+    if (suggestion.title && suggestion.title.trim() !== previousTitle) {
+      updatedFields.push('title')
+    }
+    if (suggestion.description && suggestion.description.trim() !== previousDescription) {
+      updatedFields.push('description')
+    }
+    if (suggestion.category && suggestion.category !== previousCategory) {
+      updatedFields.push('category')
+    }
+
+    if (suggestion.priceArs && suggestion.priceArs > 0) {
+      formData.value.price = suggestion.priceArs
+      aiSuggestedPrice.value = suggestion.priceArs
+      if (suggestion.priceArs !== previousPrice) {
+        updatedFields.push('price')
+      }
+    }
+
+    triggerAiAutofillAnimation(updatedFields)
+
+    if (isFormFullyCompleted()) {
+      triggerFormCompleteAnimation()
+      showToast('Formulario completado por IA. Revisa y guarda.', 'success')
+    } else {
+      showToast('IA aplicada. Revisa los datos antes de guardar.', 'success')
+    }
+  } catch (error) {
+    console.error('AI autofill error:', error)
+    const message = error instanceof Error ? error.message : 'No se pudo completar con IA'
+    showToast(message, 'error')
+  } finally {
+    aiAutofillLoading.value = false
   }
 }
 
@@ -607,9 +817,15 @@ const deleteProduct = async () => {
 }
 
 // Helper functions
-const truncateText = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) return text
-  return text.substring(0, maxLength) + '...'
+const formatCardDescription = (text?: string) => {
+  if (!text) return 'Sin descripcion'
+
+  return text
+    .replace(/\s*⚡\s*/g, ' • ')
+    .replace(/\s*:\s*/g, ': ')
+    .replace(/\s*•\s*•+\s*/g, ' • ')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 import { getCategoryLabel } from '@/composables/useCategory'
@@ -631,7 +847,7 @@ onMounted(() => {
 .product-image-wrapper {
   position: relative;
   width: 100%;
-  height: 160px;
+  height: 145px;
   background: #181818;
   border-bottom: 1px solid rgba(0, 255, 255, 0.2);
   overflow: hidden;
@@ -702,14 +918,14 @@ onMounted(() => {
 }
 
 .products-manager {
-  padding: 1.5rem;
+  padding: 1.2rem;
   max-width: 1400px;
   margin: 0 auto;
 }
 
 @media (max-width: 768px) {
   .products-manager {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 }
 
@@ -735,14 +951,14 @@ onMounted(() => {
 }
 
 .manager-header h1 {
-  font-size: 1.75rem;
+  font-size: 1.45rem;
   color: #fff;
   margin: 0;
 }
 
 @media (max-width: 768px) {
   .manager-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     text-align: center;
   }
 }
@@ -824,20 +1040,20 @@ onMounted(() => {
 
 .category-badge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
+  padding: 0.24rem 0.7rem;
   background: rgba(0, 255, 255, 0.2);
   color: #00ffff;
-  border-radius: 12px;
-  font-size: 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
   font-weight: 500;
   white-space: nowrap;
 }
 
 .status-badge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.875rem;
+  padding: 0.24rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -875,8 +1091,8 @@ onMounted(() => {
 .products-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.25rem;
-  padding: 1rem 0;
+  gap: 1.1rem;
+  padding: 0.85rem 0;
 }
 
 /* Force grid items to stretch so card heights are equal per row */
@@ -901,7 +1117,7 @@ onMounted(() => {
 .product-card {
   background: #1a1a1a;
   border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -910,16 +1126,16 @@ onMounted(() => {
 
 .card-image {
   width: 100%;
-  height: 160px;
+  height: 162px;
   object-fit: cover;
   border-bottom: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 .card-content {
-  padding: 0.875rem;
+  padding: 0.85rem;
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: 0.55rem;
 }
 
 /* Ensure the content area grows so actions can be pushed to the bottom */
@@ -930,7 +1146,7 @@ onMounted(() => {
 .card-actions {
   margin-top: auto; /* push actions to bottom */
   display: flex;
-  gap: 0.75rem;
+  gap: 0.6rem;
   justify-content: flex-start;
 }
 
@@ -949,6 +1165,7 @@ onMounted(() => {
   margin: 0;
   flex: 1;
   line-height: 1.2;
+  letter-spacing: 0.01em;
 }
 
 .card-badges {
@@ -962,7 +1179,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.2rem;
 }
 
 .price-text {
@@ -973,35 +1190,35 @@ onMounted(() => {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   letter-spacing: 0.025em;
   background: rgba(0, 255, 255, 0.1);
-  padding: 0.1875rem 0.375rem;
-  border-radius: 3px;
+  padding: 0.18rem 0.42rem;
+  border-radius: 4px;
   border: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 .card-description {
   color: #ccc;
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   line-height: 1.4;
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .card-actions {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.6rem;
   /* ensure actions are pushed to the bottom of the card regardless of description length */
   margin-top: auto;
 }
 
 .btn-card {
   flex: 1;
-  padding: 0.625rem 0.5rem;
+  padding: 0.58rem 0.48rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
@@ -1009,7 +1226,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.375rem;
+  gap: 0.34rem;
 }
 
 .btn-card.btn-edit {
@@ -1045,7 +1262,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .modal-content {
@@ -1053,10 +1270,10 @@ onMounted(() => {
   border-radius: 8px;
   border: 1px solid rgba(0, 255, 255, 0.3);
   width: 100%;
-  max-width: 480px;
-  max-height: 90vh;
+  max-width: 540px;
+  max-height: calc(100vh - 0.6rem);
   overflow-y: auto;
-  margin-top: 32px;
+  margin-top: 0;
 }
 
 .modal-small {
@@ -1067,14 +1284,14 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.25rem;
+  padding: 0.8rem 1rem;
   border-bottom: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 .modal-header h2 {
   margin: 0;
   color: #00ffff;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
 }
 
 .btn-close {
@@ -1110,42 +1327,67 @@ onMounted(() => {
 
 /* Form */
 .product-form {
-  padding: 0.5rem 1rem 1rem 1rem;
+  padding: 0.35rem 0.78rem 0.62rem;
+}
+
+.product-form.form-complete {
+  border-radius: 8px;
+  animation: formCompletePulse 1.2s ease;
+}
+
+.form-layout {
+  display: grid;
+  grid-template-columns: minmax(185px, 210px) minmax(0, 1fr);
+  gap: 0.72rem;
+  align-items: start;
+}
+
+.form-media-column,
+.form-fields-column {
+  min-width: 0;
+}
+
+.form-layout.ai-fill-highlight .form-fields-column {
+  animation: aiFieldsPanelPulse 1.1s ease;
 }
 
 .form-group {
-  margin-bottom: 0.875rem;
+  margin-bottom: 0.58rem;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  gap: 0.62rem;
   align-items: end;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.28rem;
   color: #00ffff;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 0.625rem 0.75rem;
+  padding: 0.52rem 0.62rem;
   /* darker, opaque background to avoid bleed-through from overlays */
   background: rgba(10, 10, 10, 0.85);
   border: 1px solid rgba(0, 255, 255, 0.12);
   border-radius: 4px;
   color: #fff;
-  font-size: 0.875rem;
-  line-height: 1.4;
+  font-size: 0.82rem;
+  line-height: 1.35;
   -webkit-appearance: none;
   appearance: none;
+}
+
+.form-group textarea {
+  min-height: 56px;
 }
 
 .form-group select {
@@ -1186,28 +1428,58 @@ onMounted(() => {
   display: block;
   margin-top: 0.25rem;
   color: #888;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+}
+
+.field-updated label {
+  color: #8ffcff;
+}
+
+.field-updated input,
+.field-updated textarea,
+.field-updated select {
+  border-color: rgba(0, 255, 200, 0.72);
+  box-shadow: 0 0 0 1px rgba(0, 255, 200, 0.2), 0 0 16px rgba(0, 255, 200, 0.14);
+  animation: aiFieldPulse 1.1s ease;
 }
 
 /* Image Upload */
+.media-group {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.media-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  align-items: stretch;
+}
+
 .image-upload-container {
   position: relative;
-  max-width: 220px;
-  margin-bottom: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 0;
 }
 
 .image-preview {
   position: relative;
   width: 100%;
-  max-width: 200px;
+  height: 100%;
+  min-height: 92px;
   border-radius: 8px;
   overflow: hidden;
   border: 2px solid rgba(0, 255, 255, 0.3);
+  cursor: pointer;
+  background: rgba(0, 255, 255, 0.04);
 }
 
 .image-preview img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  min-height: 92px;
+  object-fit: cover;
   display: block;
 }
 
@@ -1235,12 +1507,12 @@ onMounted(() => {
 .upload-area {
   border: 2px dashed rgba(0, 255, 255, 0.3);
   border-radius: 8px;
-  padding: 0.75rem;
+  padding: 0.45rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
   background: rgba(0, 255, 255, 0.05);
-  min-height: 80px;
+  min-height: 92px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1254,25 +1526,27 @@ onMounted(() => {
 
 .upload-area svg {
   color: #00ffff;
-  margin: 0 auto 0.5rem;
+  margin: 0 auto 0.35rem;
 }
 
 .upload-area p {
   color: #fff;
-  margin: 0.5rem 0 0.25rem;
+  margin: 0.25rem 0 0.12rem;
   font-weight: 500;
+  font-size: 0.8rem;
 }
 
 .upload-area small {
   color: #888;
+  font-size: 0.66rem;
 }
 
 .upload-progress {
-  margin-top: 0.75rem;
+  margin-top: 0.35rem;
   background: rgba(26, 26, 26, 0.8);
   border: 1px solid rgba(0, 255, 255, 0.3);
   border-radius: 6px;
-  height: 28px;
+  height: 22px;
   position: relative;
   overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -1299,6 +1573,60 @@ onMounted(() => {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
+.ai-autofill {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.btn-ai-autofill {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.62rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 0, 128, 0.35);
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.18), rgba(128, 0, 255, 0.22));
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ai-autofill:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(255, 0, 128, 0.7);
+  box-shadow: 0 0 16px rgba(255, 0, 128, 0.3);
+}
+
+.btn-ai-autofill:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-ai-autofill.is-loading .ai-icon {
+  animation: aiIconSpin 0.95s linear infinite;
+}
+
+.ai-hint {
+  color: #a7a7a7;
+  font-size: 0.66rem;
+  line-height: 1.3;
+}
+
+.ai-price {
+  color: #9af5ff;
+}
+
 @keyframes neonFlow {
   from {
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
@@ -1308,30 +1636,86 @@ onMounted(() => {
   }
 }
 
+@keyframes aiFieldsPanelPulse {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 255, 200, 0);
+  }
+  45% {
+    box-shadow: 0 0 0 1px rgba(0, 255, 200, 0.24), 0 0 26px rgba(0, 255, 200, 0.18);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(0, 255, 200, 0);
+  }
+}
+
+@keyframes aiFieldPulse {
+  0% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-1px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes aiIconSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes formCompletePulse {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 255, 200, 0);
+    transform: translateY(0);
+  }
+  40% {
+    box-shadow: 0 0 0 1px rgba(0, 255, 200, 0.45), 0 0 24px rgba(0, 255, 200, 0.35);
+    transform: translateY(-1px);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(0, 255, 200, 0);
+    transform: translateY(0);
+  }
+}
+
+.featured-checkbox-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.45rem;
+  margin-top: 0.05rem;
+}
+
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   cursor: pointer;
-  color: #fff !important;
-  font-size: 0.95rem;
-  min-height: 38px;
-  margin-left: 2px;
-  margin-top: 2px;
+  color: #00ffff;
+  font-size: 0.84rem;
+  min-height: 28px;
+  margin: 0;
+  font-weight: 500;
 }
+
 .checkbox-label input[type="checkbox"] {
-  margin-right: 8px;
+  margin-right: 6px;
   margin-left: 0;
   vertical-align: middle;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(0, 255, 255, 0.3);
   border-radius: 4px;
   background: #111;
   display: inline-block;
@@ -1347,10 +1731,10 @@ onMounted(() => {
 .checkbox-label input[type="checkbox"]:checked::after {
   content: '';
   position: absolute;
-  top: 3px;
-  left: 6px;
+  top: 2px;
+  left: 5px;
   width: 4px;
-  height: 8px;
+  height: 7px;
   border: solid #002b2b;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
@@ -1359,14 +1743,14 @@ onMounted(() => {
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
+  gap: 0.6rem;
+  padding: 0.62rem 0.85rem;
   border-top: 1px solid rgba(0, 255, 255, 0.2);
 }
 
 /* Buttons */
 .btn {
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 0.85rem;
   border: none;
   border-radius: 4px;
   font-weight: 600;
@@ -1374,8 +1758,8 @@ onMounted(() => {
   transition: all 0.3s;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
+  gap: 0.42rem;
+  font-size: 0.84rem;
 }
 
 .btn-primary {
@@ -1465,29 +1849,52 @@ onMounted(() => {
   .products-manager {
     padding: 1rem;
   }
+
+  .form-layout {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .media-row {
+    gap: 0.55rem;
+  }
+
+  .image-upload-container {
+    width: min(190px, 100%);
+    min-width: 0;
+    margin-inline: auto;
+  }
+
+  .image-preview,
+  .image-preview img,
+  .upload-area {
+    min-height: 88px;
+  }
+
   .form-row {
     grid-template-columns: 1fr;
   }
   
   .modal-content {
     max-width: 95vw;
-    margin: 0.5rem;
+    max-height: calc(100vh - 0.35rem);
+    margin: 0.15rem;
   }
   
   .product-form {
-    padding: 0.875rem;
+    padding: 0.45rem 0.62rem 0.62rem;
   }
   
   .modal-header {
-    padding: 0.875rem 1rem;
+    padding: 0.7rem 0.85rem;
   }
   
   .modal-header h2 {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   
   .form-actions {
-    padding: 0.875rem 1rem;
+    padding: 0.58rem 0.72rem;
     flex-direction: column;
   }
   
@@ -1496,56 +1903,6 @@ onMounted(() => {
     justify-content: center;
   }
 }
-  .featured-checkbox-row {
-    grid-column: 1 / span 2;
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    margin-top: 0.25rem;
-  }
-
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #00ffff;
-  }
-
-  .checkbox-label input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    accent-color: #00ffff;
-    margin: 0 8px 0 0;
-    cursor: pointer;
-    border-radius: 4px;
-    border: 1px solid rgba(0,255,255,0.3);
-    background: #111;
-    appearance: none;
-    -webkit-appearance: none;
-    position: relative;
-    transition: box-shadow 0.2s;
-  }
-
-  .checkbox-label input[type="checkbox"]:checked {
-    background: linear-gradient(90deg, #00ffff, #0088ff);
-    border-color: rgba(0,255,255,0.6);
-    box-shadow: 0 0 8px #00ffff99;
-  }
-
-  .checkbox-label input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 6px;
-    width: 4px;
-    height: 8px;
-    border: solid #002b2b;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
 </style>
 
 
