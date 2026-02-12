@@ -113,7 +113,7 @@ function sanitizeResult(payload: any): ProductAutofillResult {
 export async function generateProductAutofillFromImage(file: File): Promise<ProductAutofillResult> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim()
   if (!apiKey) {
-    throw new Error('Falta VITE_GEMINI_API_KEY en el archivo de entorno')
+    throw new Error('Falta la clave de IA en el archivo de entorno (VITE_GEMINI_API_KEY)')
   }
 
   const model = (import.meta.env.VITE_GEMINI_MODEL || DEFAULT_MODEL).trim()
@@ -167,7 +167,7 @@ export async function generateProductAutofillFromImage(file: File): Promise<Prod
   const payload = await response.json()
 
   if (!response.ok) {
-    const apiMessage = payload?.error?.message || 'Error desconocido de Gemini'
+    const apiMessage = payload?.error?.message || 'Error desconocido del servicio de IA'
     throw new Error(apiMessage)
   }
 
@@ -177,8 +177,8 @@ export async function generateProductAutofillFromImage(file: File): Promise<Prod
     .trim()
 
   if (!rawText) {
-    logger.error('[AI Autofill] Respuesta vacia de Gemini', payload)
-    throw new Error('Gemini no devolvio contenido util')
+    logger.error('[AI Autofill] Respuesta vacia del servicio de IA', payload)
+    throw new Error('La IA no devolvio contenido util')
   }
 
   let parsed: any
@@ -186,7 +186,7 @@ export async function generateProductAutofillFromImage(file: File): Promise<Prod
     parsed = JSON.parse(extractJsonText(rawText))
   } catch (error) {
     logger.error('[AI Autofill] Error parseando JSON', { rawText, error })
-    throw new Error('No se pudo interpretar la respuesta de Gemini')
+    throw new Error('No se pudo interpretar la respuesta de IA')
   }
 
   return sanitizeResult(parsed)

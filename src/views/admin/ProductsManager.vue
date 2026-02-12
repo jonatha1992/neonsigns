@@ -118,23 +118,6 @@
                     </div>
                   </div>
 
-                  <div class="ai-autofill">
-                    <button
-                      type="button"
-                      :class="['btn-ai-autofill', { 'is-loading': aiAutofillLoading }]"
-                      :disabled="aiAutofillLoading || (!selectedFile && !imagePreview) || saving"
-                      @click="autofillFromImageWithAI"
-                    >
-                      <Sparkles :size="16" class="ai-icon" />
-                      <span>{{ aiAutofillLoading ? 'Analizando imagen...' : 'Completar formulario con IA (Gemini 2.5 Flash)' }}</span>
-                    </button>
-                    <small class="ai-hint">
-                      Sube una foto y la IA completa titulo, descripcion, categoria y precio sugerido.
-                    </small>
-                    <small v-if="aiSuggestedPrice" class="ai-hint ai-price">
-                      Precio sugerido por IA: ${{ aiSuggestedPrice.toLocaleString() }} ARS
-                    </small>
-                  </div>
                 </div>
 
                 <div v-if="uploadProgress > 0 && uploadProgress < 100" class="upload-progress">
@@ -145,6 +128,24 @@
             </div>
 
             <div class="form-fields-column">
+              <div class="ai-autofill ai-autofill-top">
+                <button
+                  type="button"
+                  :class="['btn-ai-autofill', { 'is-loading': aiAutofillLoading }]"
+                  :disabled="aiAutofillLoading || !hasAnyImageForAi || saving"
+                  @click="autofillFromImageWithAI"
+                >
+                  <Sparkles :size="16" class="ai-icon" />
+                  <span>{{ aiAutofillLoading ? 'Analizando imagen...' : 'Completar o editar con IA' }}</span>
+                </button>
+                <small class="ai-hint">
+                  Sube una foto y la IA completa titulo, descripcion, categoria y precio sugerido.
+                </small>
+                <small v-if="aiSuggestedPrice" class="ai-hint ai-price">
+                  Precio sugerido por IA: ${{ aiSuggestedPrice.toLocaleString() }} ARS
+                </small>
+              </div>
+
               <div :class="['form-group', { 'field-updated': aiFieldHighlights.title }]">
                 <label>Título *</label>
                 <input
@@ -158,10 +159,12 @@
               <div :class="['form-group', { 'field-updated': aiFieldHighlights.description }]">
                 <label>Descripción *</label>
                 <textarea
+                  ref="descriptionTextarea"
                   v-model="formData.description"
                   required
-                  rows="2"
+                  rows="5"
                   placeholder="Descripción del producto"
+                  @input="autoResizeDescription"
                 ></textarea>
               </div>
 
@@ -248,7 +251,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive, watch } from 'vue'
+import { ref, onMounted, reactive, watch, nextTick, computed } from 'vue'
 import NeonSpinner from '@/components/common/NeonSpinner.vue'
 import { Plus, Edit2, Trash2, X, Upload, Sparkles } from 'lucide-vue-next'
 import { useProductsStore } from '@/stores/products'
@@ -265,12 +268,10 @@ import {
 import { 
   ref as storageRef, 
   uploadBytesResumable, 
-  getDownloadURL,
-  getBlob
+  getDownloadURL
 } from 'firebase/storage'
 import { getDb, getStorageInstance } from '@/config/firebase'
 import { generateProductAutofillFromImage } from '@/services/ai-autofill.service'
-import { StorageService } from '@/services/storage.service'
 
 // Per-product image loading state
 const imageLoading = reactive<Record<string, boolean>>({})
@@ -300,6 +301,7 @@ const formData = ref({
 // Image upload
 const fileInput = ref<HTMLInputElement | null>(null)
 const imagePreview = ref<string>('')
+const descriptionTextarea = ref<HTMLTextAreaElement | null>(null)
 const selectedFile = ref<File | null>(null)
 const uploadProgress = ref(0)
 const aiAutofillLoading = ref(false)
@@ -308,6 +310,11 @@ const formCompleteAnimation = ref(false)
 const aiAutofillHighlight = ref(false)
 
 type AutofillFieldKey = 'title' | 'description' | 'category' | 'price'
+type AutofillSourceError = 'missing-preview' | 'preview-read-failed'
+type AutofillSourceResult =
+  | { file: File; error: null }
+  | { file: null; error: AutofillSourceError }
+
 const aiFieldHighlights = reactive<Record<AutofillFieldKey, boolean>>({
   title: false,
   description: false,
@@ -351,6 +358,22 @@ watch(products, (newProducts) => {
     }
   })
 })
+
+watch(
+  () => showModal.value,
+  (visible) => {
+    if (visible) {
+      nextTick(autoResizeDescription)
+    }
+  }
+)
+
+watch(
+  () => formData.value.description,
+  () => {
+    nextTick(autoResizeDescription)
+  }
+)
 
 // Modal functions
 const openCreateModal = () => {
@@ -422,6 +445,14 @@ const resetForm = () => {
 // Image upload functions
 const triggerFileInput = () => {
   fileInput.value?.click()
+}
+
+const autoResizeDescription = () => {
+  const textarea = descriptionTextarea.value
+  if (!textarea) return
+
+  textarea.style.height = 'auto'
+  textarea.style.height = `${textarea.scrollHeight}px`
 }
 
 const convertToWebP = async (file: File): Promise<Blob> => {
@@ -521,40 +552,49 @@ const fetchImageBlob = async (url: string): Promise<Blob | null> => {
   }
 }
 
-const getAutofillSourceFile = async (): Promise<File | null> => {
-  if (selectedFile.value) return selectedFile.value
-  const previewUrl = imagePreview.value?.trim()
-  if (!previewUrl) return null
+const isLocalPreviewUrl = (url: string) => {
+  return url.startsWith('data:') || url.startsWith('blob:')
+}
 
-  const directBlob = await fetchImageBlob(previewUrl)
-  const directFile = directBlob ? toAutofillFile(directBlob) : null
-  if (directFile) return directFile
+const isFirebaseStorageUrl = (url: string) => {
+  return url.includes('firebasestorage.googleapis.com') || url.includes('.firebasestorage.app/')
+}
 
-  try {
-    const storageInstance = await getStorageInstance()
-    let blob: Blob | null = null
+const hasAnyImageForAi = computed(() => {
+  return Boolean(selectedFile.value || imagePreview.value)
+})
 
-    const firebasePath = StorageService.extractPathFromUrl(previewUrl)
-    if (firebasePath) {
-      blob = await getBlob(storageRef(storageInstance, firebasePath))
-    } else if (previewUrl.startsWith('http://') || previewUrl.startsWith('https://') || previewUrl.startsWith('gs://')) {
-      blob = await getBlob(storageRef(storageInstance, previewUrl))
-    }
-
-    const storageFile = blob ? toAutofillFile(blob) : null
-    if (storageFile) return storageFile
-
-    if (firebasePath) {
-      const refreshedUrl = await getDownloadURL(storageRef(storageInstance, firebasePath))
-      const refreshedBlob = await fetchImageBlob(refreshedUrl)
-      const refreshedFile = refreshedBlob ? toAutofillFile(refreshedBlob) : null
-      if (refreshedFile) return refreshedFile
-    }
-  } catch (error) {
-    console.error('Error preparing image for AI autofill:', error)
+const getImageFetchUrlForAutofill = (url: string) => {
+  const trimmedUrl = url.trim()
+  if (isLocalPreviewUrl(trimmedUrl)) {
+    return trimmedUrl
   }
 
-  return null
+  if (import.meta.env.DEV && isFirebaseStorageUrl(trimmedUrl)) {
+    return `/__image_proxy?url=${encodeURIComponent(trimmedUrl)}`
+  }
+
+  return trimmedUrl
+}
+
+const getAutofillSourceFile = async (): Promise<AutofillSourceResult> => {
+  if (selectedFile.value) {
+    return { file: selectedFile.value, error: null }
+  }
+
+  const previewUrl = imagePreview.value?.trim()
+  if (!previewUrl) {
+    return { file: null, error: 'missing-preview' }
+  }
+
+  const sourceUrl = getImageFetchUrlForAutofill(previewUrl)
+  const directBlob = await fetchImageBlob(sourceUrl)
+  const directFile = directBlob ? toAutofillFile(directBlob) : null
+  if (directFile) {
+    return { file: directFile, error: null }
+  }
+
+  return { file: null, error: 'preview-read-failed' }
 }
 
 const isFormFullyCompleted = () => {
@@ -603,20 +643,20 @@ const triggerFormCompleteAnimation = () => {
 }
 
 const autofillFromImageWithAI = async () => {
-  if (!selectedFile.value && !imagePreview.value) {
+  if (!hasAnyImageForAi.value) {
     showToast('Primero sube una imagen para usar autocompletado con IA', 'error')
     return
   }
 
   aiAutofillLoading.value = true
   try {
-    const sourceFile = await getAutofillSourceFile()
-    if (!sourceFile) {
-      showToast('No se pudo leer la imagen actual. Vuelve a subirla para usar IA.', 'error')
+    const source = await getAutofillSourceFile()
+    if (!source.file) {
+      showToast('No se pudo leer la imagen actual para IA. Verifica permisos o CORS.', 'error')
       return
     }
 
-    const suggestion = await generateProductAutofillFromImage(sourceFile)
+    const suggestion = await generateProductAutofillFromImage(source.file)
     const previousTitle = formData.value.title.trim()
     const previousDescription = formData.value.description.trim()
     const previousCategory = formData.value.category
@@ -1270,7 +1310,7 @@ onMounted(() => {
   border-radius: 8px;
   border: 1px solid rgba(0, 255, 255, 0.3);
   width: 100%;
-  max-width: 540px;
+  max-width: 620px;
   max-height: calc(100vh - 0.6rem);
   overflow-y: auto;
   margin-top: 0;
@@ -1337,8 +1377,8 @@ onMounted(() => {
 
 .form-layout {
   display: grid;
-  grid-template-columns: minmax(185px, 210px) minmax(0, 1fr);
-  gap: 0.72rem;
+  grid-template-columns: minmax(210px, 230px) minmax(0, 1fr);
+  gap: 0.85rem;
   align-items: start;
 }
 
@@ -1387,7 +1427,10 @@ onMounted(() => {
 }
 
 .form-group textarea {
-  min-height: 56px;
+  min-height: 128px;
+  resize: none;
+  overflow-y: hidden;
+  line-height: 1.42;
 }
 
 .form-group select {
@@ -1466,20 +1509,20 @@ onMounted(() => {
 .image-preview {
   position: relative;
   width: 100%;
-  height: 100%;
-  min-height: 92px;
+  aspect-ratio: 3 / 4;
+  min-height: 250px;
   border-radius: 8px;
   overflow: hidden;
   border: 2px solid rgba(0, 255, 255, 0.3);
   cursor: pointer;
-  background: rgba(0, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .image-preview img {
   width: 100%;
   height: 100%;
-  min-height: 92px;
-  object-fit: cover;
+  min-height: 250px;
+  object-fit: contain;
   display: block;
 }
 
@@ -1512,7 +1555,8 @@ onMounted(() => {
   cursor: pointer;
   transition: all 0.3s;
   background: rgba(0, 255, 255, 0.05);
-  min-height: 92px;
+  aspect-ratio: 3 / 4;
+  min-height: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1581,6 +1625,10 @@ onMounted(() => {
   flex: 0 0 auto;
   justify-content: flex-start;
   min-width: 0;
+}
+
+.ai-autofill-top {
+  margin-bottom: 0.45rem;
 }
 
 .btn-ai-autofill {
@@ -1860,7 +1908,7 @@ onMounted(() => {
   }
 
   .image-upload-container {
-    width: min(190px, 100%);
+    width: min(250px, 100%);
     min-width: 0;
     margin-inline: auto;
   }
@@ -1868,7 +1916,7 @@ onMounted(() => {
   .image-preview,
   .image-preview img,
   .upload-area {
-    min-height: 88px;
+    min-height: 200px;
   }
 
   .form-row {
@@ -1904,5 +1952,3 @@ onMounted(() => {
   }
 }
 </style>
-
-

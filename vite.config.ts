@@ -1,9 +1,58 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
+const imageProxyPlugin = (): Plugin => ({
+    name: 'firebase-image-proxy',
+    apply: 'serve',
+    configureServer(server) {
+        server.middlewares.use('/__image_proxy', async (req, res, next) => {
+            if (req.method !== 'GET') {
+                res.statusCode = 405
+                res.end('Method not allowed')
+                return
+            }
+
+            try {
+                const requestUrl = new URL(req.url || '', 'http://localhost')
+                const targetParam = requestUrl.searchParams.get('url')
+
+                if (!targetParam) {
+                    res.statusCode = 400
+                    res.end('Missing url param')
+                    return
+                }
+
+                const targetUrl = new URL(targetParam)
+                const hostname = targetUrl.hostname.toLowerCase()
+                const isAllowedHost = hostname === 'firebasestorage.googleapis.com' || hostname.endsWith('.firebasestorage.app')
+
+                if (targetUrl.protocol !== 'https:' || !isAllowedHost) {
+                    res.statusCode = 403
+                    res.end('Target host not allowed')
+                    return
+                }
+
+                const upstream = await fetch(targetUrl.toString())
+                const body = Buffer.from(await upstream.arrayBuffer())
+
+                res.statusCode = upstream.status
+                const contentType = upstream.headers.get('content-type')
+                const cacheControl = upstream.headers.get('cache-control')
+
+                if (contentType) res.setHeader('Content-Type', contentType)
+                if (cacheControl) res.setHeader('Cache-Control', cacheControl)
+
+                res.end(body)
+            } catch (error) {
+                next(error)
+            }
+        })
+    }
+})
+
 export default defineConfig({
-    plugins: [vue()],
+    plugins: [vue(), imageProxyPlugin()],
     base: '/',
     resolve: {
         alias: {

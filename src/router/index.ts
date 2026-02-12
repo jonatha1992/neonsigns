@@ -80,7 +80,8 @@ const routes: RouteRecordRaw[] = [
         name: 'NotFound',
         component: () => import('@/views/NotFound.vue'),
         meta: {
-            title: 'Página no encontrada'
+            title: 'Página no encontrada',
+            hideLayout: true
         }
     }
 ]

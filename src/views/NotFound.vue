@@ -61,11 +61,11 @@ const whatsappUrl = computed(() =>
 
 <style scoped>
 .not-found {
-  min-height: calc(100vh - 160px);
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4rem 0;
+  padding: 2rem 1rem;
 }
 
 .error-content {
