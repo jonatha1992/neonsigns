@@ -16,6 +16,9 @@ nul
 
 # IDE and editor files
 .vscode/
+!/.vscode/
+!/.vscode/launch.json
+!/.vscode/tasks.json
 .idea/
 *.swp
 *.swo
@@ -110,3 +113,5 @@ firebase-debug.log
 # Backup files
 *_backup.*
 *.backup.*
+!/.vscode/launch.json
+!/.vscode/tasks.json
