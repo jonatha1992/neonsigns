@@ -8,7 +8,7 @@
         "dev": "vite",
         "generate-sitemap": "npx tsx scripts/generate-sitemap.ts",
         "prebuild": "npm run generate-sitemap",
-        "build": "vite build",
+        "build": "vite build && node scripts/write-version.mjs",
         "preview": "vite preview",
         "lint": "eslint . --ext .vue,.js,.ts --fix",
         "type-check": "vue-tsc --noEmit",
