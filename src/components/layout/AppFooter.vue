@@ -77,7 +77,7 @@
       <!-- Bottom Bar -->
       <div class="footer-bottom">
         <div class="footer-bottom-content">
-          <p>&copy; 2025 Cuadros NEON LeD. Desarrollado por <a href="https://jonatha1992.github.io/tecnofusion/" target="_blank" rel="noopener noreferrer" class="developer-link">Tecnofusion.IT</a>.</p>
+          <p>&copy; 2025 Cuadros NEON LeD. Desarrollado por <a href="https://tecnofusion.dev" target="_blank" rel="noopener noreferrer" class="developer-link">tecnofusion.dev</a>.</p>
           <div class="social-links">
             <a href="#" class="social-link" title="Instagram">
               <Instagram :size="20" />
