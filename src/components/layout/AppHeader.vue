@@ -331,7 +331,6 @@ onMounted(() => {
   logger.log('🔧 [AppHeader] Mounted - Current user:', user.value?.email)
   logger.log('🔧 [AppHeader] Mounted - Is admin:', isAdmin.value)
   logger.log('🔧 [AppHeader] VITE_REQUIRE_ADMIN:', (import.meta as any).env.VITE_REQUIRE_ADMIN)
-  logger.log('🔧 [AppHeader] VITE_ADMIN_EMAILS:', (import.meta as any).env.VITE_ADMIN_EMAILS)
 })
 
 onUnmounted(() => {

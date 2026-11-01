@@ -15,7 +15,6 @@ interface ImportMetaEnv {
     readonly VITE_FIREBASE_MEASUREMENT_ID?: string
     readonly VITE_REQUIRE_AUTH?: string
     readonly VITE_REQUIRE_ADMIN?: string
-    readonly VITE_ADMIN_EMAILS?: string
     readonly VITE_GEMINI_API_KEY?: string
     readonly VITE_GEMINI_MODEL?: string
 }

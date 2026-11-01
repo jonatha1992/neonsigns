@@ -77,7 +77,16 @@ Este proyecto ahora incluye un **sistema completo de administración (ABM)** par
    ```
 
 4. **Credenciales** (configuradas en Firebase Authentication):
-   - Email: `tecnofusion.it@gmail.com`
+   - Email: administrar la lista permitida en Firestore (`config/admins`, campo `emails`); nunca configurar emails administrativos en el código o en variables `VITE_*`.
+
+   Para crear o actualizar esa lista, ejecuta desde la raíz del proyecto con credenciales de Firebase Admin disponibles (por ejemplo, `GOOGLE_APPLICATION_CREDENTIALS`):
+
+   ```sh
+   ADMIN_EMAILS="admin1@example.com,admin2@example.com" node scripts/seed-admins.mjs
+   ```
+
+   El documento `config/admins` solo puede modificarse por un administrador con el custom claim `admin: true`. Alternativamente, asigna el custom claim desde un entorno confiable de Firebase Admin. La interfaz consulta este documento para habilitar la administración; Firestore Rules lo valida en las operaciones protegidas.
+
    - Password: [Tu contraseña configurada en Firebase]
 
 ### 🧪 Verificación local

@@ -13,10 +13,11 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
   const loading = ref(true);
   const error = ref<string | null>(null);
+  const isAdminValue = ref(false);
 
   // Getters
   const isAuthenticated = computed(() => user.value !== null);
-  const isAdmin = computed(() => AuthService.isAdmin(user.value));
+  const isAdmin = computed(() => isAdminValue.value);
   const userEmail = computed(() => user.value?.email || null);
 
   /**
@@ -30,7 +31,9 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const currentUser = await AuthService.waitForAuthInit();
       user.value = currentUser;
+      isAdminValue.value = await AuthService.isAdmin(currentUser);
     } catch (err) {
+      isAdminValue.value = false;
       error.value = 'Error initializing authentication';
       logger.error('Error initializing auth:', err);
     } finally {
@@ -48,9 +51,10 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const authenticatedUser = await AuthService.signIn(email, password);
       user.value = authenticatedUser;
+      isAdminValue.value = await AuthService.isAdmin(authenticatedUser);
 
       // Check if user is admin
-      if (!AuthService.isAdmin(authenticatedUser)) {
+      if (!isAdmin.value) {
         await signOut();
         error.value = 'No tiene permisos de administrador';
         return false;
@@ -76,6 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await AuthService.signOut();
       user.value = null;
+      isAdminValue.value = false;
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Error al cerrar sesión';
       logger.error('Sign out error:', err);
@@ -140,6 +145,12 @@ export const useAuthStore = defineStore('auth', () => {
     return AuthService.onAuthStateChanged((newUser) => {
       user.value = newUser;
       loading.value = false;
+      void AuthService.isAdmin(newUser).then((admin) => {
+        if (user.value === newUser) isAdminValue.value = admin;
+      }).catch((err: unknown) => {
+        if (user.value === newUser) isAdminValue.value = false;
+        logger.error('Error checking admin status:', err);
+      });
     });
   };
 

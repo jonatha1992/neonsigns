@@ -9,7 +9,7 @@ import {
   type User,
   type AuthError
 } from 'firebase/auth';
-import { auth } from '@/config/firebase';
+import { auth, getAdminEmails } from '@/config/firebase';
 import logger from '@/utils/logger'
 
 /**
@@ -101,38 +101,14 @@ export class AuthService {
   }
 
   /**
-   * Check if user is admin
-   * Admin users are verified by email
+   * Check admin custom claim or the centrally managed Firestore email list.
    */
-  static isAdmin(user: User | null): boolean {
-    if (!user || !user.email) {
-      logger.debug('[AuthService.isAdmin] No user or email present', { user });
-      return false;
-    }
-    // If admin requirement is disabled, any authenticated user is considered admin
-    const requireAdminRaw = import.meta.env.VITE_REQUIRE_ADMIN;
-    const requireAdmin = (requireAdminRaw ?? 'true').toString().toLowerCase() !== 'false';
-    logger.debug('[AuthService.isAdmin] requireAdmin raw:', requireAdminRaw, 'parsed:', requireAdmin);
-    if (!requireAdmin) {
-      logger.debug('[AuthService.isAdmin] Admin requirement disabled by env');
-      return true;
-    }
-    // Allow configuring admin emails via env (comma-separated)
-    const envAdmins = import.meta.env.VITE_ADMIN_EMAILS;
-    logger.debug('[AuthService.isAdmin] VITE_ADMIN_EMAILS:', envAdmins);
-    if (envAdmins && envAdmins.trim().length > 0) {
-      const allowed = envAdmins
-        .split(',')
-        .map(e => e.trim().toLowerCase())
-        .filter(Boolean);
-      logger.debug('[AuthService.isAdmin] allowed admin emails:', allowed, 'checking user:', user.email.toLowerCase());
-      return allowed.includes(user.email.toLowerCase());
-    }
-    // Fallback allowlist when env is missing (mainly for misconfigured deployments)
-    const fallbackAdmins = ['ldesidel@hotmail.com', 'tecnofusion.it@gmail.com', 'admin@admin.com'];
-    const isFallbackAdmin = fallbackAdmins.includes(user.email.toLowerCase());
-    logger.debug('[AuthService.isAdmin] fallback admin check:', isFallbackAdmin);
-    return isFallbackAdmin;
+  static async isAdmin(user: User | null): Promise<boolean> {
+    if (!user) return false;
+    const token = await user.getIdTokenResult();
+    if (token.claims.admin === true) return true;
+    if (!user.email) return false;
+    return (await getAdminEmails()).includes(user.email.trim().toLowerCase());
   }
 
   /**

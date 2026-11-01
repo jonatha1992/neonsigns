@@ -9,9 +9,22 @@ service cloud.firestore {
       allow write: if true;
     }
 
-    // Future collections can be added here
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.admin == true ||
+        (request.auth.token.email != null &&
+          get(/databases/$(database)/documents/config/admins).data.emails.hasAny([request.auth.token.email]))
+      );
+    }
+
+    // Only administrators may access configuration or other protected documents.
+    match /config/admins {
+      allow read: if isAdmin();
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
     match /{document=**} {
-      allow read, write: if request.auth != null && request.auth.token.email == 'ldesidel@hotmail.com';
+      allow read, write: if isAdmin();
     }
   }
 }

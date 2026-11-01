@@ -6,7 +6,7 @@ import {
   inMemoryPersistence,
   type Auth
 } from 'firebase/auth';
-import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, type Firestore } from 'firebase/firestore';
 import { getStorage, type FirebaseStorage } from 'firebase/storage';
 import logger from '@/utils/logger';
 
@@ -160,6 +160,16 @@ export function getDb(): Firestore {
     throw new Error('[Firebase] Firestore not initialized yet - call initializeFirebaseApp() first');
   }
   return db;
+}
+
+export async function getAdminEmails(): Promise<string[]> {
+  await initializeFirebaseApp();
+  if (!db) throw new Error('[Firebase] Firestore not initialized');
+  const admins = await getDoc(doc(db, 'config', 'admins'));
+  const emails: unknown = admins.data()?.emails;
+  if (!Array.isArray(emails)) return [];
+  return emails.filter((value): value is string => typeof value === 'string')
+    .map((value) => value.trim().toLowerCase());
 }
 
 /**
