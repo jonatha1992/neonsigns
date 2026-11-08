@@ -5,8 +5,7 @@ service cloud.firestore {
     // Allow read access for all authenticated and unauthenticated users
     match /gallery_items/{document} {
       allow read: if true;
-      // Permitir escritura a cualquier usuario temporalmente para migración (¡NO OLVIDES REVERTIR ESTO!)
-      allow write: if true;
+      allow write: if isAdmin();
     }
 
     function isAdmin() {
